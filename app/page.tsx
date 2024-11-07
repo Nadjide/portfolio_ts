@@ -6,42 +6,25 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        {[
-          { label: "Projects", value: "12k+" },
-          { label: "Happy Clients", value: "56k+" },
-          { label: "Experience", value: "11k+" },
-        ].map((stat, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
-            className="bg-gray-800 p-6 rounded-lg text-center"
-          >
-            <h2 className="text-3xl font-bold text-purple-500">{stat.value}</h2>
-            <p>{stat.label}</p>
-          </motion.div>
-        ))}
-      </div>
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="bg-gray-800 p-6 rounded-lg mb-8"
       >
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6">
           <Image
             src="/profile.jpg"
-            width={80}
-            height={80}
-            className="rounded-full"
-            alt="Profile Picture"
+            width={100}
+            height={100}
+            alt="Photo de profil"
+            className="rounded-full border-2 border-purple-400"
           />
           <div>
-            <h1 className="text-xl font-semibold">Nadjide Omar</h1>
-            <p className="text-sm text-purple-400">Software Engineer</p>
+            <h1 className="text-2xl font-semibold">Nadjide Omar</h1>
+            <p className="text-sm text-purple-400">Étudiant Expert Développement WEB</p>
+            <p className="text-sm">Âge : 21 ans</p>
+            <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
           </div>
         </div>
       </motion.div>
@@ -53,9 +36,9 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="bg-gray-800 p-6 rounded-lg"
       >
-        <h3 className="text-lg font-semibold mb-4">My Projects</h3>
+        <h3 className="text-lg font-semibold mb-4">Mes Projets</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {["Project Management App", "E-Learning Platform", "Global News Aggregator", "Scientific Research Database", "Cybersecurity Dashboard"].map((project, index) => (
+          {["Stats Live"].map((project, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.05 }}
