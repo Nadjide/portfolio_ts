@@ -36,10 +36,6 @@ export default function Home() {
         {/* Section Contact */}
         <div className="flex flex-col justify-center space-y-2 text-right">
           <div className="flex items-center space-x-2 justify-end">
-            <LocationOn style={{ color: '#c084fc' }} />
-            <p>6 Rue J F Fulconis, 06000 Nice</p>
-          </div>
-          <div className="flex items-center space-x-2 justify-end">
             <Email style={{ color: '#c084fc' }} />
             <p>nadjide.omar@outlook.fr</p>
           </div>
