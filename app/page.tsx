@@ -7,26 +7,50 @@ import { LocationOn, Email, Phone, DirectionsCar, LinkedIn } from '@mui/icons-ma
 export default function Home() {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
+      {/* Section de profil et de contact */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gray-800 p-6 rounded-lg mb-8 flex items-center"
+        className="bg-gray-800 p-6 rounded-lg mb-8 flex items-start justify-between"
       >
-        <div className="w-25 h-25">
-          <Image
-            src="/profile.jpg"
-            alt="Photo de profil"
-            width={100}
-            height={100}
-            className="object-cover w-full h-full"
-          />
+        {/* Section Profil */}
+        <div className="flex items-center">
+          <div className="w-24 h-24">
+            <Image
+              src="/profile.jpg"
+              alt="Photo de profil"
+              width={100}
+              height={100}
+              className="object-cover w-full h-full rounded-lg"
+            />
+          </div>
+          <div className="ml-6 flex flex-col justify-center">
+            <h1 className="text-2xl font-semibold">Nadjide Omar</h1>
+            <p className="text-sm text-purple-400">Étudiant Expert Développement Full Stack</p>
+            <p className="text-sm">Âge : 21 ans</p>
+            <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
+          </div>
         </div>
-        <div className="ml-6 flex flex-col justify-center">
-          <h1 className="text-2xl font-semibold">Nadjide Omar</h1>
-          <p className="text-sm text-purple-400">Étudiant Expert Développement Full Stack</p>
-          <p className="text-sm">Âge : 21 ans</p>
-          <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
+
+        {/* Section Contact */}
+        <div className="flex flex-col justify-center space-y-2 text-right">
+          <div className="flex items-center space-x-2 justify-end">
+            <LocationOn style={{ color: '#c084fc' }} />
+            <p>6 Rue J F Fulconis, 06000 Nice</p>
+          </div>
+          <div className="flex items-center space-x-2 justify-end">
+            <Email style={{ color: '#c084fc' }} />
+            <p>nadjide.omar@outlook.fr</p>
+          </div>
+          <div className="flex items-center space-x-2 justify-end">
+            <Phone style={{ color: '#c084fc' }} />
+            <p>06 34 78 67 13</p>
+          </div>
+          <div className="flex items-center space-x-2 justify-end">
+            <LinkedIn style={{ color: '#c084fc' }} />
+            <p>Nadjide Omar</p>
+          </div>
         </div>
       </motion.div>
 
@@ -213,38 +237,6 @@ export default function Home() {
               <p className="font-bold text-[#c084fc]">{project}</p>
             </motion.div>
           ))}
-        </div>
-      </motion.div>
-
-      {/* Section de contact */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800 p-6 rounded-lg"
-      >
-        <h3 className="text-lg font-semibold mb-4">Contact</h3>
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <LocationOn style={{ color: '#c084fc' }} />
-            <p>6 Rue J F Fulconis, 06000 Nice</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Email style={{ color: '#c084fc' }} />
-            <p>nadjide.omar@outlook.fr</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Phone style={{ color: '#c084fc' }} />
-            <p>06 34 78 67 13</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <DirectionsCar style={{ color: '#c084fc' }} />
-            <p>Permis B, véhicule</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <LinkedIn style={{ color: '#c084fc' }} />
-            <p>Nadjide Omar</p>
-          </div>
         </div>
       </motion.div>
     </div>
