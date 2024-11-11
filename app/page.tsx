@@ -2,9 +2,24 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { LocationOn, Email, Phone, DirectionsCar, LinkedIn } from '@mui/icons-material';
+import { LocationOn, Email, Phone, DirectionsCar, LinkedIn } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import { projectsData } from "./projectsData";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleProjectClick = (projectTitle: string) => {
+    const slug = projectTitle
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9 ]/g, "")
+      .trim()
+      .toLowerCase()
+      .replace(/ /g, "-");
+    router.push(`/${slug}`);
+  };
+
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
       {/* Section de profil et de contact */}
@@ -36,20 +51,19 @@ export default function Home() {
         {/* Section Contact */}
         <div className="flex flex-col justify-center space-y-2 text-right">
           <div className="flex items-center space-x-2 justify-end">
-            <Email style={{ color: '#c084fc' }} />
+            <Email style={{ color: "#c084fc" }} />
             <p>nadjide.omar@outlook.fr</p>
           </div>
           <div className="flex items-center space-x-2 justify-end">
-            <Phone style={{ color: '#c084fc' }} />
+            <Phone style={{ color: "#c084fc" }} />
             <p>06 34 78 67 13</p>
           </div>
           <div className="flex items-center space-x-2 justify-end">
-            <LinkedIn style={{ color: '#c084fc' }} />
+            <LinkedIn style={{ color: "#c084fc" }} />
             <p>Nadjide Omar</p>
           </div>
         </div>
       </motion.div>
-
 
       {/* Section des compétences techniques */}
       <motion.div
@@ -189,48 +203,16 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="bg-gray-800 p-6 rounded-lg mb-8"
       >
-        <h3 className="text-lg font-semibold mb-4">Mes Projets en Entreprise</h3>
+        <h3 className="text-lg font-semibold mb-4">Mes Projets</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[
-            "Sites multi-associations en HTML/JS",
-            "Application STATS LIVE",
-            "Intégrateur de données automatisé",
-            "STATS LIVE 2.0",
-            "CRM interne",
-            "Templates d'emails en HTML"
-          ].map((project, index) => (
+          {projectsData.map((project) => (
             <motion.div
-              key={index}
+              key={project.title}
               whileHover={{ scale: 1.05 }}
               className="bg-gray-700 p-4 rounded-lg cursor-pointer"
+              onClick={() => handleProjectClick(project.title)}
             >
-              <p className="font-bold text-[#c084fc]">{project}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Section des projets scolaires/personnels */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800 p-6 rounded-lg mb-8"
-      >
-        <h3 className="text-lg font-semibold mb-4">Mes Projets Scolaires/Personnels</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[
-            "Exploree",
-            "Smart Hire",
-            "Pokedex",
-            "Movie App"
-          ].map((project, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="bg-gray-700 p-4 rounded-lg cursor-pointer"
-            >
-              <p className="font-bold text-[#c084fc]">{project}</p>
+              <p className="font-bold text-[#c084fc]">{project.title}</p>
             </motion.div>
           ))}
         </div>
