@@ -7,12 +7,10 @@ import { projectsData } from "../projectsData";
 export default function ProjectPage() {
     const { slug } = useParams() as { slug: string };
 
-    // Trouver le projet correspondant en utilisant le slug
     const project = projectsData.find(
         (proj) => proj.title.toLowerCase().replace(/ /g, "-") === slug
     );
 
-    // Si le projet n'est pas trouvé, afficher un message ou une page d'erreur
     if (!project) {
         return (
             <div className="p-6 text-center text-gray-300">
