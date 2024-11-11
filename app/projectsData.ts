@@ -19,12 +19,15 @@ export const projectsData: ProjectData[] = [
         ],
         imageSrc: "/images/stats_live.png",
         videoSrc: "/videos/stats_live_demo.mp4",
-        technologies: ["HTML", "CSS", "JavaScript", "FLASK", "MySQL"],
+        technologies: ["HTML", "Bootstrap", "JavaScript", "FLASK", "MySQL"],
     },
     {
         id: "2",
-        title: "Sites multi-associations",
-        description: "Développement de sites pour plusieurs associations en interne.",
+        title: "Sites multi associations",
+        description: [
+            "Dans le cadre de l'entreprise, ce projet avait pour objectif la création de templates de mini-sites en interne pour les télévendeurs. Ces mini-sites, intégrés dans le logiciel Nixxis et créés avec E-Script de SeaSoftware, permettaient de fournir aux télévendeurs un script prédéfini à suivre lors des appels de collecte de dons.",
+            "Chaque mini-site donnait aux télévendeurs une vue claire des informations des personnes appelées, facilitant ainsi leur suivi et permettant aux superviseurs de structurer les dialogues avec des scripts adaptés. Ces outils visaient à améliorer l'efficacité des appels et à standardiser les échanges avec les donateurs potentiels."
+        ],
         imageSrc: "/images/multi_association.png",
         videoSrc: "/videos/multi_association_demo.mp4",
         technologies: ["HTML", "CSS"],
@@ -32,7 +35,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "3",
         title: "Integrateur de donnees automatise",
-        description: "Outil d'intégration de données automatisé pour la synchronisation des bases de données.",
+        description: [],
         imageSrc: "/images/data_integrator.png",
         videoSrc: "/videos/data_integrator_demo.mp4",
         technologies: ["Python", "Polars", "MySQL", "DuckDB"],
@@ -40,31 +43,15 @@ export const projectsData: ProjectData[] = [
     {
         id: "4",
         title: "STATS LIVE 2.0",
-        description: "Version améliorée de l'application STATS LIVE avec de nouvelles fonctionnalités et optimisations.",
+        description: [],
         imageSrc: "/images/stats_live_2.png",
         videoSrc: "/videos/stats_live_2_demo.mp4",
         technologies: ["Next.js", "TMaterial UI", "TypeScript", "MySQL"],
     },
     {
-        id: "5",
-        title: "CRM interne",
-        description: "Développement d'un CRM interne pour la gestion des clients et des leads.",
-        imageSrc: "/images/crm_interne.png",
-        videoSrc: "/videos/crm_interne_demo.mp4",
-        technologies: ["React", "FastAPI", "Node.js", "MongoDB"],
-    },
-    {
-        id: "6",
-        title: "Templates d'emails en HTML",
-        description: "Création de templates d'emails en HTML pour des communications internes.",
-        imageSrc: "/images/email_templates.png",
-        videoSrc: "/videos/email_templates_demo.mp4",
-        technologies: ["HTML", "CSS"],
-    },
-    {
         id: "7",
         title: "Exploree",
-        description: "Application de découverte de nouveaux lieux et d'activités basée sur les préférences des utilisateurs.",
+        description: [],
         imageSrc: "/images/exploree.png",
         videoSrc: "/videos/exploree_demo.mp4",
         technologies: ["React Native", "Firebase", "JavaScript"],
@@ -72,7 +59,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "8",
         title: "Smart Hire",
-        description: "Plateforme de recrutement intelligente facilitant la mise en relation entre recruteurs et candidats.",
+        description: [],
         imageSrc: "/images/smart_hire.png",
         videoSrc: "/videos/smart_hire_demo.mp4",
         technologies: ["React Native", "Firebase", "JavaScript"],
@@ -81,7 +68,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "9",
         title: "Pokedex",
-        description: "Application pour explorer et découvrir des informations sur les Pokémon.",
+        description: [],
         imageSrc: "/images/pokedex.png",
         videoSrc: "/videos/pokedex_demo.mp4",
         technologies: ["React", "Material UI", "PokeAPI"],
@@ -89,7 +76,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "10",
         title: "Movie App",
-        description: "Application permettant de rechercher et de découvrir des films avec des informations détaillées.",
+        description: [],
         imageSrc: "/images/movie_app.png",
         videoSrc: "/videos/movie_app_demo.mp4",
         technologies: ["React", "Material UI", "The TMDB API"],
