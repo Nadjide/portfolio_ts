@@ -19,12 +19,14 @@ export const projectsData: ProjectData[] = [
         title: "Sites multi-associations",
         description: "Développement de sites pour plusieurs associations en interne.",
         imageSrc: "/images/multi_association.png",
+        videoSrc: "/videos/multi_association_demo.mp4",
     },
     {
         id: "3",
         title: "Integrateur de donnees automatise",     
         description: "Outil d'intégration de données automatisé pour la synchronisation des bases de données.",
         imageSrc: "/images/data_integrator.png",
+        videoSrc: "/videos/data_integrator_demo.mp4",
     },
     {
         id: "4",
@@ -38,12 +40,14 @@ export const projectsData: ProjectData[] = [
         title: "CRM interne",
         description: "Développement d'un CRM interne pour la gestion des clients et des leads.",
         imageSrc: "/images/crm_interne.png",
+        videoSrc: "/videos/crm_interne_demo.mp4",
     },
     {
         id: "6",
         title: "Templates d'emails en HTML",
         description: "Création de templates d'emails en HTML pour des communications internes.",
         imageSrc: "/images/email_templates.png",
+        videoSrc: "/videos/email_templates_demo.mp4",
     },
     {
         id: "7",
@@ -57,17 +61,20 @@ export const projectsData: ProjectData[] = [
         title: "Smart Hire",
         description: "Plateforme de recrutement intelligente facilitant la mise en relation entre recruteurs et candidats.",
         imageSrc: "/images/smart_hire.png",
+        videoSrc: "/videos/smart_hire_demo.mp4",
     },
     {
         id: "9",
         title: "Pokedex",
         description: "Application pour explorer et découvrir des informations sur les Pokémon.",
         imageSrc: "/images/pokedex.png",
+        videoSrc: "/videos/pokedex_demo.mp4",
     },
     {
         id: "10",
         title: "Movie App",
         description: "Application permettant de rechercher et de découvrir des films avec des informations détaillées.",
         imageSrc: "/images/movie_app.png",
+        videoSrc: "/videos/movie_app_demo.mp4",
     }
 ];
