@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { LocationOn, Email, Phone, DirectionsCar, LinkedIn } from "@mui/icons-material";
+import { Email, Phone, LinkedIn } from "@mui/icons-material";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useRouter } from "next/navigation";
 import { projectsData } from "./projectsData";
