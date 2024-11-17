@@ -56,10 +56,6 @@ export default function Home() {
             <a href="mailto:nadjide.omar@outlook.fr" className="hover:underline text-sm">nadjide.omar@outlook.fr</a>
           </div>
           <div className="flex items-center space-x-2">
-            <Phone style={{ color: "#c084fc" }} />
-            <p className="text-sm">06 34 78 67 13</p>
-          </div>
-          <div className="flex items-center space-x-2">
             <LinkedIn style={{ color: "#c084fc" }} />
             <a
               href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
