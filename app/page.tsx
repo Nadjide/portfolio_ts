@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { LocationOn, Email, Phone, DirectionsCar, LinkedIn } from "@mui/icons-material";
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { useRouter } from "next/navigation";
 import { projectsData } from "./projectsData";
 
@@ -51,16 +52,20 @@ export default function Home() {
         {/* Section Contact */}
         <div className="flex flex-col justify-center space-y-2 text-right">
           <div className="flex items-center space-x-2 justify-end">
-            <Email style={{ color: "#c084fc" }} />
-            <p>nadjide.omar@outlook.fr</p>
+          <Email style={{ color: "#c084fc" }} />
+          <a href="mailto:nadjide.omar@outlook.fr" className="hover:underline">nadjide.omar@outlook.fr</a>
           </div>
           <div className="flex items-center space-x-2 justify-end">
-            <Phone style={{ color: "#c084fc" }} />
-            <p>06 34 78 67 13</p>
+          <Phone style={{ color: "#c084fc" }} />
+          <p>06 34 78 67 13</p>
           </div>
           <div className="flex items-center space-x-2 justify-end">
-            <LinkedIn style={{ color: "#c084fc" }} />
-            <p>Nadjide Omar</p>
+          <LinkedIn style={{ color: "#c084fc" }} />
+          <a href="https://www.linkedin.com/in/nadjide-omar-b55a01212/" target="_blank" rel="noopener noreferrer" className="hover:underline">Nadjide Omar</a>
+          </div>
+          <div className="flex items-center space-x-2 justify-end">
+          <GitHubIcon style={{ color: "#c084fc" }} />
+          <a href="https://github.com/Nadjide" target="_blank" rel="noopener noreferrer" className="hover:underline">Nadjide</a>
           </div>
         </div>
       </motion.div>

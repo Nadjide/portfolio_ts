@@ -104,9 +104,15 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 >
                     <div>
                         <h2 className="text-2xl font-semibold mb-4">{title}</h2>
-                        {description.map((paragraph, index) => (
-                            <p key={index} className="text-gray-700 mb-4">{paragraph}</p>
-                        ))}
+                        {
+                            description.map((paragraph, index) => (
+                                <div
+                                    key={index}
+                                    dangerouslySetInnerHTML={{ __html: paragraph }}
+                                    className="mb-4"
+                                />
+                            ))
+                        }
                     </div>
                 </motion.div>
             </motion.div>

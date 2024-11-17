@@ -74,18 +74,33 @@ export const projectsData: ProjectData[] = [
     {
         id: "8",
         title: "Smart Hire",
-        description: [],
+        description: [
+            "Smart Hire est une application innovante développée dans le cadre d'un projet scolaire, conçue pour révolutionner le processus de recrutement RH grâce à l'intelligence artificielle et à une personnalisation poussée. L'objectif principal de l'application est de faciliter la sélection des candidats en offrant des outils complets d'évaluation et d'analyse des performances.",
+            "L'application propose un système de questionnaires dynamiques, générés automatiquement par l'IA ou personnalisés par les recruteurs selon leurs besoins. Les données collectées sont stockées dans une base de données robuste, permettant de sauvegarder les questions créées pour enrichir constamment le pool de données disponible. Chaque questionnaire est structuré autour de thématiques spécifiques pour garantir une évaluation précise et pertinente des compétences des candidats.",
+            "Smart Hire intègre également un système avancé de comparaison des scores, permettant aux recruteurs d'évaluer les candidats sur la base de graphiques interactifs et de statistiques détaillées. Ces visualisations offrent une vue d'ensemble des performances par thématique, par candidat, et permettent de prendre des décisions éclairées grâce à des données objectives.",
+            "Ce projet représente un exemple abouti d'application RH moderne, combinant une interface utilisateur intuitive et des fonctionnalités puissantes pour optimiser le processus de recrutement. Mon rôle principal a été de développer l'application avec React Native pour l'interface mobile, TypeScript pour une typage strict et FastAPI pour gérer efficacement les données et les fonctionnalités backend."
+        ],
         imageSrc: "/images/smart_hire.png",
         videoSrc: "/videos/smart_hire_demo.mp4",
-        technologies: ["React Native", "Firebase", "JavaScript"],
-
-    },
+        technologies: ["React Native", "TypeScript", "FASTAPI"],
+    },    
     {
         id: "9",
         title: "Pokedex",
-        description: [],
+        description: [
+            "<p>Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.</p>",
+            "<p>L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes :</p>",
+            "<ul class='list-disc pl-5 space-y-2'>",
+            "<li><strong>Internationalisation :</strong> L'application prend en charge plusieurs langues, rendant l'expérience accessible à un public international.</li>",
+            "<li><strong>Tri par type :</strong> Les utilisateurs peuvent facilement trier les Pokémon en fonction de leur type (eau, feu, plante, etc.), offrant une navigation simplifiée et ciblée.</li>",
+            "<li><strong>Recommandations intelligentes :</strong> Lorsqu'un utilisateur consulte les détails d'un Pokémon, l'application propose des recommandations de Pokémon similaires basées sur des caractéristiques partagées.</li>",
+            "</ul>",
+            "<p>Le site est disponible en ligne :</p>",
+            "<p class='font-bold text-purple-500 text-lg'><a href='https://pokedex-pi-brown.vercel.app/' target='_blank'>➡️ Consulter le Pokedex en ligne</a></p>",
+            "<p>Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception.</p>"
+        ],
         imageSrc: "/images/pokedex.png",
         videoSrc: "/videos/pokedex_demo.mp4",
         technologies: ["React", "Material UI", "PokeAPI"],
-    },
+    },   
 ];
