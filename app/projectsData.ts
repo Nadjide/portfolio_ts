@@ -46,7 +46,7 @@ export const projectsData: ProjectData[] = [
         description: [],
         imageSrc: "/images/stats_live_2.png",
         videoSrc: "/videos/stats_live_2_demo.mp4",
-        technologies: ["Next.js", "TMaterial UI", "TypeScript", "MySQL"],
+        technologies: ["Next.js", "Material UI", "TypeScript", "MySQL"],
     },
     {
         id: "7",
@@ -54,7 +54,7 @@ export const projectsData: ProjectData[] = [
         description: [],
         imageSrc: "/images/exploree.png",
         videoSrc: "/videos/exploree_demo.mp4",
-        technologies: ["React Native", "Firebase", "JavaScript"],
+        technologies: ["React Native", "MongoDB", "Expo", "JavaScript"],
     },
     {
         id: "8",
