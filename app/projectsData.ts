@@ -31,7 +31,7 @@ export const projectsData: ProjectData[] = [
         ],
         imageSrc: "/images/multi_association.png",
         videoSrc: "/videos/multi_association_demo.mp4",
-        technologies: ["HTML", "CSS"],
+        technologies: ["HTML", "CSS", "JavaScript", "E-Script", "Nixxis"],
     },
     {
         id: "3",

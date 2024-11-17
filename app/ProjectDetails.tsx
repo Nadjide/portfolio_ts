@@ -21,7 +21,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    // Simulate a loading effect
     useEffect(() => {
         const timeout = setTimeout(() => setLoading(false), 1000); // Adjust time as needed
         return () => clearTimeout(timeout);
@@ -59,22 +58,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 Retour
             </motion.button>
 
-            {/* Section Image ou Vidéo */}
+            {/* Section Image ou Vidéo et Description */}
             <motion.div
-                className="flex space-x-8"
+                className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.4 }}
             >
-                <div className="w-1/2">
+                <div className="w-full lg:w-1/2">
                     {isVideoAvailable ? (
                         <motion.video
                             autoPlay
                             loop
                             muted
-                            width="100%"
-                            className="rounded-lg shadow-md"
-                            ref={(video) => { if (video) video.playbackRate = 1.5; }}
+                            className="w-full rounded-lg shadow-md"
+                            ref={(video) => {
+                                if (video) video.playbackRate = 1.5;
+                            }}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 1 }}
@@ -83,7 +83,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                             Votre navigateur ne supporte pas la balise vidéo.
                         </motion.video>
                     ) : (
-                        <div className="relative h-72 w-full">
+                        <div className="relative h-72 sm:h-96 w-full">
                             <Image
                                 src={imageSrc}
                                 alt="Aperçu du projet"
@@ -97,22 +97,20 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
                 {/* Section Description */}
                 <motion.div
-                    className="w-1/2 flex flex-col justify-between"
+                    className="w-full lg:w-1/2 flex flex-col"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 1.6 }}
                 >
                     <div>
-                        <h2 className="text-2xl font-semibold mb-4">{title}</h2>
-                        {
-                            description.map((paragraph, index) => (
-                                <div
-                                    key={index}
-                                    dangerouslySetInnerHTML={{ __html: paragraph }}
-                                    className="mb-4"
-                                />
-                            ))
-                        }
+                        <h2 className="text-xl sm:text-2xl font-semibold mb-4">{title}</h2>
+                        {description.map((paragraph, index) => (
+                            <div
+                                key={index}
+                                dangerouslySetInnerHTML={{ __html: paragraph }}
+                                className="mb-4 text-sm sm:text-base"
+                            />
+                        ))}
                     </div>
                 </motion.div>
             </motion.div>
@@ -129,7 +127,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                     {technologies.map((tech, index) => (
                         <motion.li
                             key={index}
-                            className="bg-gray-300 px-4 py-2 rounded-md shadow-sm"
+                            className="bg-gray-300 px-4 py-2 rounded-md shadow-sm text-sm sm:text-base"
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 2 + index * 0.1 }}
