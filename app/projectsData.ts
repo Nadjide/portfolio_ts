@@ -26,7 +26,8 @@ export const projectsData: ProjectData[] = [
         title: "Sites multi associations",
         description: [
             "Dans le cadre de l'entreprise, ce projet avait pour objectif la création de templates de mini-sites en interne pour les télévendeurs. Ces mini-sites, intégrés dans le logiciel Nixxis et créés avec E-Script de SeaSoftware, permettaient de fournir aux télévendeurs un script prédéfini à suivre lors des appels de collecte de dons.",
-            "Chaque mini-site donnait aux télévendeurs une vue claire des informations des personnes appelées, facilitant ainsi leur suivi et permettant aux superviseurs de structurer les dialogues avec des scripts adaptés. Ces outils visaient à améliorer l'efficacité des appels et à standardiser les échanges avec les donateurs potentiels."
+            "Chaque mini-site donnait aux télévendeurs une vue claire des informations des personnes appelées, facilitant ainsi leur suivi et permettant aux superviseurs de structurer les dialogues avec des scripts adaptés. Ces outils visaient à améliorer l'efficacité des appels et à standardiser les échanges avec les donateurs potentiels.",
+            "Ces sites servaient également à collecter des données sur les appels, permettant aux superviseurs de suivre les performances des télévendeurs et d'ajuster les scripts en fonction des retours d'expérience. Les mini-sites étaient conçus pour être facilement modifiables et adaptables à différents types d'associations, offrant ainsi une solution flexible et évolutive pour les campagnes de collecte de dons.",
         ],
         imageSrc: "/images/multi_association.png",
         videoSrc: "/videos/multi_association_demo.mp4",
@@ -35,7 +36,10 @@ export const projectsData: ProjectData[] = [
     {
         id: "3",
         title: "Integrateur de donnees automatise",
-        description: [],
+        description: [
+            "L'intégrateur de données automatique est un projet pour automatiser le processus d'intégration de données provenant de différentes sources clientes. L'objectif était de créer des scripts simples et efficaces pour collecter, nettoyer et intégrer des données de manière automatisée.",
+            "Ces fichiers clients étaient stockés dans des formats variés (CSV, Excel, etc.) et nécessitaient un traitement manuel pour être intégrés dans une base de données. L'intégrateur de données automatique permettait de simplifier ce processus en automatisant les tâches répétitives.",
+        ],
         imageSrc: "/images/data_integrator.png",
         videoSrc: "/videos/data_integrator_demo.mp4",
         technologies: ["Python", "Polars", "MySQL", "DuckDB"],
@@ -43,7 +47,9 @@ export const projectsData: ProjectData[] = [
     {
         id: "4",
         title: "STATS LIVE 2.0",
-        description: [],
+        description: [
+            
+        ],
         imageSrc: "/images/stats_live_2.png",
         videoSrc: "/videos/stats_live_2_demo.mp4",
         technologies: ["Next.js", "Material UI", "TypeScript", "MySQL"],
