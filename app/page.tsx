@@ -24,65 +24,65 @@ export default function Home() {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6">
       {/* Section de profil et de contact */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  className="bg-gray-800 p-6 rounded-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start justify-between space-y-6 sm:space-y-0"
->
-  {/* Section Profil */}
-  <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
-    <div className="w-24 h-24">
-      <Image
-        src="/profile.jpg"
-        alt="Photo de profil"
-        width={100}
-        height={100}
-        className="object-cover w-full h-full rounded-lg"
-      />
-    </div>
-    <div className="text-center sm:text-left">
-      <h1 className="text-xl sm:text-2xl font-semibold">Nadjide Omar</h1>
-      <p className="text-sm text-purple-400">Étudiant Expert Développement Full Stack</p>
-      <p className="text-sm">Âge : 21 ans</p>
-      <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
-    </div>
-  </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gray-800 p-6 rounded-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start justify-between space-y-6 sm:space-y-0"
+      >
+        {/* Section Profil */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
+          <div className="w-24 h-24">
+            <Image
+              src="/profile.jpg"
+              alt="Photo de profil"
+              width={100}
+              height={100}
+              className="object-cover w-full h-full rounded-lg"
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <h1 className="text-xl sm:text-2xl font-semibold">Nadjide Omar</h1>
+            <p className="text-sm text-purple-400">Étudiant Expert Développement Full Stack</p>
+            <p className="text-sm">Âge : 21 ans</p>
+            <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
+          </div>
+        </div>
 
-  {/* Section Contact */}
-  <div className="flex flex-col items-center sm:items-end space-y-2">
-    <div className="flex items-center space-x-2">
-      <Email style={{ color: "#c084fc" }} />
-      <a href="mailto:nadjide.omar@outlook.fr" className="hover:underline text-sm">nadjide.omar@outlook.fr</a>
-    </div>
-    <div className="flex items-center space-x-2">
-      <Phone style={{ color: "#c084fc" }} />
-      <p className="text-sm">06 34 78 67 13</p>
-    </div>
-    <div className="flex items-center space-x-2">
-      <LinkedIn style={{ color: "#c084fc" }} />
-      <a
-        href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:underline text-sm"
-      >
-        Nadjide Omar
-      </a>
-    </div>
-    <div className="flex items-center space-x-2">
-      <GitHubIcon style={{ color: "#c084fc" }} />
-      <a
-        href="https://github.com/Nadjide"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:underline text-sm"
-      >
-        Nadjide
-      </a>
-    </div>
-  </div>
-</motion.div>
+        {/* Section Contact */}
+        <div className="flex flex-col items-center sm:items-end space-y-2">
+          <div className="flex items-center space-x-2">
+            <Email style={{ color: "#c084fc" }} />
+            <a href="mailto:nadjide.omar@outlook.fr" className="hover:underline text-sm">nadjide.omar@outlook.fr</a>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Phone style={{ color: "#c084fc" }} />
+            <p className="text-sm">06 34 78 67 13</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <LinkedIn style={{ color: "#c084fc" }} />
+            <a
+              href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline text-sm"
+            >
+              Nadjide Omar
+            </a>
+          </div>
+          <div className="flex items-center space-x-2">
+            <GitHubIcon style={{ color: "#c084fc" }} />
+            <a
+              href="https://github.com/Nadjide"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline text-sm"
+            >
+              Nadjide
+            </a>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Section des compétences techniques */}
       <motion.div
