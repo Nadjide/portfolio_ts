@@ -46,18 +46,27 @@ export const projectsData: ProjectData[] = [
     },
     {
         id: "4",
-        title: "STATS LIVE 2.0",
+        title: "STATS LIVE 2",
         description: [
-            
+            "Stats Live 2.0 représente une évolution majeure de l'application originale Stats Live, avec un accent particulier mis sur la modernité, l'intuitivité et la puissance. Ce projet a été conçu pour répondre aux besoins croissants de l'entreprise tout en intégrant des technologies plus avancées et des standards de qualité de code améliorés.",
+            "Grâce à l'utilisation de frameworks modernes tels que Next.js et TypeScript, l'application offre une interface utilisateur plus fluide et réactive, garantissant une expérience optimale pour les superviseurs et les télévendeurs. Le design a été entièrement repensé avec Material UI pour proposer une interface visuellement attrayante et ergonomique.",
+            "Stats Live 2.0 conserve toutes les fonctionnalités essentielles de la première version tout en y ajoutant des optimisations clés. Parmi celles-ci, une meilleure gestion des données, des visualisations améliorées pour les statistiques, et une architecture backend robuste facilitant les analyses en temps réel.",
+            "Les superviseurs bénéficient désormais d'outils encore plus précis pour ajuster les stratégies d'équipe, tandis que les télévendeurs disposent d'une interface simplifiée pour suivre leurs performances individuelles. Ce projet incarne une étape significative dans l'amélioration continue de l'efficacité et de la compétitivité des équipes, tout en mettant en avant des technologies de pointe pour répondre aux attentes actuelles.",
+            "Stats Live 2.0 reflète mon engagement à fournir des solutions de qualité supérieure, en plaçant l'utilisateur au centre des préoccupations et en adoptant les meilleures pratiques de développement logiciel."
         ],
         imageSrc: "/images/stats_live_2.png",
         videoSrc: "/videos/stats_live_2_demo.mp4",
-        technologies: ["Next.js", "Material UI", "TypeScript", "MySQL"],
+        technologies: ["Next.js", "Material UI", "TypeScript", "MySQL","PrismaORM"],
     },
     {
         id: "7",
         title: "Exploree",
-        description: [],
+        description: [
+            "Exploree est une application mobile innovante qui combine les concept de REELS pour offrir une expérience immersive et rapide, centrée sur la découverte de restaurants et d'activités. L'idée est de proposer un format de contenu sous forme de reels, permettant aux utilisateurs de visualiser rapidement des recommandations grâce à des vidéos engageantes et dynamiques.",
+            "Le projet a débuté en troisième année d'école en tant que projet de groupe, réunissant une équipe de quatre développeurs, dont moi-même. Grâce à une collaboration étroite, nous avons pu poser les bases de cette application ambitieuse qui vise à transformer la façon dont les utilisateurs découvrent des lieux et des expériences. À l'heure actuelle, Exploree est devenu un projet à part entière, toujours en cours de développement, avec une vision tournée vers l'optimisation de la visibilité pour les restaurateurs et les organisateurs d'activités.",
+            "Mon rôle dans l'équipe de développement a consisté à collaborer étroitement sur les fonctionnalités clés de l'application, telles que le flux de reels, les interactions utilisateur (likes, commentaires), ainsi que l'architecture backend pour la gestion des données. En utilisant des technologies modernes comme React Native, Expo, et MongoDB, nous avons pu créer une application fluide et performante, adaptée aux besoins d'un public jeune et connecté.",
+            "Exploree incarne la convergence entre technologie et lifestyle, offrant une plateforme qui révolutionne la manière dont les utilisateurs trouvent et partagent des expériences locales. Ce projet reste un défi passionnant et une opportunité d'appliquer des compétences avancées dans le développement d'applications mobiles modernes."
+        ],
         imageSrc: "/images/exploree.png",
         videoSrc: "/videos/exploree_demo.mp4",
         technologies: ["React Native", "MongoDB", "Expo", "JavaScript"],
@@ -79,12 +88,4 @@ export const projectsData: ProjectData[] = [
         videoSrc: "/videos/pokedex_demo.mp4",
         technologies: ["React", "Material UI", "PokeAPI"],
     },
-    {
-        id: "10",
-        title: "Movie App",
-        description: [],
-        imageSrc: "/images/movie_app.png",
-        videoSrc: "/videos/movie_app_demo.mp4",
-        technologies: ["React", "Material UI", "The TMDB API"],
-    }
 ];
