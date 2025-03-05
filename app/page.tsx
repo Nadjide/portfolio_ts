@@ -6,11 +6,14 @@ import { Email, Phone, LinkedIn } from "@mui/icons-material";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useRouter } from "next/navigation";
 import { projectsData } from "./projectsData";
+import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<string | null>(null);
 
   const handleProjectClick = (projectTitle: string) => {
+    setIsLoading(projectTitle);
     const slug = projectTitle
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -224,10 +227,15 @@ export default function Home() {
             <motion.div
               key={project.title}
               whileHover={{ scale: 1.05 }}
-              className="bg-gray-700 p-4 rounded-lg cursor-pointer"
+              className="bg-gray-700 p-4 rounded-lg cursor-pointer relative overflow-hidden"
               onClick={() => handleProjectClick(project.title)}
             >
               <p className="font-bold text-[#c084fc]">{project.title}</p>
+              {isLoading === project.title && (
+                <div className="absolute inset-0 bg-gray-700/80 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

@@ -71,6 +71,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                             autoPlay
                             loop
                             muted
+                            playsInline
+                            webkit-playsinline="true"
                             className="w-full rounded-lg shadow-md"
                             ref={(video) => {
                                 if (video) video.playbackRate = 1.5;
