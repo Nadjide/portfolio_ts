@@ -47,7 +47,7 @@ export default function Home() {
           <div className="text-center sm:text-left">
             <h1 className="text-xl sm:text-2xl font-semibold">Nadjide Omar</h1>
             <p className="text-sm text-purple-400">Étudiant Expert Développement Full Stack</p>
-            <p className="text-sm">Âge : 21 ans</p>
+            <p className="text-sm">Âge : 22 ans</p>
             <p className="text-sm">École : Sophia Ynov Campus, Valbonne</p>
           </div>
         </div>
@@ -147,6 +147,7 @@ export default function Home() {
             <div className="grid grid-cols-3 gap-4">
               {[
                 { name: "Polars", img: "/langProg/polars.png" },
+                { name: "Pandas", img: "/langProg/pandas.png" },
                 { name: "DuckDB", img: "/langProg/duckdb.png" },
                 { name: "PowerBI", img: "/langProg/powerbi.png" },
               ].map((tech, index) => (
@@ -196,6 +197,33 @@ export default function Home() {
               {[
                 { name: "Python", img: "/langProg/python.png" },
                 { name: "TypeScript", img: "/langProg/typescript.png" },
+                { name: "JavaScript", img: "/langProg/javascript.png" },
+              ].map((tech, index) => (
+                <motion.div
+                  key={index}
+                  className="flex flex-col items-center space-y-2 p-2 bg-gray-700 rounded-lg shadow-md"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Image src={tech.img} width={50} height={50} alt={tech.name} className="rounded-full" />
+                  <p className="text-sm">{tech.name}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tests & Déploiement */}
+          <div>
+            <h4 className="font-semibold mb-4 text-center text-purple-400">Tests & Déploiement</h4>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { name: "Jest", img: "/langProg/jest.png" },
+                {name:"pytest", img: "/langProg/pytest.png"},
+                { name: "Cypress", img: "/langProg/cypress.png" },
+                { name: "GitHub Actions", img: "/langProg/GitHub_Actions.png" },
+                { name: "Docker", img: "/langProg/docker.png" },
               ].map((tech, index) => (
                 <motion.div
                   key={index}
