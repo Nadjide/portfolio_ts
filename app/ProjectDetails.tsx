@@ -10,6 +10,31 @@ interface ProjectDetailsProps extends ProjectData {
     technologies: string[];
 }
 
+// Mapping des technologies vers leurs images
+const techImageMap: { [key: string]: string } = {
+    "HTML": "/langProg/HTML5.png",
+    "Bootstrap": "/langProg/Bootstrap.png",
+    "JavaScript": "/langProg/javascript.png",
+    "FLASK": "/langProg/flask.png",
+    "MySQL": "/langProg/mysql.png",
+    "CSS": "/langProg/CSS3.png",
+    "E-Script": "/langProg/javascript.png", // Utilisation de l'image JS pour E-Script
+    "Nixxis": "/langProg/nixxis.png",
+    "Python": "/langProg/python.png",
+    "Polars": "/langProg/polars.png",
+    "DuckDB": "/langProg/duckdb.png",
+    "Next.js": "/langProg/nextjs.png",
+    "Material UI": "/langProg/MaterialUI.png",
+    "TypeScript": "/langProg/typescript.png",
+    "PrismaORM": "/langProg/prisma.png",
+    "React Native": "/langProg/reactnative.png",
+    "MongoDB": "/langProg/mongodb.png",
+    "Expo": "/langProg/expo.png",
+    "FASTAPI": "/langProg/fastapi.png",
+    "React": "/langProg/react.png",
+    "PokeAPI": "/langProg/poke.png",
+};
+
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     title,
     description,
@@ -22,7 +47,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     const router = useRouter();
 
     useEffect(() => {
-        const timeout = setTimeout(() => setLoading(false), 1000); // Adjust time as needed
+        const timeout = setTimeout(() => setLoading(false), 1000);
         return () => clearTimeout(timeout);
     }, []);
 
@@ -124,20 +149,35 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.8 }}
             >
-                <h3 className="text-lg font-semibold mb-4">Technologies Utilisées</h3>
-                <ul className="flex flex-wrap gap-4">
+                <h3 className="text-lg font-semibold mb-6 text-center">Technologies Utilisées</h3>
+                <div className="flex flex-wrap justify-center gap-6">
                     {technologies.map((tech, index) => (
-                        <motion.li
+                        <motion.div
                             key={index}
-                            className="bg-gray-300 px-4 py-2 rounded-md shadow-sm text-sm sm:text-base"
-                            initial={{ opacity: 0, y: 10 }}
+                            className="group relative bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 2 + index * 0.1 }}
                         >
-                            {tech}
-                        </motion.li>
+                            <div className="flex flex-col items-center space-y-2">
+                                <div className="relative w-12 h-12 sm:w-16 sm:h-16">
+                                    <Image
+                                        src={techImageMap[tech] || "/langProg/javascript.png"}
+                                        alt={tech}
+                                        layout="fill"
+                                        objectFit="contain"
+                                        className="transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                </div>
+                                <span className="text-xs sm:text-sm font-medium text-gray-700 text-center">
+                                    {tech}
+                                </span>
+                            </div>
+                            {/* Effet de brillance au survol */}
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                        </motion.div>
                     ))}
-                </ul>
+                </div>
             </motion.div>
         </div>
     );
