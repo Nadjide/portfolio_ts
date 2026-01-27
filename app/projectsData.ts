@@ -56,7 +56,7 @@ export const projectsData: ProjectData[] = [
         ],
         imageSrc: "/images/stats_live_2.png",
         videoSrc: "/videos/stats_live_2_demo.mp4",
-        technologies: ["Next.js", "Material UI", "TypeScript", "MySQL","PrismaORM"],
+        technologies: ["Next.js", "Material UI", "TypeScript", "MySQL", "PrismaORM"],
     },
     {
         id: "7",
@@ -83,13 +83,13 @@ export const projectsData: ProjectData[] = [
         imageSrc: "/images/smart_hire.png",
         videoSrc: "/videos/smart_hire_demo.mp4",
         technologies: ["React Native", "TypeScript", "FASTAPI"],
-    },    
+    },
     {
         id: "9",
         title: "Pokedex",
         description: [
-            "<p>Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.</p>",
-            "<p>L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes :</p>",
+            "Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.",
+            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes :",
             "<ul class='list-disc pl-5 space-y-2'>",
             "<li><strong>Internationalisation :</strong> L'application prend en charge plusieurs langues, rendant l'expérience accessible à un public international.</li>",
             "<li><strong>Tri par type :</strong> Les utilisateurs peuvent facilement trier les Pokémon en fonction de leur type (eau, feu, plante, etc.), offrant une navigation simplifiée et ciblée.</li>",
@@ -102,5 +102,5 @@ export const projectsData: ProjectData[] = [
         imageSrc: "/images/pokedex.png",
         videoSrc: "/videos/pokedex_demo.mp4",
         technologies: ["React", "Material UI", "PokeAPI"],
-    },   
+    },
 ];
