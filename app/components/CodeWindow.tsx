@@ -100,7 +100,7 @@ const CodeWindow = () => {
       command: "",
       output: (
         <div className="text-sm space-y-0.5">
-          <p className="text-green-400">Portfolio v2.0 — Nadjide Omar</p>
+          <p className="text-green-400">Portfolio — Nadjide Omar</p>
           <p className="text-gray-500 dark:text-gray-400">Tapez <span className="text-cyan-400">help</span> pour voir les commandes disponibles.</p>
         </div>
       ),

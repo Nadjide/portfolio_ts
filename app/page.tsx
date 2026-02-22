@@ -6,6 +6,7 @@ import Skills from "./components/Skills";
 import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import ThemeToggle from "./components/ThemeToggle";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -20,10 +21,7 @@ export default function Home() {
         <Experience />
         <Skills />
 
-        {/* Footer */}
-        <footer className="py-8 text-center text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
-          <p>© {new Date().getFullYear()} Nadjide Omar. Built with Next.js & Tailwind.</p>
-        </footer>
+        <Footer />
       </div>
     </main>
   );

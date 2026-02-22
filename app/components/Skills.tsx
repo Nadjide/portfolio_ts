@@ -1,92 +1,111 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 
-const skills = {
-    "Front-end": [
-        { name: "React.js", img: "/langProg/react.png" },
-        { name: "Next.js", img: "/langProg/nextjs.png" },
-        { name: "React Native", img: "/langProg/reactnative.png" },
-    ],
-    "Back-end": [
-        { name: "Node.js", img: "/langProg/node.png" },
-        { name: "Express.js", img: "/langProg/express.png" },
-        { name: "Flask", img: "/langProg/flask.png" },
-        { name: "FastAPI", img: "/langProg/fastapi.png" },
-    ],
-    "Données": [
-        { name: "Polars", img: "/langProg/polars.png" },
-        { name: "Pandas", img: "/langProg/pandas.png" },
-        { name: "DuckDB", img: "/langProg/duckdb.png" },
-        { name: "PowerBI", img: "/langProg/powerbi.png" },
-    ],
-    "Bases de données": [
-        { name: "MySQL", img: "/langProg/mysql.png" },
-        { name: "MariaDB", img: "/langProg/mariadb.png" },
-        { name: "MongoDB", img: "/langProg/mongodb.png" },
-    ],
-    "Langages": [
-        { name: "Python", img: "/langProg/python.png" },
-        { name: "TypeScript", img: "/langProg/typescript.png" },
-        { name: "JavaScript", img: "/langProg/javascript.png" },
-    ],
-    "DevOps": [
-        { name: "Jest", img: "/langProg/jest.png" },
-        { name: "pytest", img: "/langProg/pytest.png" },
-        { name: "Cypress", img: "/langProg/cypress.png" },
-        { name: "GitHub Actions", img: "/langProg/GitHub_Actions.png" },
-        { name: "Docker", img: "/langProg/docker.png" },
-    ],
-};
+const skills = [
+    {
+        category: "Frontend Modern & UI",
+        items: ["Next.js", "React.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Material UI"],
+        gradient: "from-blue-400 to-indigo-600"
+    },
+    {
+        category: "Backend & API",
+        items: ["Node.js", "FastAPI", "Python", "Prisma", "Express", "REST/GraphQL"],
+        gradient: "from-emerald-400 to-green-600"
+    },
+    {
+        category: "Data Science & IA",
+        items: ["Polars", "Pandas", "DuckDB", "Ollama (Local LLM)", "Mistral AI", "PowerBI"],
+        gradient: "from-purple-400 to-pink-600"
+    },
+    {
+        category: "DevOps & Cloud",
+        items: ["Docker", "Terraform", "Ansible", "GitHub Actions", "AWS", "Nginx"],
+        gradient: "from-orange-400 to-red-600"
+    },
+    {
+        category: "Base de Données",
+        items: ["PostgreSQL", "MySQL", "MariaDB", "MongoDB", "SQLite", "Redis"],
+        gradient: "from-cyan-400 to-blue-600"
+    },
+    {
+        category: "Mobile & Cross-Platform",
+        items: ["React Native", "Expo", "Android", "iOS", "PWA"],
+        gradient: "from-yellow-400 to-amber-600"
+    },
+];
 
 const Skills = () => {
     return (
-        <section className="py-20 px-6">
-            <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-3xl font-bold mb-12 text-center text-gray-900 dark:text-white transition-colors duration-300"
-            >
-                Arsenal <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Technologique</span>
-            </motion.h2>
+        <section id="skills" className="py-32 px-6 relative overflow-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+            
+            {/* Background Glows */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] -z-10" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {Object.entries(skills).map(([category, items], categoryIndex) => (
-                    <motion.div
-                        key={category}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: categoryIndex * 0.1 }}
-                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg shadow-blue-500/5 dark:shadow-black/20 hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300"
-                    >
-                        <h3 className="text-xl font-semibold mb-6 text-blue-600 dark:text-blue-400 border-b border-gray-100 dark:border-gray-700 pb-2 transition-colors duration-300">
-                            {category}
-                        </h3>
-                        <div className="grid grid-cols-3 gap-4">
-                            {items.map((tech, index) => (
-                                <div key={index} className="flex flex-col items-center group">
-                                    <div className="relative w-12 h-12 mb-2 p-2 bg-blue-50 dark:bg-gray-700 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-100 dark:group-hover:bg-gray-600 group-hover:shadow-md">
-                                        <Image
-                                            src={tech.img}
-                                            alt={tech.name}
-                                            width={48}
-                                            height={48}
-                                            className="object-contain"
-                                            style={{ width: '100%', height: '100%' }}
-                                        />
-                                    </div>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 text-center font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                        {tech.name}
+            <div className="max-w-7xl mx-auto">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-24 space-y-4"
+                >
+                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+                        Arsenal <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-400">Technologique</span>
+                    </h2>
+                    <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light">
+                        Une expertise complète, du <strong className="text-gray-800 dark:text-gray-200 font-bold">développement web</strong> à l'<strong>intelligence artificielle</strong>.
+                    </p>
+                </motion.div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    {skills.map((group, index) => (
+                        <motion.div
+                            key={group.category}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1, duration: 0.5 }}
+                            whileHover={{ y: -5 }}
+                            className="group relative p-8 rounded-3xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20 transition-all duration-300 backdrop-blur-sm"
+                        >
+                            {/* Card Header */}
+                            <div className="mb-6 flex items-center justify-between">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                    {group.category}
+                                </h3>
+                                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${group.gradient} opacity-50 group-hover:opacity-100 group-hover:scale-150 transition-all duration-500`} />
+                            </div>
+
+                            {/* Skills Tag Cloud */}
+                            <div className="flex flex-wrap gap-2.5">
+                                {group.items.map((tech) => (
+                                    <span 
+                                        key={tech}
+                                        className="px-3.5 py-1.5 text-sm font-medium rounded-lg 
+                                        bg-white dark:bg-white/5 
+                                        text-gray-600 dark:text-gray-300 
+                                        border border-gray-200 dark:border-white/10 shadow-sm
+                                        group-hover:border-transparent
+                                        group-hover:bg-gradient-to-r
+                                        transition-all duration-300
+                                        cursor-default
+                                        hover:!bg-gray-100 dark:hover:!bg-white/10"
+                                        style={{
+                                            // Dynamic style for hover effect managed via CSS variables in future or inline here
+                                        }}
+                                    >
+                                        <span className="relative z-10">{tech}</span>
                                     </span>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                ))}
+                                ))}
+                            </div>
+
+                            {/* Decorative Corner */}
+                            <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${group.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-tr-3xl`} />
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </section>
     );
