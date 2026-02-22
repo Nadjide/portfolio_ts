@@ -23,7 +23,7 @@ const ThemeToggle = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
             className="fixed top-6 right-6 z-50 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-lg text-gray-800 dark:text-yellow-400 transition-all duration-300"
-            aria-label="Toggle Dark Mode"
+            aria-label="Basculer le thème"
         >
             {resolvedTheme === "light" ? <DarkMode /> : <LightMode />}
         </motion.button>

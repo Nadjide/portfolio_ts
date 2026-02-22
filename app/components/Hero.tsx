@@ -40,13 +40,13 @@ const Hero = () => {
 
                     {/* Social Links */}
                     <div className="flex items-center justify-center md:justify-start gap-4 pt-4">
-                        <a href="https://github.com/Nadjide" target="_blank" rel="noopener noreferrer" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
+                        <a href="https://github.com/Nadjide" target="_blank" rel="noopener noreferrer" aria-label="Profil GitHub de Nadjide Omar" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
                             <GitHub fontSize="small" />
                         </a>
-                        <a href="https://www.linkedin.com/in/nadjide-omar-b55a01212/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
+                        <a href="https://www.linkedin.com/in/nadjide-omar-b55a01212/" target="_blank" rel="noopener noreferrer" aria-label="Profil LinkedIn de Nadjide Omar" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
                             <LinkedIn fontSize="small" />
                         </a>
-                        <a href="mailto:nadjide.omar@outlook.fr" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
+                        <a href="mailto:nadjide.omar@outlook.fr" aria-label="Envoyer un email à Nadjide Omar" className="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 dark:border-gray-700 shadow-md">
                             <Email fontSize="small" />
                         </a>
                     </div>
@@ -57,9 +57,13 @@ const Hero = () => {
                         transition={{ delay: 0.8 }}
                         className="pt-8"
                     >
-                        <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-medium rounded-xl transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02]">
+                        <a 
+                            href="/CV/CV_NADJIDE_OMAR.pdf" 
+                            download="CV_Nadjide_Omar.pdf"
+                            className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-medium rounded-xl transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02]"
+                        >
                             Télécharger CV
-                        </button>
+                        </a>
                     </motion.div>
                 </motion.div>
 

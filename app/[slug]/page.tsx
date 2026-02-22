@@ -21,15 +21,8 @@ export default function ProjectPage() {
     }
 
     return (
-        <div className="p-6">
-            <ProjectDetails
-                id={project.id}
-                title={project.title}
-                description={project.description}
-                imageSrc={project.imageSrc}
-                videoSrc={project.videoSrc}
-                technologies={project.technologies}
-            />
+        <div className="p-0"> {/* Removed padding to allow full screen hero */}
+            <ProjectDetails {...project} />
         </div>
     );
 }
