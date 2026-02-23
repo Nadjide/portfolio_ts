@@ -70,10 +70,16 @@ const Hero = () => {
     const containerRef = useRef<HTMLElement>(null);
     const { scrollY } = useScroll();
     const watermarkY = useTransform(scrollY, [0, 1000], [0, 200]); // Parallax effect
+    const [isMobile, setIsMobile] = useState(true); // Default to true (mobile-first load) to avoid heavy anims initially
 
     useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+        
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener("resize", handleResize);
+
         const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current) return;
+            if (!containerRef.current || window.innerWidth < 768) return; // Disable on mobile
             const { clientX, clientY } = e;
             const { left, top } = containerRef.current.getBoundingClientRect();
             const x = clientX - left;
@@ -81,14 +87,18 @@ const Hero = () => {
             containerRef.current.style.setProperty("--x", `${x}px`);
             containerRef.current.style.setProperty("--y", `${y}px`);
         };
+        
         window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
+        return () => {
+             window.removeEventListener("mousemove", handleMouseMove);
+             window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
     return (
         <section ref={containerRef} className="min-h-screen relative overflow-hidden group">
-            {/* ── Spotlight Effect ── */}
-            <div className="absolute inset-0 pointer-events-none spotlight opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
+            {/* ── Spotlight Effect (Disabled on Mobile via CSS opacity or JS) ── */}
+            <div className={`absolute inset-0 pointer-events-none spotlight transition-opacity duration-500 z-0 ${isMobile ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`} />
 
             {/* ── Background Layers ── */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
@@ -101,9 +111,12 @@ const Hero = () => {
                         NADJIDE
                     </span>
                 </motion.div>
-                {/* Gradient orbs */}
-                <div className="absolute top-0 right-0 w-[700px] h-[500px] bg-blue-600/[0.07] rounded-full blur-[160px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[140px]" />
+                {/* Gradient orbs (Desktop Only - Mobile Optimized) */}
+                <div className="hidden md:block absolute top-0 right-0 w-[700px] h-[500px] bg-blue-600/[0.07] rounded-full blur-[160px]" />
+                <div className="hidden md:block absolute bottom-0 left-0 w-[500px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[140px]" />
+                {/* Mobile Simplified Background */}
+                <div className="md:hidden absolute top-[-20%] right-[-20%] w-[80%] h-[50%] bg-blue-900/10 blur-3xl rounded-full" />
+                <div className="md:hidden absolute bottom-[-10%] left-[-10%] w-[80%] h-[40%] bg-cyan-900/10 blur-3xl rounded-full" />
             </div>
 
             <div className="relative z-10 min-h-screen flex flex-col px-6 lg:px-16">
@@ -197,10 +210,14 @@ const Hero = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Right: Terminal - Floating Animation */}
+                            {/* Right: Terminal - Floating Animation (Disabled on Mobile) */}
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1, y: [0, -12, 0] }}
+                                animate={{ 
+                                    opacity: 1, 
+                                    scale: 1, 
+                                    y: isMobile ? 0 : [0, -12, 0] // No float on mobile
+                                }}
                                 transition={{ 
                                     duration: 0.6, 
                                     delay: 0.4,
