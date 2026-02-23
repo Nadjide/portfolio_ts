@@ -165,11 +165,11 @@ const CodeWindow = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="w-full max-w-lg rounded-xl overflow-hidden bg-white dark:bg-[#1e1e1e] shadow-2xl shadow-blue-200/50 dark:shadow-black/50 border border-gray-100 dark:border-gray-700 font-mono text-sm relative z-10 transition-colors duration-300 flex flex-col h-[360px]"
+      className="w-full rounded-xl overflow-hidden bg-[#1e1e1e] shadow-2xl shadow-black/50 border border-gray-700 font-mono text-sm relative z-10 flex flex-col h-[380px]"
       onClick={() => inputRef.current?.focus()}
     >
       {/* Header */}
-      <div className="bg-gray-50 dark:bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700 shrink-0">
+      <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2 border-b border-gray-700 shrink-0">
         <div className="w-3 h-3 rounded-full bg-red-400" />
         <div className="w-3 h-3 rounded-full bg-yellow-400" />
         <div className="w-3 h-3 rounded-full bg-green-400" />
@@ -179,7 +179,7 @@ const CodeWindow = () => {
       {/* Body */}
       <div
         ref={containerRef}
-        className="p-4 flex-1 overflow-y-auto cursor-text bg-white dark:bg-[#1e1e1e] transition-colors duration-300"
+        className="p-4 flex-1 overflow-y-auto cursor-text bg-[#1e1e1e]"
       >
         {history.map((item, idx) => (
           <div key={idx} className="mb-3">
