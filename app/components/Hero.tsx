@@ -1,13 +1,75 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import CodeWindow from "./CodeWindow";
 import { Email, LinkedIn, GitHub } from "@mui/icons-material";
+
+// Scramble Text Component (Inline for simplicity or import if preferred)
+const ScrambleText = ({ text, className }: { text: string, className?: string }) => {
+    const [display, setDisplay] = useState("");
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+    
+    useEffect(() => {
+        let iteration = 0;
+        const interval = setInterval(() => {
+            setDisplay(
+                text.split("")
+                    .map((char, index) => {
+                        if (index < iteration) return text[index];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join("")
+            );
+            
+            if (iteration >= text.length) clearInterval(interval);
+            iteration += 1 / 3;
+        }, 30);
+        return () => clearInterval(interval);
+    }, [text]);
+
+    return <span className={className}>{display}</span>;
+}
+
+const MagneticButton = ({ children, href, className, download }: { children: React.ReactNode, href: string, className?: string, download?: string }) => {
+    const ref = useRef<HTMLAnchorElement>(null);
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const { clientX, clientY } = e;
+        const { left, top, width, height } = ref.current!.getBoundingClientRect();
+        const center = { x: left + width / 2, y: top + height / 2 };
+        x.set((clientX - center.x) * 0.3);
+        y.set((clientY - center.y) * 0.3);
+    };
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    };
+
+    return (
+        <motion.a
+            ref={ref}
+            href={href}
+            download={download}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ x, y }}
+            className={className}
+            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+        >
+            {children}
+        </motion.a>
+    );
+};
 
 const Hero = () => {
     // Spotlight Logic
     const containerRef = useRef<HTMLElement>(null);
+    const { scrollY } = useScroll();
+    const watermarkY = useTransform(scrollY, [0, 1000], [0, 200]); // Parallax effect
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -30,12 +92,15 @@ const Hero = () => {
 
             {/* ── Background Layers ── */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-                {/* Giant watermark name */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                {/* Giant watermark name - Parallax */}
+                <motion.div 
+                    style={{ y: watermarkY }}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                >
                     <span className="text-[20vw] font-black text-white/[0.02] tracking-tighter whitespace-nowrap leading-none block">
                         NADJIDE
                     </span>
-                </div>
+                </motion.div>
                 {/* Gradient orbs */}
                 <div className="absolute top-0 right-0 w-[700px] h-[500px] bg-blue-600/[0.07] rounded-full blur-[160px]" />
                 <div className="absolute bottom-0 left-0 w-[500px] h-[400px] bg-cyan-500/[0.05] rounded-full blur-[140px]" />
@@ -58,15 +123,18 @@ const Hero = () => {
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <a href="https://github.com/Nadjide" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300">
-                            <GitHub fontSize="small" />
-                        </a>
-                        <a href="https://www.linkedin.com/in/nadjide-omar-b55a01212/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300">
-                            <LinkedIn fontSize="small" />
-                        </a>
-                        <a href="mailto:nadjide.omar@outlook.fr" aria-label="Email" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300">
-                            <Email fontSize="small" />
-                        </a>
+                        <MagneticButton href="https://github.com/Nadjide" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300 block">
+                             <span className="sr-only">GitHub</span>
+                             <GitHub fontSize="small" />
+                        </MagneticButton>
+                        <MagneticButton href="https://www.linkedin.com/in/nadjide-omar-b55a01212/" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300 block">
+                             <span className="sr-only">LinkedIn</span>
+                             <LinkedIn fontSize="small" />
+                        </MagneticButton>
+                        <MagneticButton href="mailto:nadjide.omar@outlook.fr" className="p-2.5 text-gray-500 hover:text-white transition-colors duration-300 block">
+                             <span className="sr-only">Email</span>
+                             <Email fontSize="small" />
+                        </MagneticButton>
                     </div>
                 </motion.header>
 
@@ -84,8 +152,8 @@ const Hero = () => {
                             <p className="text-gray-600 text-sm font-mono tracking-[0.3em] uppercase mb-6">
                                 &lt;hello world /&gt;
                             </p>
-                            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter py-2">
-                                Nadjide
+                            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter py-2 relative overflow-hidden group">
+                                <ScrambleText text="Nadjide" className="inline-block" />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 animate-gradient-x pr-2">
                                     {" "}Omar
                                 </span>
@@ -112,20 +180,20 @@ const Hero = () => {
                                 </p>
 
                                 <div className="flex items-center gap-3 pt-2">
-                                    <a 
+                                    <MagneticButton 
                                         href="/CV/CV_NADJIDE_OMAR.pdf" 
                                         download="CV_Nadjide_Omar.pdf"
                                         className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-300 text-sm"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                         Télécharger CV
-                                    </a>
-                                    <a 
+                                    </MagneticButton>
+                                    <MagneticButton
                                         href="mailto:nadjide.omar@outlook.fr"
                                         className="inline-flex items-center gap-2 px-6 py-3 border border-gray-700 text-gray-300 rounded-lg hover:border-gray-500 hover:text-white transition-all duration-300 text-sm"
                                     >
                                         Me contacter
-                                    </a>
+                                    </MagneticButton>
                                 </div>
                             </motion.div>
 
