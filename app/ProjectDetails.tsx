@@ -181,6 +181,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
                 {/* Right Column - Narrative */}
                 <div className="lg:col-span-8 space-y-20">
+                    
+                    {/* Disclaimer Alert for Company Projects */}
+                    {context === "Entreprise" && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            className="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-6 rounded-r-xl shadow-sm flex items-start gap-4 mb-12"
+                        >
+                            <svg className="w-6 h-6 text-orange-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div className="space-y-1">
+                                <h4 className="font-bold text-orange-800 dark:text-orange-300 text-sm uppercase tracking-wide">
+                                    Contexte Professionnel
+                                </h4>
+                                <p className="text-orange-700 dark:text-orange-200/80 text-sm leading-relaxed">
+                                    Projet réalisé dans le cadre d'une alternance chez <span className="font-semibold">Call To Action</span>. Les données présentées sont fictives et la vidéo est partagée à des fins de démonstration technique uniquement.
+                                </p>
+                            </div>
+                        </motion.div>
+                    )}
+
                     {description.map((paragraph, index) => (
                         <motion.div
                             key={index}
