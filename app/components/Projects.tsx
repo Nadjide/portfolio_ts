@@ -1,10 +1,51 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { projectsData } from "../projectsData";
 import BuildConsole from "./BuildConsole";
+
+// Optimized Video Component
+const ProjectVideo = ({ src, poster }: { src: string, poster?: string }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [shouldLoad, setShouldLoad] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setShouldLoad(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: "100px" } // Preload a bit before bringing into view
+        );
+
+        if (videoRef.current) observer.observe(videoRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (shouldLoad && videoRef.current) {
+            videoRef.current.play().catch(() => { /* Auto-play failed, expected in some browsers */ });
+        }
+    }, [shouldLoad]);
+
+    return (
+        <video
+            ref={videoRef}
+            poster={poster} // Show image until video loads
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+            preload="none" // ⚡ CRITICAL: Do not download video data on initial page load
+        >
+            {shouldLoad && <source src={src} type="video/mp4" />}
+        </video>
+    );
+};
 
 const Projects = () => {
     const router = useRouter();
@@ -104,13 +145,9 @@ const Projects = () => {
                         {/* Video preview — taller on featured */}
                         <div className="h-56 relative overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 flex items-center justify-center group-hover:from-blue-100 group-hover:to-cyan-100 dark:group-hover:from-blue-800/30 dark:group-hover:to-cyan-800/30 transition-all duration-300">
                             {project.videoSrc ? (
-                                <video
-                                    src={project.videoSrc}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                                <ProjectVideo 
+                                    src={project.videoSrc} 
+                                    poster={project.imageSrc} // Use image as lazy placeholder
                                 />
                             ) : (
                                 <span className="text-4xl z-10 filter drop-shadow-md">🚀</span>
