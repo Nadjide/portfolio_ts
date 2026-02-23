@@ -35,7 +35,7 @@ const formations = [
     },
     {
         id: 3,
-        title: "Master Expert Développement Full Stack",
+        title: "Mastère Expert Développement Full Stack",
         subtitle: "",
         company: "Sophia Ynov Campus",
         address: "Pl. Sophie Laffitte, Immeuble AGORA, 06560 Valbonne, Sophia Antipolis",

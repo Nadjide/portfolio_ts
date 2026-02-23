@@ -172,15 +172,12 @@ export const projectsData: ProjectData[] = [
         role: "Développement Frontend",
         description: [
             "Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.",
-            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes :",
-            "<ul class='list-disc pl-5 space-y-2'>",
-            "<li><strong>Internationalisation :</strong> L'application prend en charge plusieurs langues, rendant l'expérience accessible à un public international.</li>",
-            "<li><strong>Tri par type :</strong> Les utilisateurs peuvent facilement trier les Pokémon en fonction de leur type (eau, feu, plante, etc.), offrant une navigation simplifiée et ciblée.</li>",
-            "<li><strong>Recommandations intelligentes :</strong> Lorsqu'un utilisateur consulte les détails d'un Pokémon, l'application propose des recommandations de Pokémon similaires basées sur des caractéristiques partagées.</li>",
-            "</ul>",
-            "<p>Le site est disponible en ligne :</p>",
-            "<p class='font-bold text-purple-500 text-lg'><a href='https://pokedex-pi-brown.vercel.app/' target='_blank'>➡️ Consulter le Pokedex en ligne</a></p>",
-            "<p>Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception.</p>"
+            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes:",
+            "Internationalisation: L'application prend en charge plusieurs langues, rendant l'expérience accessible à un public international.",
+            "Tri par type: Les utilisateurs peuvent facilement trier les Pokémon en fonction de leur type (eau, feu, plante, etc.), offrant une navigation simplifiée et ciblée.",
+            "Recommandations intelligentes: Lorsqu'un utilisateur consulte les détails d'un Pokémon, l'application propose des recommandations de Pokémon similaires basées sur des caractéristiques partagées.",
+            "Le site est disponible en ligne: https://pokedex-pi-brown.vercel.app/",
+            "Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception."
         ],
         imageSrc: "/images/pokedex.png",
         videoSrc: "/videos/pokedex_demo.mp4",

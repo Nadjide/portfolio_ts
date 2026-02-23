@@ -31,7 +31,7 @@ const COMMANDS: Record<string, () => React.ReactNode> = {
     <div className="space-y-1 text-sm">
       <p><span className="text-cyan-400">nom</span>       <span className="text-green-400">"Nadjide Omar"</span></p>
       <p><span className="text-cyan-400">rôle</span>      <span className="text-green-400">"Développeur Full Stack"</span></p>
-      <p><span className="text-cyan-400">formation</span> <span className="text-green-400">"Master Expert Full Stack — Ynov Campus"</span></p>
+      <p><span className="text-cyan-400">formation</span> <span className="text-green-400">"Mastère Expert Full Stack — Ynov Campus"</span></p>
       <p><span className="text-cyan-400">dispo</span>     <span className="text-yellow-400">true</span></p>
     </div>
   ),
