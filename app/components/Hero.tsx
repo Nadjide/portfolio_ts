@@ -1,9 +1,18 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
-import CodeWindow from "./CodeWindow";
+import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
+import dynamic from "next/dynamic";
 import { Email, LinkedIn, GitHub } from "@mui/icons-material";
+
+const SkillsGrid3D = dynamic(() => import("./SkillsGrid3D"), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-full flex items-center justify-center">
+            <span className="text-gray-600 text-sm font-mono animate-pulse">Loading 3D…</span>
+        </div>
+    ),
+});
 
 // Scramble Text Component (Inline for simplicity or import if preferred)
 const ScrambleText = ({ text, className }: { text: string, className?: string }) => {
@@ -210,31 +219,27 @@ const Hero = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Right: Terminal - Floating Animation (Disabled on Mobile) */}
+                            {/* Right: 3D Skills Grid */}
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ 
-                                    opacity: 1, 
-                                    scale: 1, 
-                                    y: isMobile ? 0 : [0, -12, 0] // No float on mobile
-                                }}
-                                transition={{ 
-                                    duration: 0.6, 
-                                    delay: 0.4,
-                                    y: {
-                                        repeat: Infinity,
-                                        duration: 6,
-                                        ease: "easeInOut"
-                                    }
-                                }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.6, delay: 0.4 }}
                                 className="flex-1 w-full relative"
+                                style={{ minHeight: "380px", height: "460px" }}
                             >
                                 {/* Decorative frame corners */}
-                                <div className="absolute -top-3 -left-3 w-8 h-8 border-t-2 border-l-2 border-blue-500/30 rounded-tl-lg pointer-events-none" />
-                                <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-2 border-r-2 border-cyan-500/30 rounded-br-lg pointer-events-none" />
+                                <div className="absolute -top-3 -left-3 w-8 h-8 border-t-2 border-l-2 border-blue-500/30 rounded-tl-lg pointer-events-none z-10" />
+                                <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-2 border-r-2 border-cyan-500/30 rounded-br-lg pointer-events-none z-10" />
                                 {/* Ambient glow */}
                                 <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-2xl blur-xl pointer-events-none" />
-                                <CodeWindow />
+                                {/* 3D Canvas */}
+                                <div className="absolute inset-0">
+                                    <SkillsGrid3D />
+                                </div>
+                                {/* Label */}
+                                <div className="absolute bottom-2 right-3 text-[10px] text-gray-600 font-mono tracking-widest uppercase pointer-events-none z-10">
+                                    Stack interactive
+                                </div>
                             </motion.div>
                         </div>
                     </div>
