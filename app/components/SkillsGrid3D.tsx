@@ -26,6 +26,13 @@ const GAP_X = 0.25;
 const GAP_Y = 0.22;
 const RADIUS = 0.07;
 
+/* Animation constants */
+const FALL_HEIGHT = 8;
+const FALL_DELAY_MULTIPLIER = 1.5;
+const PARALLAX_X_FACTOR = 0.12;
+const PARALLAX_Y_FACTOR = 0.18;
+const FONT_FAMILY = "var(--font-geist-sans, system-ui, sans-serif)";
+
 /* ── Mouse-parallax controller: rotates the entire group ── */
 function SceneGroup({ children }: { children: React.ReactNode }) {
     const groupRef = useRef<THREE.Group>(null);
@@ -35,7 +42,7 @@ function SceneGroup({ children }: { children: React.ReactNode }) {
         const onMove = (e: MouseEvent) => {
             const nx = (e.clientX / window.innerWidth - 0.5) * 2;
             const ny = -(e.clientY / window.innerHeight - 0.5) * 2;
-            targetRot.current = { x: ny * 0.12, y: nx * 0.18 };
+            targetRot.current = { x: ny * PARALLAX_X_FACTOR, y: nx * PARALLAX_Y_FACTOR };
         };
         window.addEventListener("mousemove", onMove);
         return () => window.removeEventListener("mousemove", onMove);
@@ -71,7 +78,7 @@ function SkillCard({
     const [hovered, setHovered] = useState(false);
 
     // Falling entry: start high, fall to target
-    const startY = position[1] + (reducedMotion ? 0 : 8 + delay * 1.5);
+    const startY = position[1] + (reducedMotion ? 0 : FALL_HEIGHT + delay * FALL_DELAY_MULTIPLIER);
     const currentY = useRef(startY);
     const settled = useRef(false);
     const elapsed = useRef(0);
@@ -144,7 +151,7 @@ function SkillCard({
                         color: "#ffffff",
                         fontSize: "13px",
                         fontWeight: 600,
-                        fontFamily: "var(--font-geist-sans, system-ui, sans-serif)",
+                        fontFamily: FONT_FAMILY,
                         whiteSpace: "nowrap",
                         letterSpacing: "0.02em",
                         textShadow: "0 1px 3px rgba(0,0,0,0.5)",

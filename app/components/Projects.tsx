@@ -53,6 +53,10 @@ const ProjectVideo = ({ src, poster }: { src: string, poster?: string }) => {
     );
 };
 
+/* ── GSAP animation config ── */
+const CARD_ANIM = { fromY: 55, fromRotateX: 10, perspective: 900, duration: 0.75 };
+const PARALLAX_SCRUB_FACTOR = 1.2;
+
 const Projects = () => {
     const router = useRouter();
     const [hoveredProject, setHoveredProject] = useState<string | null>(null);
@@ -89,12 +93,12 @@ const Projects = () => {
             gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
                 gsap.fromTo(
                     card,
-                    { opacity: 0, y: 55, rotateX: 10, transformPerspective: 900 },
+                    { opacity: 0, y: CARD_ANIM.fromY, rotateX: CARD_ANIM.fromRotateX, transformPerspective: CARD_ANIM.perspective },
                     {
                         opacity: 1,
                         y: 0,
                         rotateX: 0,
-                        duration: 0.75,
+                        duration: CARD_ANIM.duration,
                         ease: "power3.out",
                         scrollTrigger: {
                             trigger: card,
@@ -116,7 +120,7 @@ const Projects = () => {
                         trigger: el,
                         start: "top bottom",
                         end: "bottom top",
-                        scrub: 1.2,
+                        scrub: PARALLAX_SCRUB_FACTOR,
                     },
                 });
             });
