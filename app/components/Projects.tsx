@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { projectsData } from "../projectsData";
 import BuildConsole from "./BuildConsole";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 // Optimized Video Component
 const ProjectVideo = ({ src, poster }: { src: string, poster?: string }) => {
@@ -47,10 +53,15 @@ const ProjectVideo = ({ src, poster }: { src: string, poster?: string }) => {
     );
 };
 
+/* ── GSAP animation config ── */
+const CARD_ANIM = { fromY: 55, fromRotateX: 10, perspective: 900, duration: 0.75 };
+const PARALLAX_SCRUB_FACTOR = 1.2;
+
 const Projects = () => {
     const router = useRouter();
     const [hoveredProject, setHoveredProject] = useState<string | null>(null);
     const [buildingProject, setBuildingProject] = useState<string | null>(null);
+    const sectionRef = useRef<HTMLElement>(null);
 
     const slugify = (title: string) =>
         title
@@ -72,11 +83,57 @@ const Projects = () => {
         [router]
     );
 
+    // ── GSAP ScrollTrigger setup ──
+    useEffect(() => {
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reducedMotion || !sectionRef.current) return;
+
+        const ctx = gsap.context(() => {
+            // 3D entrance for all project cards
+            gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
+                gsap.fromTo(
+                    card,
+                    { opacity: 0, y: CARD_ANIM.fromY, rotateX: CARD_ANIM.fromRotateX, transformPerspective: CARD_ANIM.perspective },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        rotateX: 0,
+                        duration: CARD_ANIM.duration,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 90%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            });
+
+            // Parallax on featured project media containers
+            gsap.utils.toArray<HTMLElement>(".project-media").forEach((el) => {
+                const inner = el.querySelector<HTMLElement>(".project-media-inner");
+                if (!inner) return;
+                gsap.to(inner, {
+                    y: "18%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: PARALLAX_SCRUB_FACTOR,
+                    },
+                });
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     const featuredProjects = projectsData.filter((p) => p.featured);
     const otherProjects = projectsData.filter((p) => !p.featured);
 
     return (
-        <section className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300">
+        <section ref={sectionRef} className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300" style={{ perspective: "1200px" }}>
 
             {/* ── Projets Phares ── */}
             <motion.h2
@@ -102,11 +159,7 @@ const Projects = () => {
                     <motion.div
                         key={project.title}
                         layoutId={`project-${project.title}`}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden cursor-pointer
+                        className="project-card group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden cursor-pointer
                                    shadow-xl shadow-blue-500/10 dark:shadow-black/40
                                    hover:shadow-2xl hover:shadow-blue-500/25 dark:hover:shadow-blue-900/30
                                    transition-all duration-300 transform hover:-translate-y-2
@@ -142,16 +195,18 @@ const Projects = () => {
                             Projet Phare
                         </div>
 
-                        {/* Video preview — taller on featured */}
-                        <div className="h-56 relative overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 flex items-center justify-center group-hover:from-blue-100 group-hover:to-cyan-100 dark:group-hover:from-blue-800/30 dark:group-hover:to-cyan-800/30 transition-all duration-300">
-                            {project.videoSrc ? (
-                                <ProjectVideo 
-                                    src={project.videoSrc} 
-                                    poster={project.imageSrc} // Use image as lazy placeholder
-                                />
-                            ) : (
-                                <span className="text-4xl z-10 filter drop-shadow-md">🚀</span>
-                            )}
+                        {/* Video preview — taller on featured, with parallax */}
+                        <div className="project-media h-56 relative overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 flex items-center justify-center group-hover:from-blue-100 group-hover:to-cyan-100 dark:group-hover:from-blue-800/30 dark:group-hover:to-cyan-800/30 transition-all duration-300">
+                            <div className="project-media-inner absolute inset-0 w-full h-[130%] -top-[15%]">
+                                {project.videoSrc ? (
+                                    <ProjectVideo 
+                                        src={project.videoSrc} 
+                                        poster={project.imageSrc}
+                                    />
+                                ) : (
+                                    <span className="text-4xl z-10 filter drop-shadow-md flex items-center justify-center h-full">🚀</span>
+                                )}
+                            </div>
                             <div className="absolute inset-0 bg-white/10 dark:bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
                         </div>
 
@@ -206,11 +261,7 @@ const Projects = () => {
                     <motion.div
                         key={project.title}
                         layoutId={`project-${project.title}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.08 }}
-                        className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg shadow-blue-500/5 dark:shadow-black/30 hover:shadow-blue-500/20 dark:hover:shadow-blue-900/20 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
+                        className="project-card group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg shadow-blue-500/5 dark:shadow-black/30 hover:shadow-blue-500/20 dark:hover:shadow-blue-900/20 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
                         onClick={() => handleProjectClick(project.title)}
                         onMouseEnter={() => setHoveredProject(project.title)}
                         onMouseLeave={() => setHoveredProject(null)}

@@ -1,7 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 const formations = [
     {
@@ -72,8 +78,50 @@ const experiences = [
 ];
 
 const Experience = () => {
+    const sectionRef = useRef<HTMLElement>(null);
+
+    useEffect(() => {
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reducedMotion || !sectionRef.current) return;
+
+        const ctx = gsap.context(() => {
+            // Animate each timeline entry: date → title → description → skills (staggered)
+            gsap.utils.toArray<HTMLElement>(".timeline-entry").forEach((entry) => {
+                const badge = entry.querySelector(".tl-badge");
+                const heading = entry.querySelector(".tl-heading");
+                const meta = entry.querySelector(".tl-meta");
+                const body = entry.querySelector(".tl-body");
+                const tags = entry.querySelectorAll(".tl-tag");
+                const dot = entry.querySelector(".tl-dot");
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: entry,
+                        start: "top 88%",
+                        toggleActions: "play none none none",
+                    },
+                });
+
+                // Dot pulse in
+                if (dot) tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" });
+                // Date badge
+                if (badge) tl.fromTo(badge, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, "-=0.1");
+                // Title + company
+                if (heading) tl.fromTo(heading, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, "-=0.05");
+                // Meta / description
+                if (meta) tl.fromTo(meta, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, "-=0.05");
+                // Body (achievements list)
+                if (body) tl.fromTo(body, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, "-=0.05");
+                // Tech tags stagger
+                if (tags.length) tl.fromTo(tags, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.25, stagger: 0.05, ease: "back.out(1.5)" }, "-=0.1");
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <section className="py-20 px-6 bg-white dark:bg-[#0a0a0a] transition-colors duration-300" id="experience">
+        <section ref={sectionRef} className="py-20 px-6 bg-white dark:bg-[#0a0a0a] transition-colors duration-300" id="experience">
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -109,26 +157,24 @@ const Experience = () => {
 
                     <div className="relative pl-6 border-l-2 border-blue-200 dark:border-blue-800/60 space-y-10">
                         {formations.map((f, i) => (
-                            <motion.div
+                            <div
                                 key={f.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, margin: "-80px" }}
-                                transition={{ duration: 0.4, delay: i * 0.1 }}
-                                className="relative"
+                                className="timeline-entry relative"
                             >
                                 {/* Dot */}
-                                <div className="absolute -left-[calc(1.5rem+5px)] top-1.5 w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)] border-2 border-white dark:border-[#0a0a0a]" />
+                                <div className="tl-dot absolute -left-[calc(1.5rem+5px)] top-1.5 w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)] border-2 border-white dark:border-[#0a0a0a]" />
 
-                                <span className="inline-block px-2.5 py-0.5 mb-2 text-xs font-semibold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-900/30 rounded-full">
+                                <span className="tl-badge inline-block px-2.5 py-0.5 mb-2 text-xs font-semibold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-900/30 rounded-full">
                                     {f.date}
                                 </span>
-                                <h4 className="text-base font-bold text-gray-900 dark:text-white mb-0.5">{f.title}</h4>
-                                {f.subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 italic mb-1">{f.subtitle}</p>}
-                                <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-0.5">{f.company}</p>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">{f.address}</p>
+                                <div className="tl-heading">
+                                    <h4 className="text-base font-bold text-gray-900 dark:text-white mb-0.5">{f.title}</h4>
+                                    {f.subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 italic mb-1">{f.subtitle}</p>}
+                                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-0.5">{f.company}</p>
+                                    <p className="text-xs text-gray-400 dark:text-gray-500">{f.address}</p>
+                                </div>
 
-                                <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1.5 mb-3">
+                                <ul className="tl-body text-sm text-gray-500 dark:text-gray-400 space-y-1.5 mb-3 mt-3">
                                     {f.achievements.map((a, j) => (
                                         <li key={j} className="flex items-start gap-2">
                                             <span className="text-blue-400 mt-0.5 shrink-0">▹</span>
@@ -139,12 +185,12 @@ const Experience = () => {
 
                                 <div className="flex flex-wrap gap-1.5">
                                     {f.tech.map((t) => (
-                                        <span key={t} className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                                        <span key={t} className="tl-tag text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                                             {t}
                                         </span>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -165,25 +211,23 @@ const Experience = () => {
 
                     <div className="relative pl-6 border-l-2 border-cyan-200 dark:border-cyan-800/60 space-y-10">
                         {experiences.map((exp, i) => (
-                            <motion.div
+                            <div
                                 key={exp.id}
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, margin: "-80px" }}
-                                transition={{ duration: 0.4, delay: i * 0.1 }}
-                                className="relative"
+                                className="timeline-entry relative"
                             >
                                 {/* Dot */}
-                                <div className="absolute -left-[calc(1.5rem+5px)] top-1.5 w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.6)] border-2 border-white dark:border-[#0a0a0a]" />
+                                <div className="tl-dot absolute -left-[calc(1.5rem+5px)] top-1.5 w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.6)] border-2 border-white dark:border-[#0a0a0a]" />
 
-                                <span className="inline-block px-2.5 py-0.5 mb-2 text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 rounded-full">
+                                <span className="tl-badge inline-block px-2.5 py-0.5 mb-2 text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 rounded-full">
                                     {exp.date}
                                 </span>
-                                <h4 className="text-base font-bold text-gray-900 dark:text-white mb-0.5">{exp.title}</h4>
-                                <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400 mb-2">{exp.company}</p>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-3">{exp.description}</p>
+                                <div className="tl-heading">
+                                    <h4 className="text-base font-bold text-gray-900 dark:text-white mb-0.5">{exp.title}</h4>
+                                    <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400">{exp.company}</p>
+                                </div>
+                                <p className="tl-meta text-sm text-gray-600 dark:text-gray-300 leading-relaxed mt-2 mb-3">{exp.description}</p>
 
-                                <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1.5 mb-4">
+                                <ul className="tl-body text-sm text-gray-500 dark:text-gray-400 space-y-1.5 mb-4">
                                     {exp.achievements.map((a, j) => (
                                         <li key={j} className="flex items-start gap-2">
                                             <span className="text-cyan-400 mt-0.5 shrink-0">▹</span>
@@ -194,12 +238,12 @@ const Experience = () => {
 
                                 <div className="flex flex-wrap gap-1.5">
                                     {exp.tech.map((t) => (
-                                        <span key={t} className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                                        <span key={t} className="tl-tag text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                                             {t}
                                         </span>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>
