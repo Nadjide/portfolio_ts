@@ -2,39 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-
-const skills = [
-    {
-        category: "Frontend Modern & UI",
-        items: ["Next.js", "React.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Material UI"],
-        gradient: "from-blue-400 to-indigo-600"
-    },
-    {
-        category: "Backend & API",
-        items: ["Node.js", "FastAPI", "Python", "Prisma", "Express", "REST/GraphQL"],
-        gradient: "from-emerald-400 to-green-600"
-    },
-    {
-        category: "Data Science & IA",
-        items: ["Polars", "Pandas", "DuckDB", "Ollama (Local LLM)", "Mistral AI", "PowerBI"],
-        gradient: "from-purple-400 to-pink-600"
-    },
-    {
-        category: "DevOps & Cloud",
-        items: ["Docker", "Terraform", "Ansible", "GitHub Actions", "AWS", "Nginx"],
-        gradient: "from-orange-400 to-red-600"
-    },
-    {
-        category: "Base de Données",
-        items: ["PostgreSQL", "MySQL", "MariaDB", "MongoDB", "SQLite", "Redis"],
-        gradient: "from-cyan-400 to-blue-600"
-    },
-    {
-        category: "Mobile & Cross-Platform",
-        items: ["React Native", "Expo", "Android", "iOS", "PWA"],
-        gradient: "from-yellow-400 to-amber-600"
-    },
-];
+import { skillGroups } from "../portfolioContent";
 
 const Skills = () => {
     return (
@@ -60,7 +28,7 @@ const Skills = () => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {skills.map((group, index) => (
+                    {skillGroups.map((group, index) => (
                         <motion.div
                             key={group.category}
                             initial={{ opacity: 0, scale: 0.95 }}

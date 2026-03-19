@@ -7,7 +7,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="relative py-12 px-6 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+        <footer id="contact" className="relative py-12 px-6 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
                 
                 {/* ── Left: Identity & Status ── */}
