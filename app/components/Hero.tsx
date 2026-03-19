@@ -150,7 +150,7 @@ const Hero = () => {
                             />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
                         </span>
-                        <span className="text-green-400 text-xs font-mono tracking-wider">DISPONIBLE</span>
+                        <span className="text-green-400 text-xs font-mono tracking-wider">Online</span>
                     </div>
 
                     <div className="flex items-center gap-1">
