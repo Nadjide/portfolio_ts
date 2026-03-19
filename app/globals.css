@@ -20,7 +20,7 @@ img, video {
   content-visibility: auto;
 }
 
-section {
+.cv-auto {
   content-visibility: auto;
   contain-intrinsic-size: 1000px;
 }
@@ -81,5 +81,20 @@ section {
 @media (prefers-reduced-motion: reduce) {
   .mini-screen-scan {
     animation: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .animate-gradient-x {
+    animation: none;
+  }
+
+  .spotlight {
+    opacity: 0 !important;
+  }
+
+  .mini-screen-scan {
+    animation: none;
+    opacity: 0.08;
   }
 }

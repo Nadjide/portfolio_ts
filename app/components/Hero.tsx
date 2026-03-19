@@ -1,30 +1,27 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
-import dynamic from "next/dynamic";
+import { motion, useScroll, useTransform, useMotionValue, useReducedMotion } from "framer-motion";
 import { Email, LinkedIn, GitHub } from "@mui/icons-material";
-
-const SkillsGrid3D = dynamic(() => import("./SkillsGrid3D"), {
-    ssr: false,
-    loading: () => (
-        <div className="w-full h-full flex items-center justify-center">
-            <span className="text-gray-600 text-sm font-mono animate-pulse">Loading 3D…</span>
-        </div>
-    ),
-});
+import SkillsGrid3D from "./SkillsGrid3D";
+import { useIsCoarsePointer } from "../hooks/useIsCoarsePointer";
 
 // Scramble Text Component (Inline for simplicity or import if preferred)
-const ScrambleText = ({ text, className }: { text: string, className?: string }) => {
-    const [display, setDisplay] = useState("");
+const ScrambleText = ({ text, className, disabled = false }: { text: string, className?: string, disabled?: boolean }) => {
+    const [display, setDisplay] = useState(text);
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
     
     useEffect(() => {
+        if (disabled) {
+            setDisplay(text);
+            return;
+        }
+
         let iteration = 0;
         const interval = setInterval(() => {
             setDisplay(
                 text.split("")
-                    .map((char, index) => {
+                    .map((_, index) => {
                         if (index < iteration) return text[index];
                         return chars[Math.floor(Math.random() * chars.length)];
                     })
@@ -35,7 +32,7 @@ const ScrambleText = ({ text, className }: { text: string, className?: string })
             iteration += 1 / 3;
         }, 30);
         return () => clearInterval(interval);
-    }, [text]);
+    }, [disabled, text]);
 
     return <span className={className}>{display}</span>;
 }
@@ -79,7 +76,10 @@ const Hero = () => {
     const containerRef = useRef<HTMLElement>(null);
     const { scrollY } = useScroll();
     const watermarkY = useTransform(scrollY, [0, 1000], [0, 200]); // Parallax effect
+    const shouldReduceMotion = useReducedMotion();
+    const isCoarsePointer = useIsCoarsePointer();
     const [isMobile, setIsMobile] = useState(true); // Default to true (mobile-first load) to avoid heavy anims initially
+    const lowMotion = shouldReduceMotion || isMobile || isCoarsePointer;
 
     useEffect(() => {
         setIsMobile(window.innerWidth < 768);
@@ -88,7 +88,7 @@ const Hero = () => {
         window.addEventListener("resize", handleResize);
 
         const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current || window.innerWidth < 768) return; // Disable on mobile
+            if (!containerRef.current || isCoarsePointer || window.innerWidth < 768) return; // Disable on touch/mobile
             const { clientX, clientY } = e;
             const { left, top } = containerRef.current.getBoundingClientRect();
             const x = clientX - left;
@@ -97,23 +97,26 @@ const Hero = () => {
             containerRef.current.style.setProperty("--y", `${y}px`);
         };
         
-        window.addEventListener("mousemove", handleMouseMove);
+        if (!isCoarsePointer) {
+            window.addEventListener("mousemove", handleMouseMove);
+        }
+
         return () => {
              window.removeEventListener("mousemove", handleMouseMove);
              window.removeEventListener("resize", handleResize);
         };
-    }, []);
+    }, [isCoarsePointer]);
 
     return (
         <section ref={containerRef} className="min-h-screen relative overflow-hidden group">
             {/* ── Spotlight Effect (Disabled on Mobile via CSS opacity or JS) ── */}
-            <div className={`absolute inset-0 pointer-events-none spotlight transition-opacity duration-500 z-0 ${isMobile ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`} />
+            <div className={`absolute inset-0 pointer-events-none spotlight transition-opacity duration-500 z-0 ${lowMotion ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`} />
 
             {/* ── Background Layers ── */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
                 {/* Giant watermark name - Parallax */}
                 <motion.div 
-                    style={{ y: watermarkY }}
+                    style={{ y: lowMotion ? 0 : watermarkY }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 >
                     <span className="text-[20vw] font-black text-white/[0.02] tracking-tighter whitespace-nowrap leading-none block">
@@ -131,14 +134,20 @@ const Hero = () => {
             <div className="relative z-10 min-h-screen flex flex-col px-6 lg:px-16">
                 {/* ── Top Bar ── */}
                 <motion.header 
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={lowMotion ? false : { opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
+                    transition={lowMotion ? { duration: 0.01 } : { duration: 0.6 }}
                     className="flex items-center justify-between py-8"
                 >
                     <div className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                            <span
+                                className={
+                                    lowMotion
+                                        ? "absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-40"
+                                        : "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+                                }
+                            />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
                         </span>
                         <span className="text-green-400 text-xs font-mono tracking-wider">DISPONIBLE</span>
@@ -166,17 +175,17 @@ const Hero = () => {
                         
                         {/* Name Block - Full Width Impact */}
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={lowMotion ? false : { opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, delay: 0.2 }}
+                            transition={lowMotion ? { duration: 0.01 } : { duration: 0.7, delay: 0.2 }}
                             className="mb-16"
                         >
                             <p className="text-gray-600 text-sm font-mono tracking-[0.3em] uppercase mb-6">
                                 &lt;hello world /&gt;
                             </p>
                             <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white leading-[0.85] tracking-tighter py-2 relative overflow-hidden group">
-                                <ScrambleText text="Nadjide" className="inline-block" />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 animate-gradient-x pr-2">
+                                <ScrambleText text="Nadjide" className="inline-block" disabled={lowMotion} />
+                                <span className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 pr-2 ${lowMotion ? "" : "animate-gradient-x"}`}>
                                     {" "}Omar
                                 </span>
                                 <span className="text-blue-500">.</span>
@@ -187,9 +196,9 @@ const Hero = () => {
                         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
                             {/* Left: Info Block */}
                             <motion.div 
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={lowMotion ? false : { opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.5 }}
+                                transition={lowMotion ? { duration: 0.01 } : { duration: 0.6, delay: 0.5 }}
                                 className="lg:max-w-sm shrink-0 space-y-8"
                             >
                                 <div className="flex items-center gap-4">
@@ -221,9 +230,9 @@ const Hero = () => {
 
                             {/* Right: 3D Skills Grid */}
                             <motion.div 
-                                initial={{ opacity: 0, scale: 0.95 }}
+                                initial={lowMotion ? false : { opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.6, delay: 0.4 }}
+                                transition={lowMotion ? { duration: 0.01 } : { duration: 0.6, delay: 0.4 }}
                                 className="flex-1 w-full relative"
                                 style={{ minHeight: "380px", height: "460px" }}
                             >
@@ -246,21 +255,23 @@ const Hero = () => {
                 </div>
 
                 {/* ── Bottom: Scroll Indicator ── */}
-                <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2 }}
-                    className="py-8 flex justify-center"
-                >
-                    <div className="flex flex-col items-center gap-2">
-                        <span className="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">Scroll</span>
-                        <motion.div 
-                            animate={{ y: [0, 6, 0] }}
-                            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                            className="w-0.5 h-8 bg-gradient-to-b from-gray-500 to-transparent rounded-full"
-                        />
-                    </div>
-                </motion.div>
+                {!lowMotion ? (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.2 }}
+                        className="py-8 flex justify-center"
+                    >
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-[10px] text-gray-600 tracking-[0.3em] uppercase font-mono">Scroll</span>
+                            <motion.div 
+                                animate={{ y: [0, 6, 0] }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                                className="w-0.5 h-8 bg-gradient-to-b from-gray-500 to-transparent rounded-full"
+                            />
+                        </div>
+                    </motion.div>
+                ) : null}
             </div>
         </section>
     );

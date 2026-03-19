@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectData } from "./projectsData";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
 import NextImage from "next/image";
+import { useIsCoarsePointer } from "./hooks/useIsCoarsePointer";
 
 interface ProjectDetailsProps extends ProjectData {
     technologies: string[];
@@ -21,6 +22,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     context
 }) => {
     const router = useRouter();
+    const shouldReduceMotion = useReducedMotion();
+    const isCoarsePointer = useIsCoarsePointer();
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({ container: containerRef });
     const scaleX = useSpring(scrollYProgress, {
@@ -28,23 +31,34 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
         damping: 30,
         restDelta: 0.001
     });
+    const [isMobile, setIsMobile] = useState(true);
+    const lowMotion = shouldReduceMotion || isCoarsePointer || isMobile;
 
     const isVideo = !!videoSrc;
+
+    useEffect(() => {
+        const update = () => setIsMobile(window.innerWidth < 768);
+        update();
+        window.addEventListener("resize", update);
+        return () => window.removeEventListener("resize", update);
+    }, []);
 
     return (
         <div ref={containerRef} className="h-screen overflow-y-auto bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 transition-colors duration-300 relative scrollbar-hide">
             
             {/* Progress Bar */}
-            <motion.div
-                className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 origin-left z-50"
-                style={{ scaleX }}
-            />
+            {!lowMotion ? (
+                <motion.div
+                    className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 origin-left z-50"
+                    style={{ scaleX }}
+                />
+            ) : null}
 
             {/* Floating Back Button */}
             <motion.button
-                initial={{ opacity: 0, x: -20 }}
+                initial={lowMotion ? false : { opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={lowMotion ? { duration: 0.01 } : { delay: 0.5 }}
                 onClick={() => router.back()}
                 className="fixed top-6 left-6 z-40 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-white/20 transition-all group flex items-center gap-2"
             >
@@ -59,10 +73,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 <div className="absolute inset-0 z-0">
                     {isVideo ? (
                         <video
-                            autoPlay
-                            loop
+                            autoPlay={!lowMotion}
+                            loop={!lowMotion}
                             muted
                             playsInline
+                            controls={lowMotion}
+                            preload={lowMotion ? "none" : "metadata"}
+                            poster={imageSrc}
                             className="w-full h-full object-cover opacity-50 dark:opacity-40"
                         >
                             <source src={videoSrc} type="video/mp4" />
@@ -81,9 +98,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
                 <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-20">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={lowMotion ? false : { opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        transition={lowMotion ? { duration: 0.01 } : { duration: 0.8, ease: "easeOut" }}
                     >
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight text-gray-900 dark:text-white drop-shadow-2xl">
                             {title}
@@ -91,9 +108,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                     </motion.div>
                     
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={lowMotion ? false : { opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
+                        transition={lowMotion ? { duration: 0.01 } : { delay: 0.3, duration: 0.8 }}
                         className="flex flex-wrap justify-center gap-3 mt-8"
                     >
                         {technologies.map((tech, i) => (
@@ -108,19 +125,21 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 </div>
 
                 {/* Scroll Indicator */}
-                <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 1 }}
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500 dark:text-gray-400"
-                >
-                    <span className="text-xs uppercase tracking-widest">Scroll</span>
+                {!lowMotion ? (
                     <motion.div 
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                        className="w-1 h-12 rounded-full bg-gradient-to-b from-blue-500 to-transparent"
-                    />
-                </motion.div>
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 1 }}
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500 dark:text-gray-400"
+                    >
+                        <span className="text-xs uppercase tracking-widest">Scroll</span>
+                        <motion.div 
+                            animate={{ y: [0, 8, 0] }}
+                            transition={{ repeat: Infinity, duration: 1.5 }}
+                            className="w-1 h-12 rounded-full bg-gradient-to-b from-blue-500 to-transparent"
+                        />
+                    </motion.div>
+                ) : null}
             </section>
 
             {/* Content Section - Case Study Layout */}
@@ -132,8 +151,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                         
                         {/* Project Info Block */}
                         <motion.div 
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={lowMotion ? false : { opacity: 0, x: -20 }}
+                            whileInView={lowMotion ? undefined : { opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             className="p-8 rounded-3xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl"
                         >
@@ -160,10 +179,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
                         {/* Tech Stack Block */}
                         <motion.div 
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={lowMotion ? false : { opacity: 0, x: -20 }}
+                            whileInView={lowMotion ? undefined : { opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
+                            transition={lowMotion ? { duration: 0.01 } : { delay: 0.2 }}
                         >
                             <h3 className="text-xl font-bold mb-6 pl-4 border-l-4 border-cyan-500 text-gray-900 dark:text-white">
                                 Stack Technique
@@ -185,9 +204,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                     {/* Disclaimer Alert for Company Projects */}
                     {context === "Entreprise" && (
                         <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={lowMotion ? false : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
+                            transition={lowMotion ? { duration: 0.01 } : { delay: 0.5 }}
                             className="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-6 rounded-r-xl shadow-sm flex items-start gap-4 mb-12"
                         >
                             <svg className="w-6 h-6 text-orange-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,10 +226,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                     {description.map((paragraph, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={lowMotion ? false : { opacity: 0, y: 30 }}
+                            whileInView={lowMotion ? undefined : { opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            transition={{ duration: 0.6 }}
+                            transition={lowMotion ? { duration: 0.01 } : { duration: 0.6 }}
                             className="group pl-8 border-l border-gray-200 dark:border-gray-800 hover:border-blue-500 transition-colors duration-500"
                         >
                             {/* Decorative number */}
@@ -226,8 +245,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                     
                     {/* Bottom Action */}
                     <motion.div 
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
+                        initial={lowMotion ? false : { opacity: 0 }}
+                        whileInView={lowMotion ? undefined : { opacity: 1 }}
                         className="pt-20 border-t border-gray-100 dark:border-gray-800 flex justify-center w-full"
                     >
                         <button 

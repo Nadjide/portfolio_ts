@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { memo, useState, useCallback, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { projectsData } from "../projectsData";
+import { useIsCoarsePointer } from "../hooks/useIsCoarsePointer";
 import BuildConsole from "./BuildConsole";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,54 +13,78 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-// Optimized Video Component
-const ProjectVideo = ({ src, poster }: { src: string, poster?: string }) => {
+// Optimized Video Component: loads source close to viewport and pauses off-screen.
+const ProjectVideo = memo(function ProjectVideo({
+    src,
+    poster,
+    className,
+    allowAutoplay,
+}: {
+    src: string;
+    poster?: string;
+    className?: string;
+    allowAutoplay: boolean;
+}) {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [shouldLoad, setShouldLoad] = useState(false);
+    const [isNearViewport, setIsNearViewport] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
+                setIsVisible(entry.isIntersecting && entry.intersectionRatio > 0.2);
                 if (entry.isIntersecting) {
-                    setShouldLoad(true);
-                    observer.disconnect();
+                    setIsNearViewport(true);
                 }
             },
-            { rootMargin: "100px" } // Preload a bit before bringing into view
+            { rootMargin: "180px", threshold: [0, 0.2, 0.5] }
         );
 
-        if (videoRef.current) observer.observe(videoRef.current);
+        const node = videoRef.current;
+        if (node) observer.observe(node);
+
         return () => observer.disconnect();
     }, []);
 
     useEffect(() => {
-        if (shouldLoad && videoRef.current) {
-            videoRef.current.play().catch(() => { /* Auto-play failed, expected in some browsers */ });
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (allowAutoplay && isVisible) {
+            video.play().catch(() => {
+                // Auto-play can fail on some browsers; keep silent.
+            });
+            return;
         }
-    }, [shouldLoad]);
+
+        video.pause();
+    }, [allowAutoplay, isVisible]);
 
     return (
         <video
             ref={videoRef}
-            poster={poster} // Show image until video loads
+            poster={poster}
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
-            preload="none" // ⚡ CRITICAL: Do not download video data on initial page load
+            preload={isNearViewport && allowAutoplay ? "metadata" : "none"}
+            className={className ?? "absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"}
         >
-            {shouldLoad && <source src={src} type="video/mp4" />}
+            {isNearViewport && allowAutoplay && <source src={src} type="video/mp4" />}
         </video>
     );
-};
+});
 
 /* ── GSAP animation config ── */
 const CARD_ANIM = { fromY: 55, fromRotateX: 10, perspective: 900, duration: 0.75 };
 const PARALLAX_SCRUB_FACTOR = 1.2;
+const HEAVY_VIDEO_SOURCES = new Set(["/videos/sonar_demo.mp4"]);
 
 const Projects = () => {
     const router = useRouter();
-    const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+    const shouldReduceMotion = useReducedMotion();
+    const isCoarsePointer = useIsCoarsePointer();
+    const lowMotion = shouldReduceMotion || isCoarsePointer;
     const [buildingProject, setBuildingProject] = useState<string | null>(null);
     const sectionRef = useRef<HTMLElement>(null);
 
@@ -83,10 +108,17 @@ const Projects = () => {
         [router]
     );
 
+    const canAutoPlayVideo = useCallback(
+        (videoSrc?: string) => {
+            if (!videoSrc) return false;
+            return !lowMotion && !HEAVY_VIDEO_SOURCES.has(videoSrc);
+        },
+        [lowMotion]
+    );
+
     // ── GSAP ScrollTrigger setup ──
     useEffect(() => {
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reducedMotion || !sectionRef.current) return;
+        if (lowMotion || !sectionRef.current) return;
 
         const ctx = gsap.context(() => {
             // 3D entrance for all project cards
@@ -104,12 +136,12 @@ const Projects = () => {
                             trigger: card,
                             start: "top 90%",
                             toggleActions: "play none none none",
+                            once: true,
                         },
                     }
                 );
             });
 
-            // Parallax on featured project media containers
             gsap.utils.toArray<HTMLElement>(".project-media").forEach((el) => {
                 const inner = el.querySelector<HTMLElement>(".project-media-inner");
                 if (!inner) return;
@@ -127,26 +159,26 @@ const Projects = () => {
         }, sectionRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [lowMotion]);
 
     const featuredProjects = projectsData.filter((p) => p.featured);
     const otherProjects = projectsData.filter((p) => !p.featured);
 
     return (
-        <section ref={sectionRef} className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300" style={{ perspective: "1200px" }}>
+        <section id="projects" ref={sectionRef} className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300" style={{ perspective: "1200px" }}>
 
             {/* ── Projets Phares ── */}
             <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={lowMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={lowMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="text-3xl font-bold mb-3 text-center text-gray-900 dark:text-white transition-colors duration-300"
             >
                 Projets <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Phares</span>
             </motion.h2>
             <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={lowMotion ? false : { opacity: 0, y: 10 }}
+                whileInView={lowMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
                 className="text-center text-gray-500 dark:text-gray-400 mb-12 text-sm"
@@ -155,7 +187,7 @@ const Projects = () => {
             </motion.p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
-                {featuredProjects.map((project, index) => (
+                {featuredProjects.map((project) => (
                     <motion.div
                         key={project.title}
                         layoutId={`project-${project.title}`}
@@ -166,8 +198,6 @@ const Projects = () => {
                                    border-2 border-blue-400/40 dark:border-blue-500/30
                                    hover:border-blue-500/70 dark:hover:border-blue-400/60"
                         onClick={() => handleProjectClick(project.title)}
-                        onMouseEnter={() => setHoveredProject(project.title)}
-                        onMouseLeave={() => setHoveredProject(null)}
                         role="button"
                         tabIndex={0}
                         aria-label={`Voir les détails du projet phare ${project.title}`}
@@ -202,6 +232,8 @@ const Projects = () => {
                                     <ProjectVideo 
                                         src={project.videoSrc} 
                                         poster={project.imageSrc}
+                                        className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                                        allowAutoplay={canAutoPlayVideo(project.videoSrc)}
                                     />
                                 ) : (
                                     <span className="text-4xl z-10 filter drop-shadow-md flex items-center justify-center h-full">🚀</span>
@@ -239,16 +271,16 @@ const Projects = () => {
 
             {/* ── Autres Projets ── */}
             <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={lowMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={lowMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="text-2xl font-bold mb-3 text-center text-gray-900 dark:text-white transition-colors duration-300"
             >
                 Autres <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-400 dark:from-gray-300 dark:to-gray-500">Réalisations</span>
             </motion.h2>
             <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={lowMotion ? false : { opacity: 0, y: 10 }}
+                whileInView={lowMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
                 className="text-center text-gray-500 dark:text-gray-400 mb-10 text-sm"
@@ -257,14 +289,12 @@ const Projects = () => {
             </motion.p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {otherProjects.map((project, index) => (
+                {otherProjects.map((project) => (
                     <motion.div
                         key={project.title}
                         layoutId={`project-${project.title}`}
                         className="project-card group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg shadow-blue-500/5 dark:shadow-black/30 hover:shadow-blue-500/20 dark:hover:shadow-blue-900/20 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
                         onClick={() => handleProjectClick(project.title)}
-                        onMouseEnter={() => setHoveredProject(project.title)}
-                        onMouseLeave={() => setHoveredProject(null)}
                         role="button"
                         tabIndex={0}
                         aria-label={`Voir les détails du projet ${project.title}`}
@@ -287,13 +317,11 @@ const Projects = () => {
                         {/* Video preview */}
                         <div className="h-44 relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/40 dark:to-gray-700/20 flex items-center justify-center group-hover:from-blue-50 group-hover:to-cyan-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-cyan-900/20 transition-all duration-300">
                             {project.videoSrc ? (
-                                <video
+                                <ProjectVideo
                                     src={project.videoSrc}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                                    poster={project.imageSrc}
+                                    className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                                    allowAutoplay={canAutoPlayVideo(project.videoSrc)}
                                 />
                             ) : (
                                 <span className="text-3xl z-10 filter drop-shadow-md">🚀</span>

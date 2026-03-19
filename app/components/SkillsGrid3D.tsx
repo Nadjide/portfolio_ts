@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { projectsData } from "../projectsData";
 import { allSkills, experiences, formations, skillGroups } from "../portfolioContent";
+import { useIsCoarsePointer } from "../hooks/useIsCoarsePointer";
 
 type PanelKey = "projects" | "skills" | "experience" | "contact";
 
@@ -265,8 +266,9 @@ function PanelBody({ activePanel }: { activePanel: PanelKey }) {
 
 export default function SkillsGrid3D() {
   const shouldReduceMotion = useReducedMotion();
+  const isCoarsePointer = useIsCoarsePointer();
+  const lowMotion = shouldReduceMotion || isCoarsePointer;
   const [activePanel, setActivePanel] = useState<PanelKey>("projects");
-  const [glare, setGlare] = useState({ x: 50, y: 50 });
 
   const currentPanel = useMemo(
     () => PANELS.find((panel) => panel.key === activePanel) ?? PANELS[0],
@@ -275,48 +277,50 @@ export default function SkillsGrid3D() {
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (shouldReduceMotion) return;
+      if (lowMotion) return;
       const rect = event.currentTarget.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
-      setGlare({ x, y });
+      event.currentTarget.style.setProperty("--glare-x", `${x}%`);
+      event.currentTarget.style.setProperty("--glare-y", `${y}%`);
     },
-    [shouldReduceMotion]
+    [lowMotion]
   );
+
+  const handlePointerLeave = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.style.setProperty("--glare-x", "50%");
+    event.currentTarget.style.setProperty("--glare-y", "50%");
+  }, []);
 
   const handleOpenSection = useCallback((targetId: string) => {
     scrollToSection(targetId);
   }, []);
-
-  const glareStyle = {
-    "--glare-x": `${glare.x}%`,
-    "--glare-y": `${glare.y}%`,
-  } as React.CSSProperties;
 
   return (
     <div className="relative h-full w-full px-1 sm:px-3">
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: shouldReduceMotion ? 0.2 : 0.55, ease: "easeOut" }}
+        transition={{ duration: lowMotion ? 0.2 : 0.55, ease: "easeOut" }}
         className="relative mx-auto h-full w-full max-w-[850px]"
       >
         <motion.div
           className="absolute inset-x-0 bottom-[56px] top-0 rounded-[1.8rem] border border-cyan-200/15 bg-gradient-to-br from-[#0b1530]/95 via-[#050e1f]/95 to-[#030814]/95 p-3 shadow-[0_30px_80px_rgba(0,0,0,0.55)]"
-          animate={shouldReduceMotion ? undefined : { y: [0, -3, 0] }}
+          animate={lowMotion ? undefined : { y: [0, -3, 0] }}
           transition={
-            shouldReduceMotion
+            lowMotion
               ? undefined
               : { duration: 5.8, repeat: Infinity, ease: "easeInOut" }
           }
+          style={{ "--glare-x": "50%", "--glare-y": "50%" } as React.CSSProperties}
           onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
         >
           <div className="relative h-full overflow-hidden rounded-[1.2rem] border border-cyan-300/20 bg-[#030a18]">
             <div className="mini-screen-grid absolute inset-0 opacity-60" />
             <div className="mini-screen-scan absolute inset-0 pointer-events-none" />
             <div
               className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_var(--glare-x)_var(--glare-y),rgba(56,189,248,0.22),transparent_40%)]"
-              style={glareStyle}
             />
 
             <div className="relative z-10 flex h-full flex-col">
@@ -343,7 +347,7 @@ export default function SkillsGrid3D() {
                           key={panel.key}
                           type="button"
                           onClick={() => setActivePanel(panel.key)}
-                          whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
+                          whileHover={lowMotion ? undefined : { scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           className={`relative overflow-hidden rounded-xl border px-3 py-2 text-left transition ${
                             isActive
@@ -381,7 +385,7 @@ export default function SkillsGrid3D() {
                     <motion.button
                       type="button"
                       onClick={() => handleOpenSection(currentPanel.targetId)}
-                      whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
+                      whileHover={lowMotion ? undefined : { scale: 1.04 }}
                       whileTap={{ scale: 0.98 }}
                       className={`rounded-lg bg-gradient-to-r ${currentPanel.accent} px-3 py-2 text-xs font-semibold text-[#051126] shadow-[0_8px_30px_rgba(56,189,248,0.35)]`}
                       aria-label={`Ouvrir la section ${currentPanel.label}`}
@@ -397,7 +401,7 @@ export default function SkillsGrid3D() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: shouldReduceMotion ? 0.15 : 0.26 }}
+                        transition={{ duration: lowMotion ? 0.12 : 0.26 }}
                       >
                         <PanelBody activePanel={activePanel} />
                       </motion.div>
