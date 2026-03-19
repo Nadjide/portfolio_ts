@@ -24,6 +24,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     const router = useRouter();
     const shouldReduceMotion = useReducedMotion();
     const isCoarsePointer = useIsCoarsePointer();
+    const reducedMotionEnabled = Boolean(shouldReduceMotion);
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({ container: containerRef });
     const scaleX = useSpring(scrollYProgress, {
@@ -32,7 +33,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
         restDelta: 0.001
     });
     const [isMobile, setIsMobile] = useState(true);
-    const lowMotion = shouldReduceMotion || isCoarsePointer || isMobile;
+    const lowMotion = reducedMotionEnabled || isCoarsePointer || isMobile;
+    const disableVideoAutoplay = reducedMotionEnabled;
 
     const isVideo = !!videoSrc;
 
@@ -73,12 +75,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                 <div className="absolute inset-0 z-0">
                     {isVideo ? (
                         <video
-                            autoPlay={!lowMotion}
-                            loop={!lowMotion}
+                            autoPlay={!disableVideoAutoplay}
+                            loop={!disableVideoAutoplay}
                             muted
                             playsInline
-                            controls={lowMotion}
-                            preload={lowMotion ? "none" : "metadata"}
+                            controls={isCoarsePointer || disableVideoAutoplay}
+                            preload={disableVideoAutoplay ? "none" : "metadata"}
                             poster={imageSrc}
                             className="w-full h-full object-cover opacity-50 dark:opacity-40"
                         >
@@ -93,7 +95,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                             priority
                         />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/60 dark:from-[#0a0a0a] dark:via-transparent dark:to-black/80" />
+                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white via-transparent to-black/60 dark:from-[#0a0a0a] dark:via-transparent dark:to-black/80" />
                 </div>
 
                 <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-20">

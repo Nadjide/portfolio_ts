@@ -50,15 +50,17 @@ const ProjectVideo = memo(function ProjectVideo({
         const video = videoRef.current;
         if (!video) return;
 
-        if (allowAutoplay && isVisible) {
-            video.play().catch(() => {
-                // Auto-play can fail on some browsers; keep silent.
-            });
+        if (!isNearViewport || !isVisible) {
+            video.pause();
             return;
         }
 
-        video.pause();
-    }, [allowAutoplay, isVisible]);
+        if (allowAutoplay) {
+            video.play().catch(() => {
+                // Auto-play can fail on some browsers; keep silent.
+            });
+        }
+    }, [allowAutoplay, isNearViewport, isVisible]);
 
     return (
         <video
@@ -67,10 +69,10 @@ const ProjectVideo = memo(function ProjectVideo({
             muted
             loop
             playsInline
-            preload={isNearViewport && allowAutoplay ? "metadata" : "none"}
+            preload={isNearViewport ? "metadata" : "none"}
             className={className ?? "absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"}
         >
-            {isNearViewport && allowAutoplay && <source src={src} type="video/mp4" />}
+            {isNearViewport && <source src={src} type="video/mp4" />}
         </video>
     );
 });
@@ -78,7 +80,6 @@ const ProjectVideo = memo(function ProjectVideo({
 /* ── GSAP animation config ── */
 const CARD_ANIM = { fromY: 55, fromRotateX: 10, perspective: 900, duration: 0.75 };
 const PARALLAX_SCRUB_FACTOR = 1.2;
-const HEAVY_VIDEO_SOURCES = new Set(["/videos/optimized/sonar_demo.mp4"]);
 
 const Projects = () => {
     const router = useRouter();
@@ -111,9 +112,9 @@ const Projects = () => {
     const canAutoPlayVideo = useCallback(
         (videoSrc?: string) => {
             if (!videoSrc) return false;
-            return !lowMotion && !HEAVY_VIDEO_SOURCES.has(videoSrc);
+            return !shouldReduceMotion;
         },
-        [lowMotion]
+        [shouldReduceMotion]
     );
 
     // ── GSAP ScrollTrigger setup ──
