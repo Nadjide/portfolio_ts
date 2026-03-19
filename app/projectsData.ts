@@ -28,8 +28,8 @@ export const projectsData: ProjectData[] = [
             "Sur le plan de l'innovation, Sonar intègre une couche d'intelligence artificielle permettant d'analyser automatiquement les appels via des prompts dédiés, de pré-remplir les grilles d'évaluation et de générer des feedbacks immédiats — réduisant considérablement le temps d'évaluation tout en augmentant sa pertinence.",
             "Sonar s'inscrit dans un écosystème applicatif cohérent : là où Stats Live pilote la performance chiffrée, Sonar apporte la dimension qualitative indispensable à une gestion complète et équilibrée des équipes. Ensemble, ces deux applications forment un duo complémentaire au service de l'excellence opérationnelle."
         ],
-        imageSrc: "/images/sonar.png",
-        videoSrc: "/videos/sonar_demo.mp4",
+        imageSrc: "/images/sonar.jpg",
+        videoSrc: "/videos/optimized/sonar_demo.mp4",
         technologies: ["Next.js", "Tailwind CSS", "TypeScript", "FastAPI", "Python", "IA Local via Ollama et Mistral"],
     },
     {
@@ -46,8 +46,8 @@ export const projectsData: ProjectData[] = [
             "Les superviseurs bénéficient désormais d'outils encore plus précis pour ajuster les stratégies d'équipe, tandis que les télévendeurs disposent d'une interface simplifiée pour suivre leurs performances individuelles. Ce projet incarne une étape significative dans l'amélioration continue de l'efficacité et de la compétitivité des équipes, tout en mettant en avant des technologies de pointe pour répondre aux attentes actuelles.",
             "Stats Live 2.0 reflète mon engagement à fournir des solutions de qualité supérieure, en plaçant l'utilisateur au centre des préoccupations et en adoptant les meilleures pratiques de développement logiciel."
         ],
-        imageSrc: "/images/stats_live_2.png",
-        videoSrc: "/videos/stats_live_2_demo.mp4",
+        imageSrc: "/images/stats_live_2.jpg",
+        videoSrc: "/videos/optimized/stats_live_2_demo.mp4",
         technologies: ["Next.js", "Material UI", "TypeScript", "MySQL", "PrismaORM"],
     },
     {
@@ -64,8 +64,8 @@ export const projectsData: ProjectData[] = [
             "Le backend repose sur FastAPI (Python), assurant la gestion de l'authentification, la création et la gestion des sessions utilisateurs, ainsi que la communication sécurisée avec les différentes applications de l'écosystème.",
             "Ce projet illustre ma capacité à concevoir des architectures fullstack adaptées à des contraintes d'entreprise réelles, en alliant rigueur technique et souci du détail UX."
         ],
-        imageSrc: "/images/portail_cta.png",
-        videoSrc: "/videos/portail_cta_demo.mp4",
+        imageSrc: "/images/portail_cta.jpg",
+        videoSrc: "/videos/optimized/portail_cta_demo.mp4",
         technologies: ["Next.js", "Tailwind CSS", "Framer Motion", "FastAPI", "Python"],
     },
     {
@@ -81,8 +81,8 @@ export const projectsData: ProjectData[] = [
             "Sur le plan technique, j'ai adopté une stack volontairement pragmatique et adaptée au besoin réel : Next.js et Tailwind CSS pour le frontend, et SQLite pour la base de données. Ce choix reflète une approche mûrement réfléchie — SQLite est léger, performant pour ce volume de données, et facilement sauvegardable sans infrastructure serveur complexe. Il n'est pas toujours nécessaire de déployer une solution lourde lorsqu'une technologie simple et efficace répond parfaitement aux exigences.",
             "Sentinel illustre parfaitement ma capacité à analyser un besoin réel, à choisir les technologies appropriées et à livrer une solution opérationnelle, bien finie et autonome — des qualités que je considère essentielles dans tout contexte professionnel."
         ],
-        imageSrc: "/images/sentinel.png",
-        videoSrc: "/videos/sentinel_demo.mp4",
+        imageSrc: "/images/sentinel.jpg",
+        videoSrc: "/videos/optimized/sentinel_demo.mp4",
         technologies: ["Next.js", "Tailwind CSS", "TypeScript", "SQLite"],
     },
 
@@ -99,8 +99,8 @@ export const projectsData: ProjectData[] = [
             "Les superviseurs bénéficient d'une vue complète des statistiques, leur permettant d'analyser les résultats et de réajuster les équipes pour maximiser l'efficacité. Quant aux télévendeurs, ils ont accès à une interface dédiée où ils peuvent consulter leurs propres performances, ce qui favorise l'auto-évaluation et l'engagement.",
             "Grâce à cette application, Stats Live devient un atout majeur pour l'entreprise, en offrant des insights qui permettent de mieux comprendre les performances, de fixer des objectifs précis et de créer un environnement de travail compétitif et motivant. C'est à ce jour le plus gros projet que j'ai mené à bien en entreprise, un projet qui incarne mon engagement envers la qualité et l'efficacité, tout en contribuant à une meilleure gestion des ressources humaines et à l'amélioration continue des performances.",
         ],
-        imageSrc: "/images/stats_live.png",
-        videoSrc: "/videos/stats_live_demo.mp4",
+        imageSrc: "/images/stats_live.jpg",
+        videoSrc: "/videos/optimized/stats_live_demo.mp4",
         technologies: ["HTML", "Bootstrap", "JavaScript", "FLASK", "MySQL"],
     },
     {
@@ -114,8 +114,8 @@ export const projectsData: ProjectData[] = [
             "Chaque mini-site donnait aux télévendeurs une vue claire des informations des personnes appelées, facilitant ainsi leur suivi et permettant aux superviseurs de structurer les dialogues avec des scripts adaptés. Ces outils visaient à améliorer l'efficacité des appels et à standardiser les échanges avec les donateurs potentiels.",
             "Ces sites servaient également à collecter des données sur les appels, permettant aux superviseurs de suivre les performances des télévendeurs et d'ajuster les scripts en fonction des retours d'expérience. Les mini-sites étaient conçus pour être facilement modifiables et adaptables à différents types d'associations, offrant ainsi une solution flexible et évolutive pour les campagnes de collecte de dons.",
         ],
-        imageSrc: "/images/multi_association.png",
-        videoSrc: "/videos/multi_association_demo.mp4",
+        imageSrc: "/images/multi_association.jpg",
+        videoSrc: "/videos/optimized/multi_association_demo.mp4",
         technologies: ["HTML", "CSS", "JavaScript", "E-Script", "Nixxis"],
     },
     {
@@ -128,8 +128,8 @@ export const projectsData: ProjectData[] = [
             "L'intégrateur de données automatique est un projet pour automatiser le processus d'intégration de données provenant de différentes sources clientes. L'objectif était de créer des scripts simples et efficaces pour collecter, nettoyer et intégrer des données de manière automatisée.",
             "Ces fichiers clients étaient stockés dans des formats variés (CSV, Excel, etc.) et nécessitaient un traitement manuel pour être intégrés dans une base de données. L'intégrateur de données automatique permettait de simplifier ce processus en automatisant les tâches répétitives.",
         ],
-        imageSrc: "/images/data_integrator.png",
-        videoSrc: "/videos/data_integrator_demo.mp4",
+        imageSrc: "/images/data_integrator.jpg",
+        videoSrc: "/videos/optimized/data_integrator_demo.mp4",
         technologies: ["Python", "Polars", "MySQL", "DuckDB"],
     },
     {
@@ -144,8 +144,8 @@ export const projectsData: ProjectData[] = [
             "Mon rôle dans l'équipe de développement a consisté à collaborer étroitement sur les fonctionnalités clés de l'application, telles que le flux de reels, les interactions utilisateur (likes, commentaires), ainsi que l'architecture backend pour la gestion des données. En utilisant des technologies modernes comme React Native, Expo, et MongoDB, nous avons pu créer une application fluide et performante, adaptée aux besoins d'un public jeune et connecté.",
             "Exploree incarne la convergence entre technologie et lifestyle, offrant une plateforme qui révolutionne la manière dont les utilisateurs trouvent et partagent des expériences locales. Ce projet reste un défi passionnant et une opportunité d'appliquer des compétences avancées dans le développement d'applications mobiles modernes."
         ],
-        imageSrc: "/images/exploree.png",
-        videoSrc: "/videos/exploree_demo.mp4",
+        imageSrc: "/images/exploree.jpg",
+        videoSrc: "/videos/optimized/exploree_demo.mp4",
         technologies: ["React Native", "MongoDB", "Expo", "JavaScript"],
     },
     {
@@ -160,8 +160,8 @@ export const projectsData: ProjectData[] = [
             "Smart Hire intègre également un système avancé de comparaison des scores, permettant aux recruteurs d'évaluer les candidats sur la base de graphiques interactifs et de statistiques détaillées. Ces visualisations offrent une vue d'ensemble des performances par thématique, par candidat, et permettent de prendre des décisions éclairées grâce à des données objectives.",
             "Ce projet représente un exemple abouti d'application RH moderne, combinant une interface utilisateur intuitive et des fonctionnalités puissantes pour optimiser le processus de recrutement. Mon rôle principal a été de développer l'application avec React Native pour l'interface mobile, TypeScript pour une typage strict et FastAPI pour gérer efficacement les données et les fonctionnalités backend."
         ],
-        imageSrc: "/images/smart_hire.png",
-        videoSrc: "/videos/smart_hire_demo.mp4",
+        imageSrc: "/images/smart_hire.jpg",
+        videoSrc: "/videos/optimized/smart_hire_demo.mp4",
         technologies: ["React Native", "TypeScript", "FASTAPI"],
     },
     {
@@ -179,8 +179,8 @@ export const projectsData: ProjectData[] = [
             "Le site est disponible en ligne: https://pokedex-pi-brown.vercel.app/",
             "Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception."
         ],
-        imageSrc: "/images/pokedex.png",
-        videoSrc: "/videos/pokedex_demo.mp4",
+        imageSrc: "/images/pokedex.jpg",
+        videoSrc: "/videos/optimized/pokedex_demo.mp4",
         technologies: ["React", "Material UI", "PokeAPI"],
     },
 ];

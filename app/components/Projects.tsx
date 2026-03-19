@@ -78,7 +78,7 @@ const ProjectVideo = memo(function ProjectVideo({
 /* ── GSAP animation config ── */
 const CARD_ANIM = { fromY: 55, fromRotateX: 10, perspective: 900, duration: 0.75 };
 const PARALLAX_SCRUB_FACTOR = 1.2;
-const HEAVY_VIDEO_SOURCES = new Set(["/videos/sonar_demo.mp4"]);
+const HEAVY_VIDEO_SOURCES = new Set(["/videos/optimized/sonar_demo.mp4"]);
 
 const Projects = () => {
     const router = useRouter();
@@ -190,7 +190,6 @@ const Projects = () => {
                 {featuredProjects.map((project) => (
                     <motion.div
                         key={project.title}
-                        layoutId={`project-${project.title}`}
                         className="project-card group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden cursor-pointer
                                    shadow-xl shadow-blue-500/10 dark:shadow-black/40
                                    hover:shadow-2xl hover:shadow-blue-500/25 dark:hover:shadow-blue-900/30
@@ -292,7 +291,6 @@ const Projects = () => {
                 {otherProjects.map((project) => (
                     <motion.div
                         key={project.title}
-                        layoutId={`project-${project.title}`}
                         className="project-card group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-lg shadow-blue-500/5 dark:shadow-black/30 hover:shadow-blue-500/20 dark:hover:shadow-blue-900/20 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
                         onClick={() => handleProjectClick(project.title)}
                         role="button"
