@@ -133,7 +133,7 @@ const Projects = () => {
     const otherProjects = projectsData.filter((p) => !p.featured);
 
     return (
-        <section ref={sectionRef} id="projects" className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300" style={{ perspective: "1200px" }}>
+        <section ref={sectionRef} className="py-20 px-6 bg-gray-50/50 dark:bg-gray-900/20 transition-colors duration-300" style={{ perspective: "1200px" }}>
 
             {/* ── Projets Phares ── */}
             <motion.h2
