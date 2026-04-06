@@ -1,0 +1,55 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#081018"/>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <g opacity="0.6" filter="url(#blurA)">
+    <ellipse cx="311" cy="171" rx="220" ry="160" fill="#0EA5E9"/>
+  </g>
+  <g opacity="0.5" filter="url(#blurB)">
+    <ellipse cx="1315" cy="733" rx="280" ry="180" fill="#10B981"/>
+  </g>
+  <rect x="125" y="110" width="1350" height="680" rx="30" fill="rgba(8,16,24,0.72)" stroke="rgba(148,163,184,0.24)"/>
+  <rect x="165" y="155" width="580" height="510" rx="22" fill="rgba(15,23,42,0.78)" stroke="rgba(14,165,233,0.22)"/>
+  <rect x="195" y="187" width="520" height="18" rx="9" fill="rgba(148,163,184,0.14)"/>
+  <rect x="195" y="230" width="355" height="110" rx="18" fill="url(#cardA)"/>
+  <rect x="580" y="230" width="105" height="110" rx="18" fill="rgba(16,185,129,0.16)"/>
+  <rect x="195" y="370" width="490" height="24" rx="12" fill="rgba(148,163,184,0.14)"/>
+  <rect x="195" y="414" width="450" height="24" rx="12" fill="rgba(148,163,184,0.1)"/>
+  <rect x="195" y="458" width="390" height="24" rx="12" fill="rgba(148,163,184,0.1)"/>
+  <rect x="195" y="538" width="155" height="54" rx="16" fill="#0EA5E9"/>
+  <rect x="370" y="538" width="130" height="54" rx="16" fill="rgba(148,163,184,0.14)"/>
+  <rect x="785" y="155" width="525" height="205" rx="22" fill="rgba(15,23,42,0.78)" stroke="rgba(16,185,129,0.22)"/>
+  <rect x="815" y="188" width="215" height="20" rx="10" fill="rgba(148,163,184,0.16)"/>
+  <rect x="815" y="236" width="465" height="34" rx="17" fill="rgba(14,165,233,0.12)"/>
+  <rect x="815" y="290" width="420" height="18" rx="9" fill="rgba(148,163,184,0.1)"/>
+  <rect x="815" y="322" width="385" height="18" rx="9" fill="rgba(148,163,184,0.1)"/>
+  <rect x="785" y="390" width="525" height="275" rx="22" fill="rgba(15,23,42,0.78)" stroke="rgba(148,163,184,0.18)"/>
+  <rect x="815" y="424" width="220" height="20" rx="10" fill="rgba(148,163,184,0.16)"/>
+  <rect x="815" y="472" width="465" height="28" rx="14" fill="rgba(16,185,129,0.14)"/>
+  <rect x="815" y="522" width="465" height="28" rx="14" fill="rgba(14,165,233,0.12)"/>
+  <rect x="815" y="572" width="300" height="28" rx="14" fill="rgba(148,163,184,0.1)"/>
+  <circle cx="1340" cy="200" r="10" fill="#10B981"/>
+  <circle cx="1376" cy="200" r="10" fill="#0EA5E9"/>
+  <circle cx="1412" cy="200" r="10" fill="#F59E0B"/>
+  <text x="195" y="742" fill="#E2E8F0" font-family="Geist, Arial, sans-serif" font-size="88" font-weight="700">Stajio</text>
+  <text x="195" y="795" fill="#93C5FD" font-family="Geist, Arial, sans-serif" font-size="28" letter-spacing="4">ALTERNANCE · IA LOCALE · JOURNAL DE BORD</text>
+  <defs>
+    <filter id="blurA" x="-89" y="-189" width="800" height="720" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur_0_1"/>
+    </filter>
+    <filter id="blurB" x="735" y="253" width="1160" height="960" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="150" result="effect1_foregroundBlur_0_1"/>
+    </filter>
+    <linearGradient id="bg" x1="1600" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="cardA" x1="195" y1="230" x2="715" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0EA5E9" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#10B981" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg>

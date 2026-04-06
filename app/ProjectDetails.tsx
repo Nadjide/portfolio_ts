@@ -16,6 +16,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     description,
     imageSrc,
     videoSrc,
+    githubUrl,
     technologies,
     year,
     role,
@@ -176,6 +177,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
                                     <h4 className="text-xs uppercase text-gray-400 font-bold tracking-wider mb-2">Année</h4>
                                     <p className="text-gray-700 dark:text-gray-300 font-medium">{year || "2024 - 2025"}</p>
                                 </div>
+                                {githubUrl ? (
+                                    <div>
+                                        <h4 className="text-xs uppercase text-gray-400 font-bold tracking-wider mb-2">Code source</h4>
+                                        <a
+                                            href={githubUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
+                                        >
+                                            <span>Voir le repo GitHub</span>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 3h7m0 0v7m0-7L10 14" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5v14h14" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                ) : null}
                             </div>
                         </motion.div>
 

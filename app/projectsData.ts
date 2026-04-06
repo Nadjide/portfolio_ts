@@ -4,15 +4,33 @@ export interface ProjectData {
     description: string[];
     imageSrc: string;
     videoSrc?: string;
+    githubUrl?: string;
     technologies: string[];
     featured?: boolean;
     year?: string;
     role?: string;
-    context?: string; // "Entreprise" or "Projet École"
+    context?: string;
 }
 
 export const projectsData: ProjectData[] = [
     // ─── Projets conservés ───────────────────────────────────────────────────
+    {
+        id: "13",
+        title: "Stajio",
+        featured: true,
+        year: "2026",
+        context: "Projet personnel / Projet de portfolio",
+        role: "Conception full-stack, architecture backend, intégration IA locale et refonte technique du projet",
+        description: [
+            "Stajio est une application conçue pour aider les étudiants en alternance ou en stage à structurer leur expérience et à valoriser leur travail tout au long de l’année. L’idée du projet est de proposer un espace unique pour saisir son journal de bord, suivre ses deadlines importantes et générer automatiquement des contenus utiles comme un rapport de stage, une préparation à la soutenance ou des points CV.",
+            "Le projet a été entièrement refondu autour de Next.js 16 avec une architecture moderne et plus maintenable. Le backend repose sur des route handlers natifs, tandis que les données sont stockées localement dans une base SQLite. L’intelligence artificielle fonctionne en local via Ollama, ce qui permet de supprimer la dépendance à des clés API cloud et de garder une logique plus simple, plus privée et plus maîtrisée.",
+            "Mon travail sur Stajio m’a permis de mettre en place une architecture full-stack cohérente, de gérer l’authentification avec JWT en cookie HTTP-only, de structurer les données métier et d’intégrer une expérience utilisateur fluide avec un design responsive et une navigation claire. Le projet inclut aussi des fonctionnalités d’export PDF, de génération de contenus IA et de suivi de progression, avec une attention particulière portée à la lisibilité du code et à la modularité.",
+            "Stajio reflète une approche orientée produit, avec un vrai cas d’usage concret, une stack moderne et une logique local-first qui le distingue des projets classiques."
+        ],
+        imageSrc: "/images/stajio.svg",
+        githubUrl: "https://github.com/Nadjide/stajio",
+        technologies: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS", "SQLite", "Ollama", "JWT", "Framer Motion"],
+    },
     {
         id: "7",
         title: "Exploree",

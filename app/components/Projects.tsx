@@ -3,6 +3,7 @@
 import React, { memo, useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import NextImage from "next/image";
 import { projectsData } from "../projectsData";
 import { useIsCoarsePointer } from "../hooks/useIsCoarsePointer";
 import BuildConsole from "./BuildConsole";
@@ -184,7 +185,7 @@ const Projects = () => {
                 transition={{ delay: 0.1 }}
                 className="text-center text-gray-500 dark:text-gray-400 mb-12 text-sm"
             >
-                Les projets les plus ambitieux, conçus et livrés en contexte professionnel
+                Une sélection de projets produits, personnels et techniques qui structurent le portfolio
             </motion.p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
@@ -236,7 +237,12 @@ const Projects = () => {
                                         allowAutoplay={canAutoPlayVideo(project.videoSrc)}
                                     />
                                 ) : (
-                                    <span className="text-4xl z-10 filter drop-shadow-md flex items-center justify-center h-full">🚀</span>
+                                    <NextImage
+                                        src={project.imageSrc}
+                                        alt={project.title}
+                                        fill
+                                        className="object-cover opacity-95 transition-transform duration-500 group-hover:scale-[1.03]"
+                                    />
                                 )}
                             </div>
                             <div className="absolute inset-0 bg-white/10 dark:bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
@@ -323,7 +329,12 @@ const Projects = () => {
                                     allowAutoplay={canAutoPlayVideo(project.videoSrc)}
                                 />
                             ) : (
-                                <span className="text-3xl z-10 filter drop-shadow-md">🚀</span>
+                                <NextImage
+                                    src={project.imageSrc}
+                                    alt={project.title}
+                                    fill
+                                    className="object-cover opacity-95 transition-transform duration-500 group-hover:scale-[1.03]"
+                                />
                             )}
                             <div className="absolute inset-0 bg-white/10 dark:bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
                         </div>
