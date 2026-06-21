@@ -10,9 +10,33 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #050607;
+}
+
+* {
+  scrollbar-color: rgba(190, 242, 100, 0.34) rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050607;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(190, 242, 100, 0.24);
+  border: 2px solid #050607;
+  border-radius: 999px;
 }
 
 /* Performance optimizations */
@@ -81,6 +105,61 @@ img, video {
 @media (prefers-reduced-motion: reduce) {
   .mini-screen-scan {
     animation: none;
+  }
+}
+
+/* ─────────────── Terminal / CRT theme ─────────────── */
+.crt-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.18) 0px,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  94% { opacity: 0.92; }
+  96% { opacity: 1; }
+  97% { opacity: 0.96; }
+}
+
+.crt-screen {
+  animation: crt-flicker 6s infinite steps(1);
+}
+
+.terminal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.4) transparent;
+}
+.terminal-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.terminal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.32);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-screen {
+    animation: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .crt-screen {
+    animation: none;
+  }
+  .crt-scanlines {
+    opacity: 0.3 !important;
   }
 }
 

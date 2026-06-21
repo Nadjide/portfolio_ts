@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface BuildConsoleProps {
   projectTitle: string;
@@ -66,15 +65,15 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
-      className="absolute inset-0 z-30 rounded-2xl overflow-hidden bg-[#0d1117] border border-green-500/30 shadow-[0_0_30px_rgba(34,197,94,0.15)] flex flex-col"
+      className="absolute inset-0 z-30 rounded-2xl overflow-hidden bg-[#0d1117] border border-sky-500/30 flex flex-col"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Console header */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-green-500/20 shrink-0">
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-sky-500/20 shrink-0">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-        <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-        <span className="ml-2 text-xs text-green-400/70 font-mono">
+        <div className="w-2.5 h-2.5 rounded-full bg-sky-500/70" />
+        <span className="ml-2 text-xs text-sky-400/70 font-mono">
           Building {projectTitle}...
         </span>
       </div>
@@ -89,13 +88,13 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
             transition={{ duration: 0.12 }}
             className={
               line.startsWith("✓")
-                ? "text-green-400 font-semibold"
+                ? "text-sky-400 font-semibold"
                 : line.startsWith("$")
                 ? "text-cyan-400"
                 : line.startsWith("Step")
                 ? "text-white"
                 : line.startsWith("Successfully")
-                ? "text-green-300"
+                ? "text-sky-300"
                 : "text-gray-500"
             }
           >
@@ -106,7 +105,7 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
         <motion.span
           animate={{ opacity: [1, 0, 1] }}
           transition={{ duration: 0.8, repeat: Infinity }}
-          className="inline-block w-1.5 h-3.5 bg-green-400 ml-0.5 align-middle"
+          className="inline-block w-1.5 h-3.5 bg-sky-400 ml-0.5 align-middle"
         />
       </div>
     </motion.div>

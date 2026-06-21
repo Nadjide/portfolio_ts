@@ -16,23 +16,24 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Nadjide Omar | Développeur Full Stack",
-  description: "Portfolio de Nadjide Omar, Développeur Full Stack spécialisé en Next.js, React, Node.js et Python. Découvrez mes projets, mes compétences et mon parcours.",
-  keywords: ["Développeur Full Stack", "Next.js", "React", "TypeScript", "Node.js", "Python", "Portfolio", "Nadjide Omar"],
+  metadataBase: new URL("https://portfolio-ts-nine.vercel.app"),
+  title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+  description: "Portfolio interactif (terminal) de Nadjide Omar, Ingénieur DevOps & Développeur Full Stack : Docker, CI/CD, Next.js, FastAPI, Python. Tape « help » pour explorer projets, stack et parcours.",
+  keywords: ["Ingénieur DevOps", "Développeur Full Stack", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python", "Portfolio", "Nadjide Omar"],
   authors: [{ name: "Nadjide Omar" }],
   creator: "Nadjide Omar",
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://nadjide-omar.fr", // Replace with actual URL if known
-    title: "Nadjide Omar | Développeur Full Stack",
-    description: "Portfolio de Nadjide Omar, Développeur Full Stack spécialisé en Next.js, React, Node.js et Python.",
+    url: "https://portfolio-ts-nine.vercel.app",
+    title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+    description: "Portfolio interactif sous forme de terminal. Tape « help » pour explorer projets, stack et parcours.",
     siteName: "Portfolio Nadjide Omar",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nadjide Omar | Développeur Full Stack",
-    description: "Portfolio de Nadjide Omar, Développeur Full Stack spécialisé en Next.js, React, Node.js et Python.",
+    title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+    description: "Portfolio interactif sous forme de terminal — Docker, CI/CD, Next.js, FastAPI, Python.",
   },
 };
 

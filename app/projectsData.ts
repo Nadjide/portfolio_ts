@@ -2,9 +2,10 @@ export interface ProjectData {
     id: string;
     title: string;
     description: string[];
-    imageSrc: string;
+    imageSrc?: string;
     videoSrc?: string;
     githubUrl?: string;
+    liveUrl?: string;
     technologies: string[];
     featured?: boolean;
     year?: string;
@@ -27,7 +28,7 @@ export const projectsData: ProjectData[] = [
             "Mon travail sur Stajio m’a permis de mettre en place une architecture full-stack cohérente, de gérer l’authentification avec JWT en cookie HTTP-only, de structurer les données métier et d’intégrer une expérience utilisateur fluide avec un design responsive et une navigation claire. Le projet inclut aussi des fonctionnalités d’export PDF, de génération de contenus IA et de suivi de progression, avec une attention particulière portée à la lisibilité du code et à la modularité.",
             "Stajio reflète une approche orientée produit, avec un vrai cas d’usage concret, une stack moderne et une logique local-first qui le distingue des projets classiques."
         ],
-        imageSrc: "/images/stajio.svg",
+        videoSrc: "/videos/stajio_video.mp4",
         githubUrl: "https://github.com/Nadjide/stajio",
         technologies: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS", "SQLite", "Ollama", "JWT", "Framer Motion"],
     },
@@ -73,15 +74,30 @@ export const projectsData: ProjectData[] = [
         role: "Développement Frontend",
         description: [
             "Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.",
-            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes:",
-            "Internationalisation: L'application prend en charge plusieurs langues, rendant l'expérience accessible à un public international.",
-            "Tri par type: Les utilisateurs peuvent facilement trier les Pokémon en fonction de leur type (eau, feu, plante, etc.), offrant une navigation simplifiée et ciblée.",
-            "Recommandations intelligentes: Lorsqu'un utilisateur consulte les détails d'un Pokémon, l'application propose des recommandations de Pokémon similaires basées sur des caractéristiques partagées.",
-            "Le site est disponible en ligne: https://pokedex-pi-brown.vercel.app/",
+            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes: internationalisation (plusieurs langues disponibles), tri par type (eau, feu, plante, etc.) et recommandations intelligentes basées sur les caractéristiques partagées entre Pokémon.",
             "Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception."
         ],
         imageSrc: "/images/pokedex.jpg",
         videoSrc: "/videos/optimized/pokedex_demo.mp4",
+        githubUrl: "https://github.com/Nadjide/pokedex",
+        liveUrl: "https://pokedex-pi-brown.vercel.app/",
         technologies: ["React", "Material UI", "PokeAPI"],
+    },
+    {
+        id: "14",
+        title: "FisherFans API",
+        year: "2026",
+        context: "Projet académique",
+        role: "Conception backend, modélisation des données, implémentation API REST, authentification JWT, règles métier et tests fonctionnels",
+        description: [
+            "FisherFans est une API backend conçue pour une plateforme collaborative autour de la pêche, avec gestion des utilisateurs, bateaux, sorties, réservations et carnets de pêche numériques.",
+            "Le projet s'appuie sur FastAPI pour la performance et la lisibilité, avec une documentation OpenAPI générée automatiquement. Les données sont structurées avec SQLModel, ce qui permet de combiner validation et persistance SQL dans une architecture simple à faire évoluer. L'authentification repose sur JWT (Bearer token) avec vérification des identifiants et protection des routes sensibles.",
+            "Côté logique métier, l'API inclut des contrôles concrets: unicité des emails, vérification de l'existence des ressources liées (utilisateur, bateau, sortie), filtres de recherche (dont critères géographiques pour les bateaux) et gestion d'erreurs explicite avec des codes HTTP cohérents. Le projet intègre aussi des exigences de conformité comme l'anonymisation des données utilisateur lors de la suppression.",
+            "L'ensemble est testé avec Pytest via des scénarios fonctionnels couvrant les cas nominaux et les erreurs métier. Le déploiement local est facilité par Docker Compose avec Nginx en reverse proxy, ce qui donne un environnement proche d'une architecture de production.",
+            "FisherFans montre une approche backend orientée produit: API documentée, sécurité de base, règles métier réelles, et structure technique propre pour servir de base à une application complète."
+        ],
+        imageSrc: "/images/fisherfans_logo.png",
+        githubUrl: "https://github.com/Nadjide/api-fisherfans",
+        technologies: ["Python 3.9+", "FastAPI", "SQLModel", "SQLite", "JWT", "OAuth2", "Pytest", "Docker", "Nginx", "OpenAPI"],
     },
 ];
