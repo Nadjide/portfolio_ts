@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { ImageResponse } from "next/og";
 
 export const alt = "Nadjide Omar — Ingénieur DevOps & Développeur Full Stack";
@@ -9,27 +8,23 @@ const mono =
   "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
 
 export default function OpengraphImage() {
-  const dot = (c: string) => ({
-    width: 16,
-    height: 16,
-    borderRadius: 999,
-    background: c,
-  });
-
-  const line = (children: ReactNode, color = "#cbd5e1") => (
-    <div style={{ display: "flex", color, fontSize: 26, fontFamily: mono }}>
-      {children}
+  const file = (name: string, color: string, active = false) => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "4px 10px",
+        borderRadius: 4,
+        background: active ? "#37373d" : "transparent",
+        color: active ? "#ffffff" : "#cccccc",
+        fontSize: 20,
+        fontFamily: mono,
+      }}
+    >
+      <span style={{ color, fontSize: 14, fontWeight: 700 }}>●</span>
+      {name}
     </div>
-  );
-
-  const promptSpan = (
-    <span style={{ color: "#38bdf8" }}>
-      visitor<span style={{ color: "#64748b" }}>@</span>
-      <span style={{ color: "#7dd3fc" }}>nadjide</span>
-      <span style={{ color: "#64748b" }}>:</span>
-      <span style={{ color: "#22d3ee" }}>~</span>
-      <span style={{ color: "#64748b" }}>$&nbsp;</span>
-    </span>
   );
 
   return new ImageResponse(
@@ -40,69 +35,75 @@ export default function OpengraphImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "#06090f",
-          padding: 56,
+          background: "#1e1e1e",
+          fontFamily: mono,
         }}
       >
-        {/* terminal window */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flex: 1,
-            borderRadius: 20,
-            border: "1px solid rgba(56,189,248,0.3)",
-            background: "rgba(10,14,21,0.92)",
-            overflow: "hidden",
-          }}
-        >
-          {/* chrome */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "18px 24px",
-              borderBottom: "1px solid rgba(56,189,248,0.2)",
-              background: "#0c1119",
-            }}
-          >
-            <div style={dot("#ef4444")} />
-            <div style={dot("#eab308")} />
-            <div style={dot("#22c55e")} />
-            <div style={{ display: "flex", marginLeft: 16, color: "#7dd3fc", fontSize: 22, fontFamily: mono }}>
-              visitor@nadjide: ~ — bash
-            </div>
-          </div>
-
-          {/* body */}
+        <div style={{ display: "flex", flex: 1 }}>
+          {/* activity bar */}
+          <div style={{ width: 56, background: "#333333" }} />
+          {/* sidebar */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 16,
-              padding: 40,
-              flex: 1,
+              width: 300,
+              background: "#252526",
+              padding: "24px 14px",
+              gap: 6,
             }}
           >
-            {line(<>{promptSpan}whoami</>)}
-            <div style={{ display: "flex", color: "#f8fafc", fontSize: 44, fontWeight: 800, fontFamily: mono }}>
-              Nadjide Omar
+            <div style={{ display: "flex", color: "#bbbbbb", fontSize: 16, letterSpacing: 2, marginBottom: 8 }}>
+              EXPLORER
             </div>
-            <div style={{ display: "flex", color: "#7dd3fc", fontSize: 30, fontFamily: mono }}>
-              Ingénieur DevOps &amp; Développeur Full Stack
+            {file("about/", "#c09553")}
+            {file("experience/", "#c09553")}
+            {file("projects/", "#c09553")}
+            {file("skills.json", "#cbcb41")}
+            {file("contact.ts", "#3178c6", true)}
+          </div>
+          {/* editor */}
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "#1e1e1e" }}>
+            <div style={{ display: "flex", height: 44, background: "#252526", alignItems: "center", paddingLeft: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#1e1e1e", height: "100%", padding: "0 16px", color: "#fff", fontSize: 18 }}>
+                <span style={{ color: "#3178c6", fontWeight: 700, fontSize: 13 }}>TS</span> contact.ts
+              </div>
             </div>
-            <div style={{ display: "flex", height: 18 }} />
-            {line(<>{promptSpan}ls projects</>)}
-            <div style={{ display: "flex", color: "#22d3ee", fontSize: 26, fontFamily: mono }}>
-              stajio/&nbsp;&nbsp;exploree/&nbsp;&nbsp;smart-hire/&nbsp;&nbsp;pokedex/&nbsp;&nbsp;fisherfans/
-            </div>
-            <div style={{ display: "flex", height: 8 }} />
-            <div style={{ display: "flex", alignItems: "center", fontSize: 26, fontFamily: mono }}>
-              {promptSpan}
-              <div style={{ display: "flex", width: 14, height: 28, background: "#38bdf8", marginLeft: 4 }} />
+            <div style={{ display: "flex", flexDirection: "column", padding: 40, gap: 14 }}>
+              <div style={{ display: "flex", color: "#f8fafc", fontSize: 46, fontWeight: 800 }}>
+                Nadjide Omar
+              </div>
+              <div style={{ display: "flex", color: "#4ec9b0", fontSize: 28 }}>
+                Ingénieur DevOps &amp; Développeur Full Stack
+              </div>
+              <div style={{ display: "flex", height: 16 }} />
+              <div style={{ display: "flex", color: "#6a9955", fontSize: 22 }}>
+                {"// Docker · CI/CD · Next.js · FastAPI · Python · IA locale"}
+              </div>
+              <div style={{ display: "flex", color: "#569cd6", fontSize: 22 }}>
+                const <span style={{ color: "#9cdcfe" }}>&nbsp;portfolio</span>
+                <span style={{ color: "#d4d4d4" }}>&nbsp;=&nbsp;</span>
+                <span style={{ color: "#ce9178" }}>&quot;explore →&quot;</span>
+                <span style={{ color: "#d4d4d4" }}>;</span>
+              </div>
             </div>
           </div>
+        </div>
+        {/* status bar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: 36,
+            background: "#007acc",
+            color: "#fff",
+            fontSize: 18,
+            paddingLeft: 16,
+            gap: 24,
+          }}
+        >
+          <span>⎇ master</span>
+          <span style={{ marginLeft: "auto", marginRight: 16 }}>TypeScript · UTF-8</span>
         </div>
       </div>
     ),

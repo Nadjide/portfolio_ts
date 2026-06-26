@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { Icon } from "@iconify/react";
 import NextImage from "next/image";
 import BuildConsole from "../BuildConsole";
 import type { ProjectData } from "../../projectsData";
@@ -183,9 +184,9 @@ export default function ProjectWindow({
                           href={project.githubUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="font-mono text-sm text-sky-300 underline-offset-2 hover:underline"
+                          className="inline-flex items-center gap-1.5 font-mono text-sm text-sky-300 underline-offset-2 hover:underline"
                         >
-                          → GitHub
+                          <Icon icon="lucide:github" className="text-[15px]" /> GitHub
                         </a>
                       ) : null}
                       {project.liveUrl ? (
@@ -193,9 +194,9 @@ export default function ProjectWindow({
                           href={project.liveUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="font-mono text-sm text-cyan-300 underline-offset-2 hover:underline"
+                          className="inline-flex items-center gap-1.5 font-mono text-sm text-cyan-300 underline-offset-2 hover:underline"
                         >
-                          → Live demo
+                          <Icon icon="lucide:external-link" className="text-[15px]" /> Live demo
                         </a>
                       ) : null}
                       {!project.githubUrl && !project.liveUrl ? (

@@ -9,7 +9,6 @@ export interface Formation {
   title: string;
   subtitle: string;
   company: string;
-  address: string;
   date: string;
   achievements: string[];
   tech: string[];
@@ -17,6 +16,8 @@ export interface Formation {
 
 export interface ExperienceEntry {
   id: number;
+  /** Slug stable utilisé comme nom de fichier dans l'explorateur (ex. "call-to-action"). */
+  slug: string;
   title: string;
   company: string;
   date: string;
@@ -58,17 +59,12 @@ export const skillGroups: SkillGroup[] = [
   },
 ];
 
-export const allSkills: string[] = Array.from(
-  new Set(skillGroups.flatMap((group) => group.items))
-);
-
 export const formations: Formation[] = [
   {
     id: 1,
     title: "BTS SIO SLAM",
     subtitle: "Services Informatiques aux Organisations",
     company: "Campus Riera",
-    address: "64 Av. Valéry Giscard d'Estaing, Immeuble HERMES, 06200 Nice",
     date: "2021 — 2023",
     achievements: [
       "Création d'un site Laravel de gestion d'agence immobilière.",
@@ -82,7 +78,6 @@ export const formations: Formation[] = [
     title: "Bachelor 3 Développement Informatique",
     subtitle: "",
     company: "Sophia Ynov Campus",
-    address: "Pl. Sophie Laffitte, Immeuble AGORA, 06560 Valbonne, Sophia Antipolis",
     date: "2023 — 2024",
     achievements: [
       "Création d'un Pokedex interactif avec React et Material UI.",
@@ -97,7 +92,6 @@ export const formations: Formation[] = [
     title: "Mastère Expert Développement Full Stack",
     subtitle: "",
     company: "Sophia Ynov Campus",
-    address: "Pl. Sophie Laffitte, Immeuble AGORA, 06560 Valbonne, Sophia Antipolis",
     date: "2024 — 2026",
     achievements: [
       "Projet Exploree : Application mobile de recommandation.",
@@ -112,20 +106,52 @@ export const formations: Formation[] = [
 export const experiences: ExperienceEntry[] = [
   {
     id: 1,
+    slug: "call-to-action",
     title: "Développeur Full Stack & DevOps",
     company: "Call To Action (CTA)",
     date: "2021 — 2026",
     description:
-      "Conception, développement et déploiement d'applications métiers critiques en alternance. Prise en charge complète du cycle de vie logiciel, de l'architecture à la mise en production.",
+      "Conception, développement et déploiement d'applications métiers critiques en alternance. Prise en charge complète du cycle de vie logiciel, de l'architecture à la mise en production (CI/CD, Docker, automatisation).",
     achievements: [
-      "Sonar : Plateforme d'évaluation qualité commerciale avec intégration IA.",
-      "Stats Live 2.0 : Refonte complète du dashboard de statistiques en temps réel.",
       "Portail CTA : Hub SSO centralisant l'accès à toutes les applications internes.",
+      "Stats Live 2.0 : Refonte complète du dashboard de statistiques en temps réel.",
       "Sentinel : Outil de gestion de parc matériel et logiciel.",
       "Création de mini-sites pour des campagnes de collecte de dons.",
       "Gestion de projets informatiques en méthode Agile.",
       "Développement de scripts d'intégration de données (Python, Polars).",
     ],
     tech: ["Next.js", "TypeScript", "FastAPI", "Python", "Polars", "Docker", "Tailwind CSS"],
+  },
+  {
+    id: 2,
+    slug: "sonar",
+    title: "Plateforme IA locale d'évaluation qualité (Sonar)",
+    company: "Call To Action (CTA)",
+    date: "2024 — 2025",
+    description:
+      "Sonar évalue la qualité des échanges commerciaux grâce à un LLM hébergé en local (Ollama / Mistral) — aucune donnée sensible ne quitte l'infrastructure.",
+    achievements: [
+      "Backend FastAPI exposant l'inférence du modèle local.",
+      "Conteneurisation complète (Docker) de la stack IA + bases de données.",
+      "Front Next.js : tableaux de bord et restitution des scores.",
+      "Pipeline de traitement des transcriptions et calcul d'indicateurs qualité.",
+    ],
+    tech: ["FastAPI", "Docker", "Next.js", "MySQL", "MariaDB", "Ollama", "Mistral"],
+  },
+  {
+    id: 3,
+    slug: "integrateur-nixxis",
+    title: "Intégrateur / Automatisation de campagnes Nixxis",
+    company: "Call To Action (CTA)",
+    date: "2022 — 2024",
+    description:
+      "Application Python automatisant le montage des campagnes du call center : le temps de montage est passé de 20–60 min à ~5 min, avec une fiabilité accrue.",
+    achievements: [
+      "Interface Tkinter pilotant tout le pipeline de montage.",
+      "Lecture/transformation des fichiers Excel via DuckDB (SQL in-process).",
+      "Injection des données dans SQL Server avec contrôles de cohérence.",
+      "Suppression des erreurs de mapping manuelles.",
+    ],
+    tech: ["Python", "DuckDB", "SQL Server", "Excel", "Tkinter"],
   },
 ];

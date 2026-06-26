@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #1e1e1e;
+  --foreground: #cccccc;
 }
 
 body {
@@ -13,167 +13,74 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 html {
-  scroll-behavior: smooth;
-  background: #050607;
+  background: #1e1e1e;
 }
 
 * {
-  scrollbar-color: rgba(190, 242, 100, 0.34) rgba(255, 255, 255, 0.04);
+  scrollbar-color: #424242 transparent;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #050607;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(190, 242, 100, 0.24);
-  border: 2px solid #050607;
+  background: #424242;
+  border: 3px solid transparent;
+  background-clip: padding-box;
   border-radius: 999px;
 }
 
-/* Performance optimizations */
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Performance */
 img, video {
   content-visibility: auto;
 }
 
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: 1000px;
+/* Focus clavier visible (façon VS Code) sur toute l'app */
+:focus-visible {
+  outline: 1px solid #007acc;
+  outline-offset: -1px;
 }
 
-/* Animations custom */
-@keyframes gradient-x {
-  0%, 100% {
-    background-size: 200% 200%;
-    background-position: left center;
-  }
-  50% {
-    background-size: 200% 200%;
-    background-position: right center;
-  }
-}
-
-.animate-gradient-x {
-  animation: gradient-x 3s ease infinite;
-}
-
-.spotlight {
-  background: radial-gradient(
-    600px circle at var(--x) var(--y),
-    rgba(29, 78, 216, 0.15),
-    transparent 40%
-  );
-}
-
-@keyframes scanlines {
-  0% {
-    transform: translateY(-6%);
-  }
-  100% {
-    transform: translateY(6%);
-  }
-}
-
-.mini-screen-grid {
-  background-image:
-    linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.14), transparent 55%);
-  background-size: 22px 22px, 22px 22px, 100% 100%;
-}
-
-.mini-screen-scan {
-  background: repeating-linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05) 0,
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 3px,
-    transparent 6px
-  );
-  opacity: 0.2;
-  animation: scanlines 5.5s linear infinite alternate;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mini-screen-scan {
-    animation: none;
-  }
-}
-
-/* ─────────────── Terminal / CRT theme ─────────────── */
-.crt-scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.18) 0px,
-    rgba(0, 0, 0, 0.18) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  mix-blend-mode: multiply;
-}
-
-@keyframes crt-flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  94% { opacity: 0.92; }
-  96% { opacity: 1; }
-  97% { opacity: 0.96; }
-}
-
-.crt-screen {
-  animation: crt-flicker 6s infinite steps(1);
-}
-
+/* Scrollbar fin (zones éditeur / terminal), façon VS Code */
 .terminal-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.4) transparent;
+  scrollbar-color: #424242 transparent;
 }
 .terminal-scroll::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 .terminal-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 .terminal-scroll::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.32);
+  background: #424242;
   border-radius: 999px;
 }
 
+/* Respect du réglage système "réduire les animations" */
 @media (prefers-reduced-motion: reduce) {
-  .crt-screen {
-    animation: none;
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .crt-screen {
-    animation: none;
-  }
-  .crt-scanlines {
-    opacity: 0.3 !important;
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .animate-gradient-x {
-    animation: none;
-  }
-
-  .spotlight {
-    opacity: 0 !important;
-  }
-
-  .mini-screen-scan {
-    animation: none;
-    opacity: 0.08;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

@@ -1,11 +1,33 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Icon } from "@iconify/react";
 import { projectsData, type ProjectData } from "../../projectsData";
 import { skillGroups, experiences, formations } from "../../portfolioContent";
+import { contactLinks } from "../../contactData";
+import { findFile, allFiles } from "../../ide/fileSystem";
 import { useIsCoarsePointer } from "../../hooks/useIsCoarsePointer";
 import ProjectWindow from "./ProjectWindow";
+import CIPipeline from "../ide/CIPipeline";
+
+/** API impérative exposée au layout IDE (panneau Scripts, boutons "Run demo"…). */
+export interface TerminalHandle {
+  run: (cmd: string) => void;
+  clear: () => void;
+}
+
+export interface TerminalProps {
+  /** Ouvre un fichier dans l'éditeur central (commandes « cat » / « code »). */
+  onOpenPath?: (path: string) => void;
+}
 
 /* ─────────────────────────── helpers & data ─────────────────────────── */
 
@@ -24,17 +46,20 @@ const COMMANDS = [
   "projects",
   "ls",
   "open",
+  "cat",
+  "code",
   "skills",
   "stack",
   "experience",
+  "education",
   "parcours",
   "contact",
+  "ci",
   "cv",
   "neofetch",
   "social",
   "clear",
   "history",
-  "neofetch",
   "matrix",
   "coffee",
   "sudo",
@@ -52,11 +77,21 @@ function getCompletion(value: string): string {
     return m ?? "";
   }
   const [name, ...rest] = parts;
-  if (["open", "cat", "cd"].includes(name.toLowerCase())) {
-    const partial = rest.join(" ").toLowerCase();
+  const lc = name.toLowerCase();
+  const partial = rest.join(" ").toLowerCase();
+  if (["open", "cd"].includes(lc)) {
     if (!partial) return "";
     const p = projectsData.find((pr) => projectKey(pr.title).startsWith(partial));
     if (p) return `${name} ${projectKey(p.title)}`;
+  }
+  if (["cat", "code"].includes(lc)) {
+    if (!partial) return "";
+    const f = allFiles().find(
+      (file) =>
+        file.path.toLowerCase().startsWith(partial) ||
+        file.name.toLowerCase().startsWith(partial)
+    );
+    if (f) return `${name} ${f.path}`;
   }
   return "";
 }
@@ -75,7 +110,9 @@ function Typewriter({
 }) {
   const [n, setN] = useState(0);
   const doneRef = useRef(onDone);
-  doneRef.current = onDone;
+  useEffect(() => {
+    doneRef.current = onDone;
+  });
   useEffect(() => {
     if (n >= text.length) {
       doneRef.current?.();
@@ -105,7 +142,9 @@ function MatrixBlock() {
           {r}
         </motion.div>
       ))}
-      <p className="mt-1 text-cyan-300">Wake up, Nadjide... 🐇 follow the white rabbit.</p>
+      <p className="mt-1 flex items-center gap-1.5 text-cyan-300">
+        Wake up, Nadjide... <Icon icon="lucide:rabbit" className="text-[15px]" /> follow the white rabbit.
+      </p>
     </div>
   );
 }
@@ -137,9 +176,17 @@ function CopyEmail({ email }: { email: string }) {
           /* ignore */
         }
       }}
-      className="ml-2 rounded border border-sky-500/30 bg-sky-500/5 px-1.5 py-0.5 text-[11px] text-sky-200 transition hover:bg-sky-500/15"
+      className="ml-2 inline-flex items-center gap-1 rounded border border-sky-500/30 bg-sky-500/5 px-1.5 py-0.5 text-[11px] text-sky-200 transition hover:bg-sky-500/15"
     >
-      {copied ? "copié ✓" : "copier"}
+      {copied ? (
+        <>
+          <Icon icon="lucide:check" className="text-[12px]" /> copié
+        </>
+      ) : (
+        <>
+          <Icon icon="lucide:copy" className="text-[12px]" /> copier
+        </>
+      )}
     </button>
   );
 }
@@ -161,7 +208,10 @@ function Prompt({ small }: { small?: boolean }) {
 
 /* ─────────────────────────── main component ─────────────────────────── */
 
-export default function Terminal() {
+const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
+  { onOpenPath },
+  ref
+) {
   const isCoarse = useIsCoarsePointer();
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<"boot" | "ready">("boot");
@@ -226,17 +276,30 @@ export default function Terminal() {
           ["help", "cette aide"],
           ["about", "qui suis-je"],
           ["projects", "liste des projets"],
-          ["open <projet>", "ouvrir un projet"],
+          ["open <projet>", "lancer la démo"],
+          ["cat <fichier>", "ouvrir un fichier"],
           ["skills", "stack technique"],
-          ["experience", "parcours & formation"],
+          ["experience", "expériences pro"],
+          ["education", "formation"],
           ["contact", "me joindre"],
+          ["ci", "pipeline CI/CD"],
           ["cv", "télécharger le CV"],
           ["neofetch", "infos système"],
           ["history", "commandes tapées"],
           ["clear", "vider l'écran"],
         ].map(([c, desc]) => (
           <div key={c} className="flex items-center gap-2">
-            <Cmd run={c.split(" ")[0] === "open" ? "projects" : c}>{c}</Cmd>
+            <Cmd
+              run={
+                c.startsWith("open")
+                  ? "projects"
+                  : c.startsWith("cat")
+                  ? "code skills.json"
+                  : c
+              }
+            >
+              {c}
+            </Cmd>
             <span className="hidden text-xs text-stone-500 sm:inline">{desc}</span>
           </div>
         ))}
@@ -245,7 +308,8 @@ export default function Terminal() {
         Astuce : <span className="text-stone-400">Tab</span> ou{" "}
         <span className="text-stone-400">→</span> accepte la suggestion grisée,{" "}
         <span className="text-stone-400">↑ / ↓</span> rappelle l'historique. Quelques
-        commandes cachées traînent aussi. 👀
+        commandes cachées traînent aussi.{" "}
+        <Icon icon="lucide:eye" className="inline-block align-text-bottom text-[14px]" />
       </p>
     </div>
   );
@@ -255,12 +319,13 @@ export default function Terminal() {
       <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-sky-300/90">{`Nadjide Omar — Ingénieur DevOps / Développeur Full Stack`}</pre>
       <div className="grid gap-1 font-mono text-[13px] sm:grid-cols-2">
         {[
-          ["📍 Localisation", "Nice (06)"],
-          ["🎓 Formation", "Mastère Expert Dév. Logiciel (Bac+5)"],
-          ["💼 Expérience", "Alternance CTA · 2021 → 2026"],
-          ["🌐 Langues", "Français natif · Anglais C1"],
-        ].map(([k, v]) => (
-          <p key={k}>
+          ["lucide:map-pin", "Localisation", "Nice (06)"],
+          ["lucide:graduation-cap", "Formation", "Mastère Expert Dév. Logiciel (Bac+5)"],
+          ["lucide:briefcase", "Expérience", "Alternance CTA · 2021 → 2026"],
+          ["lucide:globe", "Langues", "Français natif · Anglais C1"],
+        ].map(([icon, k, v]) => (
+          <p key={k} className="flex items-center gap-1.5">
+            <Icon icon={icon} className="shrink-0 text-sky-400 text-[14px]" />
             <span className="text-sky-400">{k}: </span>
             <span className="text-stone-300">{v}</span>
           </p>
@@ -355,33 +420,45 @@ export default function Terminal() {
           </div>
         ))}
       </div>
-      <div>
-        <p className="font-mono text-xs uppercase tracking-wider text-sky-400"># Formation</p>
-        <div className="mt-2 space-y-2">
-          {formations.map((f) => (
-            <div key={f.id} className="border-l border-sky-500/30 pl-4">
-              <p className="font-bold text-white">{f.title}</p>
-              <p className="font-mono text-xs text-stone-500">
-                {f.company} · {f.date}
-              </p>
-            </div>
-          ))}
-        </div>
+      <p className="text-stone-500">
+        → <Cmd run="education">education</Cmd> pour la formation.
+      </p>
+    </div>
+  );
+
+  const educationOutput = () => (
+    <div className="space-y-1">
+      <p className="font-mono text-xs uppercase tracking-wider text-sky-400"># Formation</p>
+      <div className="mt-2 space-y-3">
+        {[...formations].reverse().map((f) => (
+          <div key={f.id} className="border-l border-sky-500/30 pl-4">
+            <p className="font-bold text-white">{f.title}</p>
+            <p className="font-mono text-xs text-stone-500">
+              {f.company} · {f.date}
+            </p>
+            {f.tech.length ? (
+              <div className="mt-1 flex flex-wrap gap-1">
+                {f.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded border border-white/10 bg-black/30 px-1.5 py-0.5 font-mono text-[10px] text-stone-300"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ))}
       </div>
     </div>
   );
 
   const contactOutput = () => {
-    const links: [string, string, string][] = [
-      ["Email", "nadjide.omar@outlook.fr", "mailto:nadjide.omar@outlook.fr"],
-      ["GitHub", "github.com/Nadjide", "https://github.com/Nadjide"],
-      ["LinkedIn", "in/nadjide-omar", "https://www.linkedin.com/in/nadjide-omar-b55a01212/"],
-      ["Téléphone", "06 34 78 67 13", "tel:+33634786713"],
-    ];
     return (
       <div className="space-y-1.5 font-mono text-[13px]">
         <p className="text-stone-400">Liens — cliquables :</p>
-        {links.map(([label, value, href]) => (
+        {contactLinks.map(({ label, value, href }) => (
           <p key={label}>
             <span className="inline-block w-24 text-sky-400">{label}</span>
             <a
@@ -472,7 +549,6 @@ export default function Terminal() {
         pushLine(projectsOutput());
         break;
       case "open":
-      case "cat":
       case "cd": {
         if (!arg) {
           pushLine(<p className="text-yellow-400">usage: open &lt;projet&gt; — ex. « open stajio ». Tape « projects ».</p>);
@@ -498,14 +574,48 @@ export default function Terminal() {
         }
         break;
       }
+      case "cat":
+      case "code": {
+        if (!arg) {
+          pushLine(<p className="text-yellow-400">usage: cat &lt;fichier&gt; — ex. « cat projects/stajio.ts » ou « cat skills.json ».</p>);
+          break;
+        }
+        const file = findFile(arg);
+        if (file && onOpenPath) {
+          pushLine(
+            <p className="font-mono text-sky-300">
+              → ouverture de <span className="text-cyan-300">{file.path}</span> dans l&apos;éditeur…
+            </p>
+          );
+          onOpenPath(file.path);
+        } else if (file) {
+          pushLine(<p className="font-mono text-stone-300">{file.path}</p>);
+        } else {
+          pushLine(
+            <p className="text-yellow-400">
+              fichier introuvable : « {arg} ». Explore la sidebar à gauche.
+            </p>
+          );
+        }
+        break;
+      }
       case "skills":
       case "stack":
         pushLine(skillsOutput());
         break;
       case "experience":
       case "xp":
-      case "parcours":
         pushLine(experienceOutput());
+        break;
+      case "education":
+      case "formation":
+      case "parcours":
+      case "studies":
+        pushLine(educationOutput());
+        break;
+      case "ci":
+      case "pipeline":
+        pushLine(<CIPipeline />);
         break;
       case "contact":
       case "links":
@@ -543,8 +653,9 @@ export default function Terminal() {
         break;
       case "sudo":
         pushLine(
-          <p className="font-mono text-red-400">
-            visitor n'est pas dans le fichier sudoers. Cet incident sera signalé. 🚓
+          <p className="flex items-center gap-1.5 font-mono text-red-400">
+            visitor n'est pas dans le fichier sudoers. Cet incident sera signalé.
+            <Icon icon="lucide:siren" className="text-[15px]" />
           </p>
         );
         break;
@@ -578,7 +689,9 @@ export default function Terminal() {
         pushLine(
           <div>
             <pre className="font-mono text-[11px] leading-3 text-sky-300">{COFFEE_ART}</pre>
-            <p className="mt-1 font-mono text-cyan-300">☕ brewing... café prêt. Bon code !</p>
+            <p className="mt-1 flex items-center gap-1.5 font-mono text-cyan-300">
+              <Icon icon="lucide:coffee" className="text-[15px]" /> brewing... café prêt. Bon code !
+            </p>
           </div>
         );
         break;
@@ -597,6 +710,16 @@ export default function Terminal() {
   };
 
   executeRef.current = execute;
+
+  /* ── API impérative pour le layout IDE (Scripts, "Run demo") ── */
+  useImperativeHandle(
+    ref,
+    () => ({
+      run: (cmd: string) => executeRef.current(cmd),
+      clear: () => setLines([]),
+    }),
+    []
+  );
 
   /* ───────────────────────── boot sequence ───────────────────────── */
 
@@ -704,24 +827,7 @@ export default function Terminal() {
   /* ───────────────────────── render ───────────────────────── */
 
   return (
-    <main className="crt-screen relative flex min-h-screen flex-col bg-[#06090f] p-0 text-stone-100 sm:p-4 md:p-8">
-      <div className="pointer-events-none fixed inset-0 z-[40] crt-scanlines opacity-40" />
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.10),transparent_55%)]" />
-
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col overflow-hidden border-sky-500/25 bg-[#0a0e15]/90 backdrop-blur-sm sm:rounded-xl sm:border">
-        {/* window chrome */}
-        <div className="flex shrink-0 items-center gap-2 border-b border-sky-500/20 bg-[#0c1119] px-4 py-2.5">
-          <span className="h-3 w-3 rounded-full bg-red-500/80" />
-          <span className="h-3 w-3 rounded-full bg-yellow-500/70" />
-          <span className="h-3 w-3 rounded-full bg-sky-500/70" />
-          <span className="ml-3 truncate font-mono text-xs text-sky-300/70">
-            visitor@nadjide: ~ — bash — 80×24
-          </span>
-          <span className="ml-auto hidden font-mono text-[11px] text-stone-600 sm:inline">
-            nadjide omar · portfolio
-          </span>
-        </div>
-
+    <div className="flex h-full flex-col bg-[#0d1117] text-[#cccccc]">
         {/* terminal body */}
         <div
           ref={scrollRef}
@@ -793,7 +899,6 @@ export default function Terminal() {
             </div>
           </div>
         ) : null}
-      </div>
 
       <AnimatePresence>
         {openProject ? (
@@ -804,9 +909,11 @@ export default function Terminal() {
           />
         ) : null}
       </AnimatePresence>
-    </main>
+    </div>
   );
-}
+});
+
+export default Terminal;
 
 /* ─────────────────────────── welcome banner ─────────────────────────── */
 

@@ -1,16 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-
 const NoiseOverlay = () => {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) return null;
-
     return (
         <div 
             className="pointer-events-none fixed inset-0 z-[9999] opacity-[0.03] mix-blend-overlay w-screen h-screen"
