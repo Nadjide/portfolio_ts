@@ -9,6 +9,8 @@ export interface Formation {
   title: string;
   subtitle: string;
   company: string;
+  /** Ville / localisation de l'établissement (ex. "Sophia Antipolis (06)"). */
+  location: string;
   date: string;
   achievements: string[];
   tech: string[];
@@ -20,6 +22,8 @@ export interface ExperienceEntry {
   slug: string;
   title: string;
   company: string;
+  /** Ville / localisation (ex. "Nice (06)"). */
+  location: string;
   date: string;
   description: string;
   achievements: string[];
@@ -65,6 +69,7 @@ export const formations: Formation[] = [
     title: "BTS SIO SLAM",
     subtitle: "Services Informatiques aux Organisations",
     company: "Campus Riera",
+    location: "Nice (06)",
     date: "2021 — 2023",
     achievements: [
       "Création d'un site Laravel de gestion d'agence immobilière.",
@@ -78,6 +83,7 @@ export const formations: Formation[] = [
     title: "Bachelor 3 Développement Informatique",
     subtitle: "",
     company: "Sophia Ynov Campus",
+    location: "Sophia Antipolis (06)",
     date: "2023 — 2024",
     achievements: [
       "Création d'un Pokedex interactif avec React et Material UI.",
@@ -89,9 +95,10 @@ export const formations: Formation[] = [
   },
   {
     id: 3,
-    title: "Mastère Expert Développement Full Stack",
+    title: "Mastère Expert Développement Logiciel",
     subtitle: "",
     company: "Sophia Ynov Campus",
+    location: "Sophia Antipolis (06)",
     date: "2024 — 2026",
     achievements: [
       "Projet Exploree : Application mobile de recommandation.",
@@ -109,49 +116,30 @@ export const experiences: ExperienceEntry[] = [
     slug: "call-to-action",
     title: "Développeur Full Stack & DevOps",
     company: "Call To Action (CTA)",
+    location: "Nice — Av. Simone Veil (06)",
     date: "2021 — 2026",
     description:
-      "Conception, développement et déploiement d'applications métiers critiques en alternance. Prise en charge complète du cycle de vie logiciel, de l'architecture à la mise en production (CI/CD, Docker, automatisation).",
+      "Alternance de 5 ans : conception, développement et déploiement d'applications métiers critiques, de l'architecture à la mise en production (CI/CD, Docker, automatisation). Prise en charge du cycle de vie complet de plusieurs outils internes en production.",
     achievements: [
-      "Portail CTA : Hub SSO centralisant l'accès à toutes les applications internes.",
-      "Stats Live 2.0 : Refonte complète du dashboard de statistiques en temps réel.",
-      "Sentinel : Outil de gestion de parc matériel et logiciel.",
-      "Création de mini-sites pour des campagnes de collecte de dons.",
-      "Gestion de projets informatiques en méthode Agile.",
-      "Développement de scripts d'intégration de données (Python, Polars).",
+      "Plateforme interne d'évaluation de la qualité des échanges commerciaux, propulsée par un LLM auto-hébergé (Ollama / Mistral) — backend FastAPI, conteneurisation Docker, front Next.js, aucune donnée sensible ne quittant l'infrastructure.",
+      "Automatisation du montage des campagnes du centre d'appels : temps de traitement réduit de ~20–60 min à ~5 min (Python, interface Tkinter, transformation de fichiers Excel via DuckDB, injection en base SQL Server avec contrôles de cohérence).",
+      "Portail SSO interne centralisant l'accès à l'ensemble des applications métiers.",
+      "Refonte d'un dashboard de statistiques en temps réel.",
+      "Outil interne de gestion de parc matériel et logiciel.",
+      "Mini-sites de campagnes de collecte de dons, scripts d'intégration de données (Python, Polars) et gestion de projets en méthode Agile.",
     ],
-    tech: ["Next.js", "TypeScript", "FastAPI", "Python", "Polars", "Docker", "Tailwind CSS"],
-  },
-  {
-    id: 2,
-    slug: "sonar",
-    title: "Plateforme IA locale d'évaluation qualité (Sonar)",
-    company: "Call To Action (CTA)",
-    date: "2024 — 2025",
-    description:
-      "Sonar évalue la qualité des échanges commerciaux grâce à un LLM hébergé en local (Ollama / Mistral) — aucune donnée sensible ne quitte l'infrastructure.",
-    achievements: [
-      "Backend FastAPI exposant l'inférence du modèle local.",
-      "Conteneurisation complète (Docker) de la stack IA + bases de données.",
-      "Front Next.js : tableaux de bord et restitution des scores.",
-      "Pipeline de traitement des transcriptions et calcul d'indicateurs qualité.",
+    tech: [
+      "Next.js",
+      "TypeScript",
+      "FastAPI",
+      "Python",
+      "Polars",
+      "Docker",
+      "Ollama",
+      "Mistral",
+      "DuckDB",
+      "SQL Server",
+      "Tailwind CSS",
     ],
-    tech: ["FastAPI", "Docker", "Next.js", "MySQL", "MariaDB", "Ollama", "Mistral"],
-  },
-  {
-    id: 3,
-    slug: "integrateur-nixxis",
-    title: "Intégrateur / Automatisation de campagnes Nixxis",
-    company: "Call To Action (CTA)",
-    date: "2022 — 2024",
-    description:
-      "Application Python automatisant le montage des campagnes du call center : le temps de montage est passé de 20–60 min à ~5 min, avec une fiabilité accrue.",
-    achievements: [
-      "Interface Tkinter pilotant tout le pipeline de montage.",
-      "Lecture/transformation des fichiers Excel via DuckDB (SQL in-process).",
-      "Injection des données dans SQL Server avec contrôles de cohérence.",
-      "Suppression des erreurs de mapping manuelles.",
-    ],
-    tech: ["Python", "DuckDB", "SQL Server", "Excel", "Tkinter"],
   },
 ];

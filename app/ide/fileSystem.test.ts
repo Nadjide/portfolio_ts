@@ -11,7 +11,7 @@ describe("projectKeyOf", () => {
   it("slugifie titres avec accents / espaces / symboles", () => {
     expect(projectKeyOf("Smart Hire")).toBe("smart-hire");
     expect(projectKeyOf("FisherFans API")).toBe("fisherfans-api");
-    expect(projectKeyOf("Intégrateur Nixxis!")).toBe("integrateur-nixxis");
+    expect(projectKeyOf("Intégrateur Métier!")).toBe("integrateur-metier");
   });
 });
 

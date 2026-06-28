@@ -69,7 +69,7 @@ function projectToTs(p: ProjectData): string {
   return lines.join("\n");
 }
 
-/** slug "integrateur-nixxis" → "integrateurNixxis" (nom de la const exportée). */
+/** slug "call-to-action" → "callToAction" (nom de la const exportée). */
 const camel = (s: string) => s.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
 /** Génère le contenu .ts d'un fichier expérience à partir de portfolioContent. */
@@ -80,6 +80,7 @@ function experienceToTs(e: ExperienceEntry): string {
   lines.push(`export const ${camel(e.slug)}: Experience = {`);
   lines.push(`  poste: ${j(e.title)},`);
   lines.push(`  entreprise: ${j(e.company)},`);
+  lines.push(`  lieu: ${j(e.location)},`);
   lines.push(`  periode: ${j(e.date)},`);
   lines.push(`  stack: [${e.tech.map((t) => j(t)).join(", ")}],`);
   lines.push(`  resume: ${j(e.description)},`);
@@ -121,6 +122,7 @@ function educationToMd(): string {
     if (f.subtitle) out.push(`*${f.subtitle}*`);
     out.push("");
     out.push(`- **Établissement** : ${f.company}`);
+    out.push(`- **Lieu** : ${f.location}`);
     out.push(`- **Période** : ${f.date}`);
     if (f.tech.length) out.push(`- **Stack** : ${f.tech.join(", ")}`);
     out.push("");

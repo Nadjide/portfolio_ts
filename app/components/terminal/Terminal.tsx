@@ -96,34 +96,6 @@ function getCompletion(value: string): string {
   return "";
 }
 
-/* ── typewriter effect ── */
-function Typewriter({
-  text,
-  speed = 24,
-  onDone,
-  className,
-}: {
-  text: string;
-  speed?: number;
-  onDone?: () => void;
-  className?: string;
-}) {
-  const [n, setN] = useState(0);
-  const doneRef = useRef(onDone);
-  useEffect(() => {
-    doneRef.current = onDone;
-  });
-  useEffect(() => {
-    if (n >= text.length) {
-      doneRef.current?.();
-      return;
-    }
-    const t = setTimeout(() => setN((v) => v + 1), speed);
-    return () => clearTimeout(t);
-  }, [n, text, speed]);
-  return <span className={className}>{text.slice(0, n)}</span>;
-}
-
 /* ── easter eggs ── */
 function MatrixBlock() {
   const chars = "アカサタナハマヤラワ0123456789";
@@ -214,7 +186,6 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
 ) {
   const isCoarse = useIsCoarsePointer();
   const [mounted, setMounted] = useState(false);
-  const [phase, setPhase] = useState<"boot" | "ready">("boot");
   const [lines, setLines] = useState<Line[]>([]);
   const [input, setInput] = useState("");
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
@@ -407,7 +378,7 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
             <p className="font-bold text-white">
               {e.title} <span className="text-stone-500">@ {e.company}</span>
             </p>
-            <p className="font-mono text-xs text-stone-500">{e.date}</p>
+            <p className="font-mono text-xs text-stone-500">{e.location} · {e.date}</p>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-stone-400">{e.description}</p>
             <ul className="mt-2 space-y-0.5">
               {e.achievements.slice(0, 4).map((a, i) => (
@@ -434,7 +405,7 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
           <div key={f.id} className="border-l border-sky-500/30 pl-4">
             <p className="font-bold text-white">{f.title}</p>
             <p className="font-mono text-xs text-stone-500">
-              {f.company} · {f.date}
+              {f.company} · {f.location} · {f.date}
             </p>
             {f.tech.length ? (
               <div className="mt-1 flex flex-wrap gap-1">
@@ -721,54 +692,24 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
     []
   );
 
-  /* ───────────────────────── boot sequence ───────────────────────── */
+  /* ───────────── démarrage propre : prompt + sortie « help » direct ───────────── */
 
   useEffect(() => {
-    const boot = [
-      "booting portfolio-os v2.0 ...",
-      "[ OK ] mounting /projects",
-      "[ OK ] loading modules: next.js · typescript · docker",
-      "[ OK ] starting nadjide-sh",
-      "ready.",
-    ];
-    let i = 0;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const step = () => {
-      if (i < boot.length) {
-        const txt = boot[i];
-        pushLine(
-          <p className="font-mono text-[13px] text-sky-400/80">
-            {txt.startsWith("[ OK ]") ? (
-              <>
-                <span className="text-sky-400">[ OK ]</span>
-                {txt.slice(6)}
-              </>
-            ) : (
-              txt
-            )}
-          </p>
-        );
-        i++;
-        timers.push(setTimeout(step, 230 + Math.random() * 160));
-      } else {
-        timers.push(
-          setTimeout(() => {
-            pushLine(<WelcomeBanner Cmd={Cmd} />);
-            setPhase("ready");
-          }, 260)
-        );
-      }
-    };
-    timers.push(setTimeout(step, 320));
-    return () => timers.forEach(clearTimeout);
+    pushLine(
+      <div className="flex items-baseline gap-1">
+        <Prompt small />
+        <span className="font-mono text-stone-200">help</span>
+      </div>
+    );
+    pushLine(helpOutput());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ───────────────────────── effects: focus & scroll ───────────────────────── */
 
   useEffect(() => {
-    if (phase === "ready" && !openProject) inputRef.current?.focus();
-  }, [phase, lines, openProject]);
+    if (!openProject) inputRef.current?.focus();
+  }, [lines, openProject]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -848,38 +789,31 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
           </div>
 
           {/* live input line */}
-          {phase === "ready" ? (
-            <div className="mt-2 flex items-baseline gap-1">
-              <Prompt small />
-              <div className="relative flex-1">
-                {/* ghost autocomplete layer */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre font-mono text-stone-100"
-                >
-                  <span className="text-transparent">{input}</span>
-                  <span className="text-stone-600">{ghost}</span>
-                </div>
-                <input
-                  ref={inputRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={onKeyDown}
-                  spellCheck={false}
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  aria-label="Terminal input"
-                  className="relative w-full border-none bg-transparent p-0 font-mono text-stone-100 caret-cyan-300 outline-none placeholder:text-stone-600"
-                  placeholder={ghost ? "" : "tape « help » puis Entrée…"}
-                />
+          <div className="mt-2 flex items-baseline gap-1">
+            <Prompt small />
+            <div className="relative flex-1">
+              {/* ghost autocomplete layer */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre font-mono text-stone-100"
+              >
+                <span className="text-transparent">{input}</span>
+                <span className="text-stone-600">{ghost}</span>
               </div>
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+                spellCheck={false}
+                autoComplete="off"
+                autoCapitalize="off"
+                aria-label="Terminal input"
+                className="relative w-full border-none bg-transparent p-0 font-mono text-stone-100 caret-cyan-300 outline-none placeholder:text-stone-600"
+                placeholder={ghost ? "" : "tape « help » puis Entrée…"}
+              />
             </div>
-          ) : (
-            <div className="mt-2 flex items-center gap-1">
-              <Prompt small />
-              <span className="inline-block h-4 w-2 animate-pulse bg-sky-400" />
-            </div>
-          )}
+          </div>
         </div>
 
         {/* mobile quick commands */}
@@ -914,45 +848,3 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
 });
 
 export default Terminal;
-
-/* ─────────────────────────── welcome banner ─────────────────────────── */
-
-function WelcomeBanner({
-  Cmd,
-}: {
-  Cmd: (props: { children: React.ReactNode; run: string }) => React.JSX.Element;
-}) {
-  const [done, setDone] = useState(false);
-  return (
-    <div className="space-y-3 py-1">
-      <pre className="overflow-x-auto font-mono text-[10px] leading-[1.15] text-sky-400 sm:text-xs">{String.raw`
- _   _    _    ___    _ ___ ___  ___    ___  __  __    _    ___
-| \ | |  /_\  |   \  | |_ _|   \| __|  / _ \|  \/  |  /_\  | _ \
-|  \| | / _ \ | |) |_| || || |) | _|  | (_) | |\/| | / _ \ |   /
-|_| \_|/_/ \_\|___/\___/___|___/|___|  \___/|_|  |_|/_/ \_\|_|_\
-`}</pre>
-      <p className="text-stone-300">
-        <Typewriter
-          text="Bienvenue sur mon portfolio interactif. "
-          onDone={() => setDone(true)}
-        />
-        {done ? (
-          <span className="text-sky-300">Ingénieur DevOps &amp; Full Stack.</span>
-        ) : (
-          <span className="inline-block h-3.5 w-2 animate-pulse bg-sky-400 align-middle" />
-        )}
-      </p>
-      {done ? (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="text-stone-500"
-        >
-          Tape <Cmd run="help">help</Cmd> pour commencer, ou{" "}
-          <Cmd run="projects">projects</Cmd> pour voir mes projets directement.
-        </motion.p>
-      ) : null}
-    </div>
-  );
-}
