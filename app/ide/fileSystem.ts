@@ -102,7 +102,7 @@ function contactToTs(): string {
   }
   lines.push(`];`);
   lines.push("");
-  lines.push(`// 💡 Tape « contact » dans le terminal pour des liens cliquables,`);
+  lines.push(`// Tape « contact » dans le terminal pour des liens cliquables,`);
   lines.push(`//    ou « cv » pour télécharger mon CV en PDF.`);
   return lines.join("\n");
 }
@@ -116,7 +116,7 @@ function skillsToJson(): string {
 
 /** education.md — dérivé des formations. */
 function educationToMd(): string {
-  const out: string[] = ["# 🎓 Formation", ""];
+  const out: string[] = ["# Formation", ""];
   for (const f of [...formations].reverse()) {
     out.push(`## ${f.title}`);
     if (f.subtitle) out.push(`*${f.subtitle}*`);
@@ -149,14 +149,14 @@ const PROFILE_JSON = j({
 });
 
 const ABOUT_README = [
-  `# 👋 ${profile.name} — ${profile.title}`,
+  `# ${profile.name} — ${profile.title}`,
   "",
   ...profile.about.map((p) => `${p}\n`),
   "## Ce qui me caractérise",
   "",
-  ...profile.highlights.map((h) => `- ${h.emoji} **${h.title}** : ${h.text}`),
+  ...profile.highlights.map((h) => `- **${h.title}** : ${h.text}`),
   "",
-  `> 📍 ${profile.location} · 🗣️ ${profile.languages.join(" · ")}`,
+  `> ${profile.location} · ${profile.languages.join(" · ")}`,
   "",
   "```bash",
   "# Explore le reste depuis la sidebar, ou tape « help » dans le terminal.",
@@ -210,7 +210,7 @@ jobs:
           echo "Pushing image to registry..."
 
       - name: Deploy to production
-        run: echo "🚀 Deployed successfully"
+        run: echo "Deployed successfully"
 `;
 
 const PACKAGE_JSON = j({

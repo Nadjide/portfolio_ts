@@ -43,7 +43,9 @@ export default function StatusBar({
             <Icon icon="lucide:triangle-alert" className="text-[13px]" /> 0
           </span>
         </span>
-        <span className="hidden text-white/80 sm:inline">⌘/Ctrl+P : fichiers · ⇧ pour scripts</span>
+        <span className="hidden items-center gap-1 text-white/80 sm:inline-flex">
+          <Icon icon="lucide:command" className="text-[11px]" />/Ctrl+P : fichiers · Maj+P : scripts
+        </span>
       </div>
       <div className="flex items-center gap-3">
         {active ? <span>{LANG_LABEL[active.lang]}</span> : <span>Welcome</span>}

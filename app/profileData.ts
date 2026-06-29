@@ -2,8 +2,6 @@
    ET par les fichiers about/profile.json & about/README.md de l'IDE. */
 
 export interface ProfileHighlight {
-  /** Emoji conservé pour le README markdown simulé de l'IDE (texte brut). */
-  emoji: string;
   /** Nom d'icône Iconify (ex. « lucide:rocket ») pour l'UI vitrine. */
   icon: string;
   title: string;
@@ -26,25 +24,21 @@ export const profile = {
   ],
   highlights: [
     {
-      emoji: "🚀",
       icon: "lucide:rocket",
       title: "Cycle complet",
       text: "De l'architecture à la mise en production (CI/CD, Docker).",
     },
     {
-      emoji: "🧠",
       icon: "lucide:brain-circuit",
       title: "IA locale",
       text: "LLM auto-hébergés (Ollama / Mistral) pour des solutions privées.",
     },
     {
-      emoji: "⚙️",
       icon: "lucide:settings-2",
       title: "Automatisation",
       text: "Python & data-engineering, avec des gains de temps mesurables.",
     },
     {
-      emoji: "📦",
       icon: "lucide:package",
       title: "Pragmatique",
       text: "Du code lisible, modulaire, et qui tourne en conditions réelles.",

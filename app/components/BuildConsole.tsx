@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Icon } from "@iconify/react";
 
 interface BuildConsoleProps {
   projectTitle: string;
@@ -29,7 +30,7 @@ const generateBuildLines = (title: string): string[] => [
   `Successfully built 5x6y7z8a9b0c`,
   `Successfully tagged portfolio/${title.toLowerCase().replace(/[^a-z0-9]/g, "-")}:latest`,
   "",
-  `✓ Deploying ${title}...`,
+  `Deploying ${title}...`,
 ];
 
 const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete }) => {
@@ -87,7 +88,7 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.12 }}
             className={
-              line.startsWith("✓")
+              line.startsWith("Deploying")
                 ? "text-sky-400 font-semibold"
                 : line.startsWith("$")
                 ? "text-cyan-400"
@@ -98,7 +99,14 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
                 : "text-gray-500"
             }
           >
-            {line || "\u00a0"}
+            {line.startsWith("Deploying") ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Icon icon="lucide:check" className="text-[13px]" />
+                {line}
+              </span>
+            ) : (
+              line || "\u00a0"
+            )}
           </motion.div>
         ))}
         {/* Blinking cursor */}

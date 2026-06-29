@@ -6,7 +6,7 @@
 
 Un portfolio interactif avec **deux expériences** : une vitrine claire pour les recruteurs, et un **IDE façon VS Code** (avec terminal jouable) pour les développeurs.
 
-🔗 **[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)**
+**[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)**
 
 `Next.js` · `TypeScript` · `Tailwind CSS` · `Framer Motion`
 
@@ -14,15 +14,15 @@ Un portfolio interactif avec **deux expériences** : une vitrine claire pour les
 
 ---
 
-## ✨ Le concept
+## Le concept
 
 Le portfolio propose deux vues, basculables à tout moment (avec une petite animation de transition « écran qui s'allume ») :
 
-### 🧑‍💼 Vue recruteur
+### Vue recruteur
 
 Une landing page moderne, droit au but : hero animé, marquee de technologies, grille *bento*, *spotlight cards* qui suivent la souris, timelines de parcours, et fiches projets avec démo vidéo. Pensée pour qu'un profil non-technique comprenne l'essentiel en quelques secondes.
 
-### 👨‍💻 Vue développeur
+### Vue développeur
 
 Une reproduction d'un éditeur **VS Code** entièrement fonctionnelle :
 
@@ -45,9 +45,9 @@ Une reproduction d'un éditeur **VS Code** entièrement fonctionnelle :
 | `cv` | Télécharge le CV (PDF) |
 | `neofetch` | Infos « système » |
 
-> Quelques commandes cachées traînent aussi (`matrix`, `coffee`, `sudo`…) 👀
+> Quelques commandes cachées traînent aussi (`matrix`, `coffee`, `sudo`…)
 
-## 🏗️ Architecture
+## Architecture
 
 Le contenu vit dans **une seule source de vérité** ([`app/profileData.ts`](app/profileData.ts), [`portfolioContent.ts`](app/portfolioContent.ts), [`projectsData.ts`](app/projectsData.ts), [`contactData.ts`](app/contactData.ts)). Ces données alimentent à la fois :
 
@@ -69,7 +69,7 @@ app/
 └─ opengraph-image.tsx  # Image de partage (OG) générée
 ```
 
-## 🛠️ Stack
+## Stack
 
 - **[Next.js 16](https://nextjs.org)** (App Router) · **React 19** · **TypeScript**
 - **[Tailwind CSS](https://tailwindcss.com)** pour le style
@@ -78,7 +78,7 @@ app/
 - `react-markdown` + `react-syntax-highlighter` pour les viewers de l'éditeur
 - **Vercel Analytics**
 
-## 🚀 Démarrage
+## Démarrage
 
 ```bash
 npm install
@@ -98,11 +98,11 @@ Ouvrir [http://localhost:3000](http://localhost:3000).
 | `npm test` | Tests unitaires (Vitest) |
 | `npm run e2e` | Tests end-to-end (Playwright) |
 
-## 🧪 Tests
+## Tests
 
 Les tests unitaires ([Vitest](https://vitest.dev)) valident la cohérence du système de fichiers simulé (slugs, génération d'un fichier par projet/expérience, JSON valide). Tests e2e via [Playwright](https://playwright.dev).
 
-## 📫 Contact
+## Contact
 
 **Nadjide Omar** — Nice / Sophia Antipolis (06)
 
