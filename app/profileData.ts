@@ -19,7 +19,7 @@ export const profile = {
     "Je conçois, déploie et maintiens des applications en production — du code à l'infrastructure.",
   about: [
     "Développeur Full Stack à forte culture DevOps, j'accompagne une application sur tout son cycle de vie : de l'architecture au déploiement en production, en passant par les tests, la conteneurisation et l'automatisation (CI/CD, Docker).",
-    "En alternance, j'ai conçu et maintenu en production tout un écosystème d'outils métiers internes — dont un intégrateur de campagnes qui a divisé par ~10 le temps de montage. Je cherche toujours l'impact concret et mesurable.",
+    "En alternance, j'ai conçu et maintenu en production tout un écosystème d'outils métiers internes, automatisant des processus critiques pour un gain de productivité majeur. Je cherche toujours l'impact concret et mesurable.",
     "J'aime le code lisible et modulaire, les solutions pragmatiques qui tiennent en conditions réelles, et l'IA auto-hébergée (Ollama / Mistral) pour garder la donnée privée.",
   ],
   highlights: [

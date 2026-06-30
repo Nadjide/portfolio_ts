@@ -305,8 +305,8 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
       <p className="max-w-2xl leading-6 text-stone-300">
         Développeur Full Stack avec une forte culture DevOps : je conçois, teste,
         déploie et maintiens des applications internes en production. J'ai bâti un
-        écosystème d'outils métiers automatisant des process critiques — dont un
-        intégrateur divisant par deux le temps de montage des campagnes.
+        écosystème d'outils métiers automatisant des processus critiques, avec un
+        gain de productivité majeur à la clé.
       </p>
       <p className="text-stone-500">
         → <Cmd run="projects">projects</Cmd> pour voir le travail, ou{" "}

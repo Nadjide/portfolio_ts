@@ -631,10 +631,10 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
 
           <SpotlightCard className="flex flex-col justify-center p-6">
             <p className="bg-gradient-to-r from-sky-300 to-indigo-300 bg-clip-text text-4xl font-black text-transparent">
-              ~10×
+              100%
             </p>
             <p className="mt-2 text-sm leading-6 text-stone-400">
-              de gain de temps sur des process métiers critiques que j&apos;ai automatisés.
+              on-premise : IA auto-hébergée, aucune donnée ne quitte l&apos;infrastructure.
             </p>
           </SpotlightCard>
 

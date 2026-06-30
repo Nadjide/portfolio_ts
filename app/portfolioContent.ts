@@ -121,12 +121,12 @@ export const experiences: ExperienceEntry[] = [
     description:
       "Alternance de 5 ans : conception, développement et déploiement d'applications métiers critiques, de l'architecture à la mise en production (CI/CD, Docker, automatisation). Prise en charge du cycle de vie complet de plusieurs outils internes en production.",
     achievements: [
-      "Plateforme interne d'évaluation de la qualité des échanges commerciaux, propulsée par un LLM auto-hébergé (Ollama / Mistral) — backend FastAPI, conteneurisation Docker, front Next.js, aucune donnée sensible ne quittant l'infrastructure.",
-      "Automatisation du montage des campagnes du centre d'appels : temps de traitement réduit de ~20–60 min à ~5 min (Python, interface Tkinter, transformation de fichiers Excel via DuckDB, injection en base SQL Server avec contrôles de cohérence).",
-      "Portail SSO interne centralisant l'accès à l'ensemble des applications métiers.",
-      "Refonte d'un dashboard de statistiques en temps réel.",
-      "Outil interne de gestion de parc matériel et logiciel.",
-      "Mini-sites de campagnes de collecte de dons, scripts d'intégration de données (Python, Polars) et gestion de projets en méthode Agile.",
+      "Conception et déploiement d'une architecture d'IA générative (LLM auto-hébergé via Ollama / Mistral) pour l'analyse automatisée de flux de données — backend FastAPI, conteneurisation Docker, front Next.js, traitement entièrement on-premise.",
+      "Optimisation et automatisation de workflows métiers critiques (Python, interface Tkinter, transformation de données via DuckDB, injection en base SQL Server avec contrôles de cohérence) — gain de productivité majeur sur des processus auparavant manuels.",
+      "Centralisation des accès applicatifs via la mise en place d'une solution d'authentification unique (SSO).",
+      "Refonte d'un tableau de bord de visualisation de données en temps réel.",
+      "Conception et développement d'une application interne de gestion de ressources et d'inventaire.",
+      "Développement de mini-sites événementiels, scripts d'intégration et de traitement de données (Python, Polars), et gestion de projets en méthode Agile.",
     ],
     tech: [
       "Next.js",

@@ -14,7 +14,7 @@ const generateBuildLines = (title: string): string[] => [
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "-")} .`,
   "Sending build context to Docker daemon...",
-  "Step 1/6 : FROM node:20-alpine",
+  "Step 1/6 : FROM node:24-alpine",
   " ---> a1b2c3d4e5f6",
   "Step 2/6 : WORKDIR /app",
   " ---> Running in 7f8g9h0i1j2k",
