@@ -6,7 +6,17 @@ import { Icon } from "@iconify/react";
 import { profile } from "../../profileData";
 import { skillGroups, experiences, formations } from "../../portfolioContent";
 import { projectsData, type ProjectData } from "../../projectsData";
-import { contactLinks } from "../../contactData";
+import { contactLinks, findLink } from "../../contactData";
+
+/* Le CV n'est pas en téléchargement public — on invite à le demander
+   par email (sujet/corps pré-remplis) ou via LinkedIn. */
+const CV_EMAIL = findLink("Email")?.href ?? "mailto:nadjide.omar@outlook.fr";
+const REQUEST_CV_MAILTO =
+  `${CV_EMAIL}?subject=` +
+  encodeURIComponent("Demande de CV — Nadjide Omar") +
+  "&body=" +
+  encodeURIComponent("Bonjour Nadjide,\n\nJe souhaiterais recevoir votre CV.\n\n");
+const LINKEDIN_URL = findLink("LinkedIn")?.href ?? "https://www.linkedin.com/in/nadjide-omar-b55a01212/";
 
 /* ─────────────────────────── données d'affichage ─────────────────────────── */
 
@@ -569,17 +579,16 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
 
             <div className="mt-9 flex flex-wrap gap-3">
               <a
-                href={profile.cvPath}
-                download
+                href={REQUEST_CV_MAILTO}
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 font-medium text-white shadow-lg shadow-sky-500/25 transition hover:shadow-sky-500/40"
               >
-                <Icon icon="lucide:download" className="text-[18px]" /> Télécharger mon CV
+                <Icon icon="lucide:mail" className="text-[18px]" /> Demander mon CV
               </a>
               <a
                 href="#contact"
                 className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-medium text-white backdrop-blur transition hover:bg-white/10"
               >
-                <Icon icon="lucide:mail" className="text-[18px]" /> Me contacter
+                <Icon icon="lucide:at-sign" className="text-[18px]" /> Me contacter
               </a>
             </div>
 
@@ -847,15 +856,26 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
 
           <Reveal delay={0.1}>
             <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-2xl border border-sky-400/20 bg-gradient-to-br from-sky-500/15 to-indigo-500/10 p-6">
-              <p className="text-lg font-bold text-white">Mon CV en PDF</p>
-              <p className="mt-1 text-sm text-stone-300">Tout mon parcours en un document.</p>
-              <a
-                href={profile.cvPath}
-                download
-                className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 font-medium text-[#070b12] transition hover:bg-stone-200"
-              >
-                <Icon icon="lucide:download" className="text-[18px]" /> Télécharger
-              </a>
+              <p className="text-lg font-bold text-white">Mon CV sur demande</p>
+              <p className="mt-1 text-sm text-stone-300">
+                Contactez-moi par email ou via LinkedIn et je vous l'envoie.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  href={REQUEST_CV_MAILTO}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 font-medium text-[#070b12] transition hover:bg-stone-200"
+                >
+                  <Icon icon="lucide:mail" className="text-[18px]" /> Demander par email
+                </a>
+                <a
+                  href={LINKEDIN_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
+                >
+                  <Icon icon="lucide:linkedin" className="text-[18px]" /> LinkedIn
+                </a>
+              </div>
             </div>
           </Reveal>
         </div>

@@ -103,7 +103,7 @@ function contactToTs(): string {
   lines.push(`];`);
   lines.push("");
   lines.push(`// Tape « contact » dans le terminal pour des liens cliquables,`);
-  lines.push(`//    ou « cv » pour télécharger mon CV en PDF.`);
+  lines.push(`//    ou « cv » — mon CV est envoyé sur demande (email / LinkedIn).`);
   return lines.join("\n");
 }
 
@@ -226,7 +226,7 @@ const PACKAGE_JSON = j({
     education: "Affiche la formation",
     contact: "Affiche les liens (cliquables)",
     ci: "Lance la pipeline CI/CD",
-    "download:cv": "Télécharge le CV (PDF)",
+    "request:cv": "Mon CV — sur demande (email / LinkedIn)",
     clear: "Vide le terminal",
   },
   keywords: ["devops", "fullstack", "docker", "ci-cd", "nextjs", "fastapi", "python"],

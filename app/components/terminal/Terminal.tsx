@@ -254,7 +254,7 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
           ["education", "formation"],
           ["contact", "me joindre"],
           ["ci", "pipeline CI/CD"],
-          ["cv", "télécharger le CV"],
+          ["cv", "obtenir mon CV (sur demande)"],
           ["neofetch", "infos système"],
           ["history", "commandes tapées"],
           ["clear", "vider l'écran"],
@@ -450,7 +450,7 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
             onClick={() => run("cv")}
             className="text-cyan-300 underline-offset-2 hover:underline"
           >
-            télécharger →
+            sur demande →
           </button>
         </p>
       </div>
@@ -600,19 +600,28 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
         break;
       case "cv":
       case "resume": {
-        const a = document.createElement("a");
-        a.href = "/CV/CV_Nadjide_Omar_DevOps_2026.pdf";
-        a.download = "CV_Nadjide_Omar_DevOps_2026.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
         pushLine(
-          <p className="font-mono text-sky-300">
-            ↓ téléchargement du CV...{" "}
-            <a href="/CV/CV_Nadjide_Omar_DevOps_2026.pdf" target="_blank" rel="noreferrer" className="text-sky-300 underline">
-              ouvrir
-            </a>
-          </p>
+          <div className="font-mono text-sky-200/90 space-y-1">
+            <p>Mon CV n'est pas en téléchargement direct.</p>
+            <p>
+              Écris-moi et je te l'envoie :{" "}
+              <a
+                href="mailto:nadjide.omar@outlook.fr?subject=Demande%20de%20CV%20%E2%80%94%20Nadjide%20Omar"
+                className="text-sky-300 underline"
+              >
+                email
+              </a>
+              {" · "}
+              <a
+                href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sky-300 underline"
+              >
+                LinkedIn
+              </a>
+            </p>
+          </div>
         );
         break;
       }

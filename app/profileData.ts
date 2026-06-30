@@ -14,7 +14,6 @@ export const profile = {
   location: "Nice (06)",
   availability: "Alternance / CDI",
   languages: ["Français — natif", "Anglais — C1"],
-  cvPath: "/CV/CV_Nadjide_Omar_DevOps_2026.pdf",
   tagline:
     "Je conçois, déploie et maintiens des applications en production — du code à l'infrastructure.",
   about: [

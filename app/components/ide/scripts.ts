@@ -19,6 +19,6 @@ export const scripts: ScriptDef[] = [
   { label: "education", command: "education", description: "Affiche la formation" },
   { label: "contact", command: "contact", description: "Affiche les liens cliquables" },
   { label: "ci", command: "ci", description: "Lance la pipeline CI/CD" },
-  { label: "download:cv", command: "cv", description: "Télécharge le CV (PDF)" },
+  { label: "request:cv", command: "cv", description: "Mon CV — sur demande (email / LinkedIn)" },
   { label: "clear", command: "clear", description: "Vide le terminal" },
 ];

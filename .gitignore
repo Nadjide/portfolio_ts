@@ -39,6 +39,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# documents privés non publiés (CV, etc.) — jamais servis ni commités
+/private
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
