@@ -47,6 +47,29 @@ test.describe("Vue terminal", () => {
     await page.getByRole("button", { name: "ci", exact: true }).click();
     await expect(page.getByText("All checks passed")).toBeVisible({ timeout: 15000 });
   });
+
+  test("hire-me provisionne un entretien", async ({ page }) => {
+    const input = page.getByLabel("Terminal input");
+    await input.fill("hire-me");
+    await input.press("Enter");
+    await expect(page.getByText("Apply complete!", { exact: false })).toBeVisible({
+      timeout: 15000,
+    });
+    await expect(page.getByRole("link", { name: /Ouvrir l'email/ })).toBeVisible();
+  });
+
+  test("le thème du terminal est modifiable", async ({ page }) => {
+    await page.getByRole("button", { name: "Thème Ambre" }).click();
+    await expect(page.locator('[data-term-theme="amber"]')).toBeVisible();
+  });
+});
+
+test.describe("Deep-linking", () => {
+  test("?view=simple ouvre directement la vue simplifiée sans notice", async ({ page }) => {
+    await page.goto("/?view=simple");
+    await expect(page.getByRole("heading", { name: "Nadjide Omar", level: 1 })).toBeVisible();
+    await expect(page.getByText("Ce portfolio se découvre", { exact: false })).toHaveCount(0);
+  });
 });
 
 test.describe("Bascule de vues", () => {

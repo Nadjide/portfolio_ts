@@ -7,24 +7,14 @@ export const contentType = "image/png";
 const mono =
   "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
 
+const CYAN = "#38bdf8";
+const CYAN_SOFT = "#7dd3fc";
+const GREEN = "#4ade80";
+const STONE = "#a8a29e";
+
 export default function OpengraphImage() {
-  const file = (name: string, color: string, active = false) => (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "4px 10px",
-        borderRadius: 4,
-        background: active ? "#37373d" : "transparent",
-        color: active ? "#ffffff" : "#cccccc",
-        fontSize: 20,
-        fontFamily: mono,
-      }}
-    >
-      <span style={{ color, fontSize: 14, fontWeight: 700 }}>●</span>
-      {name}
-    </div>
+  const line = (children: React.ReactNode, color = "#e2e8f0") => (
+    <div style={{ display: "flex", color, fontSize: 24, lineHeight: 1.5 }}>{children}</div>
   );
 
   return new ImageResponse(
@@ -34,93 +24,107 @@ export default function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          background: "#1e1e1e",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#05080f",
           fontFamily: mono,
+          padding: 56,
         }}
       >
-        <div style={{ display: "flex", flex: 1 }}>
-          {/* activity bar */}
-          <div style={{ width: 56, background: "#333333" }} />
-          {/* sidebar */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              width: 300,
-              background: "#252526",
-              padding: "24px 14px",
-              gap: 6,
-            }}
-          >
-            <div style={{ display: "flex", color: "#bbbbbb", fontSize: 16, letterSpacing: 2, marginBottom: 8 }}>
-              EXPLORER
-            </div>
-            {file("about/", "#c09553")}
-            {file("experience/", "#c09553")}
-            {file("projects/", "#c09553")}
-            {file("skills.json", "#cbcb41")}
-            {file("contact.ts", "#3178c6", true)}
-          </div>
-          {/* editor */}
-          <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "#1e1e1e" }}>
-            <div style={{ display: "flex", height: 44, background: "#252526", alignItems: "center", paddingLeft: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#1e1e1e", height: "100%", padding: "0 16px", color: "#fff", fontSize: 18 }}>
-                <span style={{ color: "#3178c6", fontWeight: 700, fontSize: 13 }}>TS</span> contact.ts
-              </div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", padding: 40, gap: 14 }}>
-              <div style={{ display: "flex", color: "#f8fafc", fontSize: 46, fontWeight: 800 }}>
-                Nadjide Omar
-              </div>
-              <div style={{ display: "flex", color: "#4ec9b0", fontSize: 28 }}>
-                Ingénieur DevOps &amp; Développeur Full Stack
-              </div>
-              <div style={{ display: "flex", height: 16 }} />
-              <div style={{ display: "flex", color: "#6a9955", fontSize: 22 }}>
-                {"// Docker · CI/CD · Next.js · FastAPI · Python · IA locale"}
-              </div>
-              <div style={{ display: "flex", color: "#569cd6", fontSize: 22 }}>
-                const <span style={{ color: "#9cdcfe" }}>&nbsp;portfolio</span>
-                <span style={{ color: "#d4d4d4" }}>&nbsp;=&nbsp;</span>
-                <span style={{ color: "#ce9178" }}>&quot;explore →&quot;</span>
-                <span style={{ color: "#d4d4d4" }}>;</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* status bar */}
+        {/* fenêtre terminal */}
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            height: 36,
-            background: "#007acc",
-            color: "#fff",
-            fontSize: 18,
-            paddingLeft: 16,
-            gap: 24,
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+            borderRadius: 18,
+            border: "1px solid rgba(255,255,255,0.10)",
+            background: "#0a0f17",
+            overflow: "hidden",
+            boxShadow: "0 0 90px rgba(56,189,248,0.12)",
           }}
         >
-          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fff"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="6" y1="3" x2="6" y2="15" />
-              <circle cx="18" cy="6" r="3" />
-              <circle cx="6" cy="18" r="3" />
-              <path d="M18 9a9 9 0 0 1-9 9" />
-            </svg>
-            master
-          </span>
-          <span style={{ marginLeft: "auto", marginRight: 16 }}>TypeScript · UTF-8</span>
+          {/* barre de titre */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "16px 22px",
+              background: "rgba(255,255,255,0.03)",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <div style={{ display: "flex", width: 14, height: 14, borderRadius: 999, background: "#ef4444" }} />
+            <div style={{ display: "flex", width: 14, height: 14, borderRadius: 999, background: "#eab308" }} />
+            <div style={{ display: "flex", width: 14, height: 14, borderRadius: 999, background: "#22c55e" }} />
+            <div style={{ display: "flex", marginLeft: 14, color: STONE, fontSize: 20 }}>
+              visitor@nadjide: ~
+            </div>
+          </div>
+
+          {/* corps */}
+          <div style={{ display: "flex", flexDirection: "column", padding: 44, gap: 6, flex: 1 }}>
+            <div style={{ display: "flex", gap: 10, fontSize: 24 }}>
+              <span style={{ color: CYAN }}>visitor@nadjide</span>
+              <span style={{ color: STONE }}>:~$</span>
+              <span style={{ color: "#e2e8f0" }}>whoami</span>
+            </div>
+
+            <div style={{ display: "flex", height: 14 }} />
+
+            <div style={{ display: "flex", color: "#f8fafc", fontSize: 62, fontWeight: 800 }}>
+              Nadjide Omar
+            </div>
+            <div style={{ display: "flex", color: CYAN_SOFT, fontSize: 30, marginTop: 4 }}>
+              Ingénieur DevOps &amp; Développeur Full Stack
+            </div>
+
+            <div style={{ display: "flex", height: 22 }} />
+
+            {line(
+              <span>
+                <span style={{ color: STONE }}>{"// "}</span>Docker · CI/CD · Next.js · FastAPI · Python · IA locale
+              </span>,
+              GREEN
+            )}
+
+            <div style={{ display: "flex", gap: 10, fontSize: 24, marginTop: 14 }}>
+              <span style={{ color: CYAN }}>visitor@nadjide</span>
+              <span style={{ color: STONE }}>:~$</span>
+              <span style={{ color: "#e2e8f0" }}>help</span>
+              <span
+                style={{
+                  display: "flex",
+                  width: 12,
+                  height: 26,
+                  background: CYAN,
+                  marginLeft: 4,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* barre de statut façon tmux */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 22,
+              padding: "10px 20px",
+              background: "#0b1220",
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+              color: STONE,
+              fontSize: 18,
+            }}
+          >
+            <span style={{ display: "flex", color: CYAN_SOFT, background: "rgba(56,189,248,0.18)", padding: "2px 10px", borderRadius: 4 }}>
+              [portfolio]
+            </span>
+            <span style={{ display: "flex" }}> master</span>
+            <span style={{ display: "flex", marginLeft: "auto" }}>Nice, FR · FR · EN</span>
+          </div>
         </div>
       </div>
     ),

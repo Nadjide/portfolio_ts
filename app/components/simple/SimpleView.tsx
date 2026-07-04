@@ -7,6 +7,16 @@ import { profile } from "../../profileData";
 import { skillGroups, experiences, formations } from "../../portfolioContent";
 import { projectsData, type ProjectData } from "../../projectsData";
 import { contactLinks, findLink } from "../../contactData";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
+
+/** slug d'un projet pour le deep-link ?project=… (ex. « Stajio » → « stajio »). */
+export const projectSlug = (title: string) =>
+  title
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 
 /* Le CV n'est pas en téléchargement public — on invite à le demander
    par email (sujet/corps pré-remplis) ou via LinkedIn. */
@@ -356,8 +366,10 @@ function ProjectCard({ project, onOpen }: { project: ProjectData; onOpen: () => 
 
 function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [maxH, setMaxH] = useState(440);
   const [collapsed, setCollapsed] = useState(false);
+  useFocusTrap(dialogRef, true);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -398,6 +410,10 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
       className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-0 backdrop-blur-sm sm:p-6"
     >
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Projet ${project.title}`}
         initial={{ opacity: 0, scale: 0.95, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97 }}
@@ -511,6 +527,32 @@ const NAV = [
 export default function SimpleView({ onSwitchView }: { onSwitchView: () => void }) {
   const [openProject, setOpenProject] = useState<ProjectData | null>(null);
   const { scrollYProgress } = useScroll();
+
+  // Deep-link : ouvre le projet passé en ?project=… au montage.
+  useEffect(() => {
+    try {
+      const slug = new URLSearchParams(window.location.search).get("project");
+      if (slug) {
+        const p = projectsData.find((pr) => projectSlug(pr.title) === slug);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        if (p) setOpenProject(p);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // Reflète le projet ouvert dans l'URL (?project=…), en préservant les autres params.
+  useEffect(() => {
+    try {
+      const url = new URL(window.location.href);
+      if (openProject) url.searchParams.set("project", projectSlug(openProject.title));
+      else url.searchParams.delete("project");
+      window.history.replaceState(null, "", url);
+    } catch {
+      /* ignore */
+    }
+  }, [openProject]);
 
   return (
     <div className="min-h-[100dvh] bg-[#070b12] text-stone-200">

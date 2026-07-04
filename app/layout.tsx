@@ -43,6 +43,26 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Nadjide Omar",
+  jobTitle: "Ingénieur DevOps & Développeur Full Stack",
+  url: "https://portfolio-ts-nine.vercel.app",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Nice",
+    addressRegion: "Alpes-Maritimes",
+    addressCountry: "FR",
+  },
+  knowsLanguage: ["fr", "en"],
+  knowsAbout: ["DevOps", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python"],
+  sameAs: [
+    "https://github.com/Nadjide",
+    "https://www.linkedin.com/in/nadjide-omar-b55a01212/",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,6 +71,10 @@ export default function RootLayout({
   return (
     <html lang="fr" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <NoiseOverlay />
         {children}
         <Analytics />

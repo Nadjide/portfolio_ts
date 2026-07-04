@@ -43,6 +43,8 @@ const COMMANDS = [
   "uptime",
   "ssh prod",
   "neofetch",
+  "hire-me",
+  "theme",
   "history",
   "clear",
   "matrix",
@@ -50,6 +52,13 @@ const COMMANDS = [
   "sudo",
   "date",
 ] as const;
+
+export type TermTheme = "cyan" | "green" | "amber";
+export const TERM_THEMES: { id: TermTheme; label: string }[] = [
+  { id: "cyan", label: "Cyan" },
+  { id: "green", label: "Phosphore" },
+  { id: "amber", label: "Ambre" },
+];
 
 type Line = { id: number; node: React.ReactNode };
 
@@ -100,7 +109,7 @@ function DockerPsBlock() {
           key={name}
           className="grid min-w-[34rem] grid-cols-[10rem_13rem_13rem_1fr] gap-x-4"
         >
-          <span className="text-cyan-300">{name}</span>
+          <span className="text-[rgb(var(--tc-c-rgb))]">{name}</span>
           <span className="text-stone-300">{image}</span>
           <span className="text-green-400">{status}</span>
           <span className="text-stone-400">{ports}</span>
@@ -133,7 +142,7 @@ function KubectlBlock() {
           key={name}
           className="grid min-w-[30rem] grid-cols-[15rem_4rem_6rem_6rem_1fr] gap-x-3"
         >
-          <span className="text-cyan-300">{name}</span>
+          <span className="text-[rgb(var(--tc-c-rgb))]">{name}</span>
           <span className="text-stone-300">{ready}</span>
           <span className="text-green-400">{status}</span>
           <span className="text-stone-400">{restarts}</span>
@@ -165,7 +174,7 @@ function GitLogBlock() {
           <span className="text-stone-500">* </span>
           <span className="text-yellow-500">{fakeSha(e.label)}</span>
           {i === 0 ? (
-            <span className="text-cyan-300"> (HEAD → master, origin/prod)</span>
+            <span className="text-[rgb(var(--tc-c-rgb))]"> (HEAD → master, origin/prod)</span>
           ) : null}
           <span className="text-stone-200"> feat({e.scope}): {e.label}</span>
           <span className="text-stone-500"> · {e.date}</span>
@@ -212,11 +221,11 @@ function TopBlock() {
           className="grid min-w-[28rem] grid-cols-[3.5rem_9rem_1fr_4rem_4rem] items-center gap-x-3"
         >
           <span className="text-stone-500">{p.pid}</span>
-          <span className="text-cyan-300">{p.cmd}</span>
+          <span className="text-[rgb(var(--tc-c-rgb))]">{p.cmd}</span>
           <span className="h-1.5 overflow-hidden rounded-full bg-white/5">
             <span
               className={`block h-full rounded-full ${
-                p.cpu > 90 ? "bg-fuchsia-400" : p.cpu > 50 ? "bg-sky-400" : "bg-sky-600/70"
+                p.cpu > 90 ? "bg-fuchsia-400" : p.cpu > 50 ? "bg-[rgb(var(--tc-a-rgb))]" : "bg-[rgb(var(--tc-d-rgb)/0.7)]"
               }`}
               style={{ width: `${Math.min(p.cpu, 100)}%` }}
             />
@@ -285,7 +294,7 @@ function DeploySequence() {
               {state === "done" ? (
                 <Icon icon="lucide:circle-check" className="text-[14px] text-green-400" />
               ) : state === "run" ? (
-                <Icon icon="lucide:loader-circle" className="animate-spin text-[14px] text-sky-400" />
+                <Icon icon="lucide:loader-circle" className="animate-spin text-[14px] text-[rgb(var(--tc-a-rgb))]" />
               ) : (
                 <Icon icon="lucide:circle" className="text-[14px] text-stone-600" />
               )}
@@ -307,6 +316,70 @@ function DeploySequence() {
   );
 }
 
+/** `hire-me` — provisionne un entretien via un faux « terraform apply », puis CTA. */
+const HIRE_MAILTO =
+  "mailto:nadjide.omar@outlook.fr?subject=" +
+  encodeURIComponent("On se rencontre ? — Nadjide Omar") +
+  "&body=" +
+  encodeURIComponent(
+    "Bonjour Nadjide,\n\nVotre portfolio m'a tapé dans l'œil. Discutons d'une opportunité :\n\n"
+  );
+
+function HireSequence() {
+  const steps = [
+    "terraform init",
+    "terraform plan -out=interview.tfplan",
+    'module.candidate: Refreshing state... [id="nadjide-omar"]',
+    "aws_opportunity.interview: Creating...",
+    "aws_opportunity.interview: Creation complete after 2s",
+  ];
+  const [done, setDone] = useState(0);
+  const finished = done >= steps.length;
+  useEffect(() => {
+    if (finished) return;
+    const t = setTimeout(() => setDone((d) => d + 1), 480 + Math.random() * 320);
+    return () => clearTimeout(t);
+  }, [done, finished]);
+  return (
+    <div className="space-y-1 font-mono text-[13px]">
+      <p className="text-stone-400">$ hire-me — terraform apply -auto-approve</p>
+      {steps.slice(0, done).map((s) => (
+        <p key={s} className="text-stone-300">
+          <span className="text-green-400">+ </span>
+          {s}
+        </p>
+      ))}
+      {finished ? (
+        <div className="mt-2 space-y-2">
+          <p className="flex items-center gap-1.5 font-semibold text-green-400">
+            <Icon icon="lucide:party-popper" className="text-[14px]" />
+            Apply complete! Resources: 1 opportunity added.
+          </p>
+          <p className="text-stone-400">
+            Outputs : <span className="text-[rgb(var(--tc-c-rgb))]">interview_url</span> = prêt quand vous l'êtes 👇
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <a
+              href={HIRE_MAILTO}
+              className="inline-flex items-center gap-1.5 rounded border border-[rgb(var(--tc-d-rgb)/0.4)] bg-[rgb(var(--tc-d-rgb)/0.1)] px-3 py-1.5 text-sky-100 transition hover:bg-[rgb(var(--tc-d-rgb)/0.2)]"
+            >
+              <Icon icon="lucide:mail" className="text-[14px]" /> Ouvrir l'email
+            </a>
+            <a
+              href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded border border-[rgb(var(--tc-d-rgb)/0.4)] bg-[rgb(var(--tc-d-rgb)/0.1)] px-3 py-1.5 text-sky-100 transition hover:bg-[rgb(var(--tc-d-rgb)/0.2)]"
+            >
+              <Icon icon="lucide:linkedin" className="text-[14px]" /> LinkedIn
+            </a>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 /* ── easter eggs ── */
 function MatrixBlock() {
   const chars = "アカサタナハマヤラワ0123456789";
@@ -314,7 +387,7 @@ function MatrixBlock() {
     Array.from({ length: 46 }, () => chars[Math.floor(Math.random() * chars.length)]).join("")
   );
   return (
-    <div className="font-mono text-[11px] leading-4 text-sky-400/80">
+    <div className="font-mono text-[11px] leading-4 text-[rgb(var(--tc-a-rgb)/0.8)]">
       {rows.map((r, i) => (
         <motion.div
           key={i}
@@ -325,7 +398,7 @@ function MatrixBlock() {
           {r}
         </motion.div>
       ))}
-      <p className="mt-1 flex items-center gap-1.5 text-cyan-300">
+      <p className="mt-1 flex items-center gap-1.5 text-[rgb(var(--tc-c-rgb))]">
         Wake up, Nadjide... <Icon icon="lucide:rabbit" className="text-[15px]" /> follow the white rabbit.
       </p>
     </div>
@@ -364,7 +437,7 @@ function CopyEmail({ email }: { email: string }) {
           /* ignore */
         }
       }}
-      className="ml-2 inline-flex items-center gap-1 rounded border border-sky-500/30 bg-sky-500/5 px-1.5 py-0.5 text-[11px] text-sky-200 transition hover:bg-sky-500/15"
+      className="ml-2 inline-flex items-center gap-1 rounded border border-[rgb(var(--tc-d-rgb)/0.3)] bg-[rgb(var(--tc-d-rgb)/0.05)] px-1.5 py-0.5 text-[11px] text-[rgb(var(--tc-b-rgb))] transition hover:bg-[rgb(var(--tc-d-rgb)/0.15)]"
     >
       {copied ? (
         <>
@@ -384,11 +457,11 @@ function CopyEmail({ email }: { email: string }) {
 function Prompt({ small }: { small?: boolean }) {
   return (
     <span className="select-none whitespace-nowrap font-mono">
-      <span className="text-sky-400">visitor</span>
+      <span className="text-[rgb(var(--tc-a-rgb))]">visitor</span>
       <span className="text-stone-500">@</span>
-      <span className="text-sky-300">nadjide</span>
+      <span className="text-[rgb(var(--tc-b-rgb))]">nadjide</span>
       <span className="text-stone-500">:</span>
-      <span className="text-cyan-300">~</span>
+      <span className="text-[rgb(var(--tc-c-rgb))]">~</span>
       <span className="text-stone-500">{small ? " $" : "$"} </span>
     </span>
   );
@@ -396,7 +469,13 @@ function Prompt({ small }: { small?: boolean }) {
 
 /* ─────────────────────────── main component ─────────────────────────── */
 
-export default function Terminal() {
+export default function Terminal({
+  theme = "cyan",
+  onThemeChange,
+}: {
+  theme?: TermTheme;
+  onThemeChange?: (t: TermTheme) => void;
+} = {}) {
   const isCoarse = useIsCoarsePointer();
   const [mounted, setMounted] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
@@ -442,7 +521,7 @@ export default function Terminal() {
       <button
         type="button"
         onClick={() => run(cmd)}
-        className="rounded border border-sky-500/30 bg-sky-500/5 px-2 py-0.5 text-left font-mono text-[13px] text-sky-200 transition hover:border-sky-400/60 hover:bg-sky-500/15 hover:text-sky-100"
+        className="rounded border border-[rgb(var(--tc-d-rgb)/0.3)] bg-[rgb(var(--tc-d-rgb)/0.05)] px-2 py-0.5 text-left font-mono text-[13px] text-[rgb(var(--tc-b-rgb))] transition hover:border-[rgb(var(--tc-a-rgb)/0.6)] hover:bg-[rgb(var(--tc-d-rgb)/0.15)] hover:text-sky-100"
       >
         {children}
       </button>
@@ -478,11 +557,13 @@ export default function Terminal() {
           ["top", "processus"],
           ["ping", "latence"],
           ["neofetch", "infos système"],
+          ["hire-me", "on se rencontre ?"],
         ],
       ],
       [
         "système",
         [
+          ["theme", "changer de couleurs"],
           ["history", "historique"],
           ["clear", "vider l'écran"],
           ["help", "cette aide"],
@@ -519,7 +600,7 @@ export default function Terminal() {
 
   const aboutOutput = () => (
     <div className="space-y-3">
-      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-sky-300/90">{`Nadjide Omar — Ingénieur DevOps / Développeur Full Stack`}</pre>
+      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-[rgb(var(--tc-b-rgb)/0.9)]">{`Nadjide Omar — Ingénieur DevOps / Développeur Full Stack`}</pre>
       <div className="grid gap-1 font-mono text-[13px] sm:grid-cols-2">
         {[
           ["lucide:map-pin", "Localisation", "Nice (06)"],
@@ -528,8 +609,8 @@ export default function Terminal() {
           ["lucide:globe", "Langues", "Français natif · Anglais C1"],
         ].map(([icon, k, v]) => (
           <p key={k} className="flex items-center gap-1.5">
-            <Icon icon={icon} className="shrink-0 text-sky-400 text-[14px]" />
-            <span className="text-sky-400">{k}: </span>
+            <Icon icon={icon} className="shrink-0 text-[rgb(var(--tc-a-rgb))] text-[14px]" />
+            <span className="text-[rgb(var(--tc-a-rgb))]">{k}: </span>
             <span className="text-stone-300">{v}</span>
           </p>
         ))}
@@ -550,7 +631,7 @@ export default function Terminal() {
   const projectsOutput = () => (
     <div className="space-y-2">
       <p className="text-stone-400">
-        {projectsData.length} projets — <span className="text-sky-300">open &lt;nom&gt;</span> ou clique :
+        {projectsData.length} projets — <span className="text-[rgb(var(--tc-b-rgb))]">open &lt;nom&gt;</span> ou clique :
       </p>
       <div className="space-y-1.5 font-mono text-[13px]">
         {projectsData.map((p) => (
@@ -560,8 +641,8 @@ export default function Terminal() {
               onClick={() => run(`open ${projectKey(p.title)}`)}
               className="group flex min-w-0 items-baseline gap-2 text-left"
             >
-              <span className="text-sky-500/60">drwxr-xr-x</span>
-              <span className="font-bold text-cyan-300 underline-offset-4 group-hover:underline">
+              <span className="text-[rgb(var(--tc-d-rgb)/0.6)]">drwxr-xr-x</span>
+              <span className="font-bold text-[rgb(var(--tc-c-rgb))] underline-offset-4 group-hover:underline">
                 {projectKey(p.title)}/
               </span>
             </button>
@@ -580,7 +661,7 @@ export default function Terminal() {
       <div className="grid gap-3 sm:grid-cols-2">
         {skillGroups.map((g) => (
           <div key={g.category} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
-            <p className="font-mono text-xs uppercase tracking-wider text-sky-400">
+            <p className="font-mono text-xs uppercase tracking-wider text-[rgb(var(--tc-a-rgb))]">
               {g.category}
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -602,11 +683,11 @@ export default function Terminal() {
   const experienceOutput = () => (
     <div className="space-y-5">
       <div>
-        <p className="font-mono text-xs uppercase tracking-wider text-sky-400">
+        <p className="font-mono text-xs uppercase tracking-wider text-[rgb(var(--tc-a-rgb))]">
           # Expérience
         </p>
         {experiences.map((e) => (
-          <div key={e.id} className="mt-2 border-l border-sky-500/30 pl-4">
+          <div key={e.id} className="mt-2 border-l border-[rgb(var(--tc-d-rgb)/0.3)] pl-4">
             <p className="font-bold text-white">
               {e.title} <span className="text-stone-500">@ {e.company}</span>
             </p>
@@ -615,7 +696,7 @@ export default function Terminal() {
             <ul className="mt-2 space-y-0.5">
               {e.achievements.slice(0, 4).map((a, i) => (
                 <li key={i} className="text-sm text-stone-300">
-                  <span className="text-sky-500">▸ </span>
+                  <span className="text-[rgb(var(--tc-d-rgb))]">▸ </span>
                   {a}
                 </li>
               ))}
@@ -632,10 +713,10 @@ export default function Terminal() {
 
   const educationOutput = () => (
     <div className="space-y-1">
-      <p className="font-mono text-xs uppercase tracking-wider text-sky-400"># Formation</p>
+      <p className="font-mono text-xs uppercase tracking-wider text-[rgb(var(--tc-a-rgb))]"># Formation</p>
       <div className="mt-2 space-y-3">
         {[...formations].reverse().map((f) => (
-          <div key={f.id} className="border-l border-sky-500/30 pl-4">
+          <div key={f.id} className="border-l border-[rgb(var(--tc-d-rgb)/0.3)] pl-4">
             <p className="font-bold text-white">{f.title}</p>
             <p className="font-mono text-xs text-stone-500">
               {f.company} · {f.location} · {f.date}
@@ -664,12 +745,12 @@ export default function Terminal() {
         <p className="text-stone-400">Liens — cliquables :</p>
         {contactLinks.map(({ label, value, href }) => (
           <p key={label}>
-            <span className="inline-block w-24 text-sky-400">{label}</span>
+            <span className="inline-block w-24 text-[rgb(var(--tc-a-rgb))]">{label}</span>
             <a
               href={href}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel="noreferrer"
-              className="text-sky-300 underline-offset-2 hover:underline"
+              className="text-[rgb(var(--tc-b-rgb))] underline-offset-2 hover:underline"
             >
               {value}
             </a>
@@ -677,11 +758,11 @@ export default function Terminal() {
           </p>
         ))}
         <p className="pt-1">
-          <span className="inline-block w-24 text-sky-400">CV</span>
+          <span className="inline-block w-24 text-[rgb(var(--tc-a-rgb))]">CV</span>
           <button
             type="button"
             onClick={() => run("cv")}
-            className="text-cyan-300 underline-offset-2 hover:underline"
+            className="text-[rgb(var(--tc-c-rgb))] underline-offset-2 hover:underline"
           >
             sur demande →
           </button>
@@ -692,7 +773,7 @@ export default function Terminal() {
 
   const neofetchOutput = () => (
     <div className="flex flex-col gap-4 font-mono text-[12px] sm:flex-row sm:gap-6">
-      <pre className="text-sky-400">{String.raw`
+      <pre className="text-[rgb(var(--tc-a-rgb))]">{String.raw`
    _   _  ___
   | \ | |/ _ \   nadjide@portfolio
   |  \| | | | |  ----------------
@@ -701,11 +782,11 @@ export default function Terminal() {
                  Stack: Next.js · TS · Docker
 `}</pre>
       <div className="space-y-0.5 text-stone-300">
-        <p><span className="text-sky-400">role</span>: DevOps / Full Stack</p>
-        <p><span className="text-sky-400">projects</span>: {projectsData.length}</p>
-        <p><span className="text-sky-400">uptime</span>: dev depuis 2021</p>
-        <p><span className="text-sky-400">location</span>: Nice, FR</p>
-        <p><span className="text-sky-400">langs</span>: FR · EN (C1)</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">role</span>: DevOps / Full Stack</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">projects</span>: {projectsData.length}</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">uptime</span>: dev depuis 2021</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">location</span>: Nice, FR</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">langs</span>: FR · EN (C1)</p>
         <div className="mt-2 flex gap-1">
           {["#7dd3fc", "#38bdf8", "#22d3ee", "#60a5fa", "#0ea5e9"].map((c) => (
             <span key={c} className="h-3 w-3 rounded-sm" style={{ background: c }} />
@@ -771,8 +852,8 @@ export default function Terminal() {
           projectsData.find((p) => p.title.toLowerCase().includes(arg));
         if (found) {
           pushLine(
-            <p className="font-mono text-sky-300">
-              → launching <span className="text-cyan-300">{found.title}</span>...
+            <p className="font-mono text-[rgb(var(--tc-b-rgb))]">
+              → launching <span className="text-[rgb(var(--tc-c-rgb))]">{found.title}</span>...
             </p>
           );
           setOpenProject(found);
@@ -859,9 +940,9 @@ export default function Terminal() {
           <p className="font-mono text-[13px] text-stone-300">
             {new Date().toLocaleTimeString("fr-FR")} up {new Date().getFullYear() - 2021} years
             (dev depuis 2021), 1 user, load average:{" "}
-            <span className="text-sky-300">café 0.92</span>,{" "}
-            <span className="text-sky-300">projets 0.80</span>,{" "}
-            <span className="text-sky-300">veille 0.61</span>
+            <span className="text-[rgb(var(--tc-b-rgb))]">café 0.92</span>,{" "}
+            <span className="text-[rgb(var(--tc-b-rgb))]">projets 0.80</span>,{" "}
+            <span className="text-[rgb(var(--tc-b-rgb))]">veille 0.61</span>
           </p>
         );
         break;
@@ -886,7 +967,7 @@ export default function Terminal() {
             </p>
           ) : (
             <div>
-              <pre className="font-mono text-[12px] leading-4 text-sky-300">{CAT_ART}</pre>
+              <pre className="font-mono text-[12px] leading-4 text-[rgb(var(--tc-b-rgb))]">{CAT_ART}</pre>
               <p className="mt-1 font-mono text-stone-400">meow.</p>
             </div>
           )
@@ -903,16 +984,49 @@ export default function Terminal() {
       case "neofetch":
         pushLine(neofetchOutput());
         break;
+      case "hire-me":
+      case "hireme":
+      case "hire":
+        pushLine(<HireSequence />);
+        break;
+      case "theme": {
+        const t = arg.trim() as TermTheme;
+        const valid = TERM_THEMES.some((x) => x.id === t);
+        if (valid && onThemeChange) {
+          onThemeChange(t);
+          pushLine(
+            <p className="font-mono text-stone-300">
+              thème → <span className="text-[rgb(var(--tc-b-rgb))]">{t}</span>
+            </p>
+          );
+        } else {
+          pushLine(
+            <div className="space-y-1.5 font-mono text-[13px]">
+              <p className="text-stone-400">
+                Thème courant : <span className="text-[rgb(var(--tc-b-rgb))]">{theme}</span>. Choisis :
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {TERM_THEMES.map((x) => (
+                  <Cmd key={x.id} run={`theme ${x.id}`}>
+                    {x.id} · {x.label}
+                  </Cmd>
+                ))}
+              </div>
+            </div>
+          );
+        }
+        break;
+      }
       case "cv":
       case "resume": {
         pushLine(
-          <div className="font-mono text-sky-200/90 space-y-1">
+          <div className="font-mono text-[rgb(var(--tc-b-rgb)/0.9)] space-y-1">
             <p>Mon CV n'est pas en téléchargement direct.</p>
             <p>
               Écris-moi et je te l'envoie :{" "}
               <a
                 href="mailto:nadjide.omar@outlook.fr?subject=Demande%20de%20CV%20%E2%80%94%20Nadjide%20Omar"
-                className="text-sky-300 underline"
+                className="text-[rgb(var(--tc-b-rgb))] underline"
               >
                 email
               </a>
@@ -921,7 +1035,7 @@ export default function Terminal() {
                 href="https://www.linkedin.com/in/nadjide-omar-b55a01212/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sky-300 underline"
+                className="text-[rgb(var(--tc-b-rgb))] underline"
               >
                 LinkedIn
               </a>
@@ -954,7 +1068,7 @@ export default function Terminal() {
                   <button
                     type="button"
                     onClick={() => run(h)}
-                    className="text-sky-300 underline-offset-2 hover:underline"
+                    className="text-[rgb(var(--tc-b-rgb))] underline-offset-2 hover:underline"
                   >
                     {h}
                   </button>
@@ -973,8 +1087,8 @@ export default function Terminal() {
       case "brew":
         pushLine(
           <div>
-            <pre className="font-mono text-[11px] leading-3 text-sky-300">{COFFEE_ART}</pre>
-            <p className="mt-1 flex items-center gap-1.5 font-mono text-cyan-300">
+            <pre className="font-mono text-[11px] leading-3 text-[rgb(var(--tc-b-rgb))]">{COFFEE_ART}</pre>
+            <p className="mt-1 flex items-center gap-1.5 font-mono text-[rgb(var(--tc-c-rgb))]">
               <Icon icon="lucide:coffee" className="text-[15px]" /> brewing... café prêt. Bon code !
             </p>
           </div>
@@ -1067,7 +1181,7 @@ export default function Terminal() {
     }
   };
 
-  const quickCmds = ["help", "projects", "about", "skills", "git log", "docker ps", "deploy", "contact"];
+  const quickCmds = ["help", "projects", "about", "skills", "git log", "docker ps", "hire-me", "contact"];
 
   const completion = getCompletion(input);
   const ghost = completion && completion.startsWith(input.toLowerCase())
@@ -1118,7 +1232,7 @@ export default function Terminal() {
                 autoComplete="off"
                 autoCapitalize="off"
                 aria-label="Terminal input"
-                className="relative w-full border-none bg-transparent p-0 font-mono text-stone-100 caret-cyan-300 outline-none placeholder:text-stone-600"
+                className="relative w-full border-none bg-transparent p-0 font-mono text-stone-100 caret-[rgb(var(--tc-c-rgb))] outline-none placeholder:text-stone-600"
                 placeholder={ghost ? "" : "tape « help » puis Entrée…"}
               />
             </div>
@@ -1127,14 +1241,14 @@ export default function Terminal() {
 
         {/* mobile quick commands */}
         {isMobile ? (
-          <div className="shrink-0 border-t border-sky-500/20 bg-[#0c1119] px-3 py-2">
+          <div className="shrink-0 border-t border-[rgb(var(--tc-d-rgb)/0.2)] bg-[#0c1119] px-3 py-2">
             <div className="flex gap-2 overflow-x-auto pb-1">
               {quickCmds.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => run(c)}
-                  className="shrink-0 rounded-full border border-sky-500/30 bg-sky-500/5 px-3 py-1.5 font-mono text-xs text-sky-200 active:bg-sky-500/20"
+                  className="shrink-0 rounded-full border border-[rgb(var(--tc-d-rgb)/0.3)] bg-[rgb(var(--tc-d-rgb)/0.05)] px-3 py-1.5 font-mono text-xs text-[rgb(var(--tc-b-rgb))] active:bg-[rgb(var(--tc-d-rgb)/0.2)]"
                 >
                   {c}
                 </button>

@@ -1,40 +1,68 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { Icon } from "@iconify/react";
 import TerminalView from "./terminal/TerminalView";
 import SimpleView from "./simple/SimpleView";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 type View = "terminal" | "simple";
 const KEY = "portfolio_view";
+const WELCOME_KEY = "welcome_seen"; // sessionStorage : notice montrée une fois par session
 
 /* Durées de la transition (ms) : on bascule la vue quand l'écran est couvert. */
 const SWAP_AT = 560;
 const END_AT = 1180;
 
+/** Reflète la vue courante dans l'URL (?view=…) pour des liens partageables. */
+function syncUrl(v: View) {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", v);
+    window.history.replaceState(null, "", url);
+  } catch {
+    /* ignore */
+  }
+}
+
 export default function Portfolio() {
   const [view, setView] = useState<View>("terminal");
   const [pending, setPending] = useState<View | null>(null);
-  // Notice d'accueil affichée à chaque visite (pas de persistance volontairement).
-  const [showWelcome, setShowWelcome] = useState(true);
+  // Décidé au montage : deep-link (?view=) > sinon notice une fois par session.
+  const [showWelcome, setShowWelcome] = useState(false);
 
-  // Restaure le choix précédent après le montage (évite un mismatch d'hydratation).
+  // Montage : deep-link URL > choix mémorisé ; notice si jamais vue cette session.
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- init post-montage (SSR ne peut lire ni URL ni storage) */
+    let deepLinked = false;
     try {
-      const v = localStorage.getItem(KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (v === "simple" || v === "terminal") setView(v);
-      else if (v === "ide") setView("terminal"); // ancienne valeur (ex-vue IDE)
+      const param = new URLSearchParams(window.location.search).get("view");
+      if (param === "simple" || param === "terminal") {
+        setView(param);
+        deepLinked = true;
+      } else {
+        const v = localStorage.getItem(KEY);
+        if (v === "simple" || v === "terminal") setView(v);
+        else if (v === "ide") setView("terminal"); // ancienne valeur (ex-vue IDE)
+      }
     } catch {
       /* ignore */
     }
+    // Notice : seulement si pas de deep-link et pas déjà vue dans la session.
+    try {
+      if (!deepLinked && !sessionStorage.getItem(WELCOME_KEY)) setShowWelcome(true);
+    } catch {
+      setShowWelcome(!deepLinked);
+    }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   // Le terminal est une app plein écran (body figé) ; la vue simplifiée est une
   // page classique qui doit pouvoir défiler. globals.css fige le body par défaut.
   useEffect(() => {
     document.body.style.overflow = view === "simple" ? "auto" : "hidden";
+    syncUrl(view);
     return () => {
       document.body.style.overflow = "";
     };
@@ -58,6 +86,15 @@ export default function Portfolio() {
     };
   }, [pending]);
 
+  const dismissWelcome = () => {
+    setShowWelcome(false);
+    try {
+      sessionStorage.setItem(WELCOME_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
   const switchView = () => {
     if (pending) return;
     setPending(view === "terminal" ? "simple" : "terminal");
@@ -65,7 +102,7 @@ export default function Portfolio() {
 
   // Choix depuis la notice d'accueil : bascule directe (sans transition) + ferme.
   const chooseView = (v: View) => {
-    setShowWelcome(false);
+    dismissWelcome();
     if (v !== view) {
       setView(v);
       try {
@@ -77,7 +114,7 @@ export default function Portfolio() {
   };
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       {view === "terminal" ? (
         <TerminalView onSwitchView={switchView} />
       ) : (
@@ -90,10 +127,10 @@ export default function Portfolio() {
 
       <AnimatePresence>
         {showWelcome ? (
-          <WelcomeModal onChoose={chooseView} onClose={() => setShowWelcome(false)} />
+          <WelcomeModal onChoose={chooseView} onClose={dismissWelcome} />
         ) : null}
       </AnimatePresence>
-    </>
+    </MotionConfig>
   );
 }
 
@@ -106,6 +143,15 @@ function WelcomeModal({
   onChoose: (v: View) => void;
   onClose: () => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, true);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -115,6 +161,10 @@ function WelcomeModal({
       className="fixed inset-0 z-[150] flex items-center justify-center bg-black/75 p-4 backdrop-blur-md"
     >
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Bienvenue — choisissez une vue"
         initial={{ opacity: 0, scale: 0.94, y: 18 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 8 }}

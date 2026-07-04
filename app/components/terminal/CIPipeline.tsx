@@ -34,7 +34,7 @@ export default function CIPipeline() {
               {state === "done" ? (
                 <Icon icon="lucide:circle-check" className="text-[14px] text-green-400" />
               ) : state === "run" ? (
-                <Icon icon="lucide:loader-circle" className="animate-spin text-[14px] text-sky-400" />
+                <Icon icon="lucide:loader-circle" className="animate-spin text-[14px] text-[rgb(var(--tc-a-rgb))]" />
               ) : (
                 <Icon icon="lucide:circle" className="text-[14px] text-stone-600" />
               )}

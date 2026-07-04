@@ -66,15 +66,15 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
-      className="absolute inset-0 z-30 rounded-2xl overflow-hidden bg-[#0d1117] border border-sky-500/30 flex flex-col"
+      className="absolute inset-0 z-30 rounded-2xl overflow-hidden bg-[#0d1117] border border-[rgb(var(--tc-d-rgb)/0.3)] flex flex-col"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Console header */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-sky-500/20 shrink-0">
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-[rgb(var(--tc-d-rgb)/0.2)] shrink-0">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-        <div className="w-2.5 h-2.5 rounded-full bg-sky-500/70" />
-        <span className="ml-2 text-xs text-sky-400/70 font-mono">
+        <div className="w-2.5 h-2.5 rounded-full bg-[rgb(var(--tc-d-rgb)/0.7)]" />
+        <span className="ml-2 text-xs text-[rgb(var(--tc-a-rgb)/0.7)] font-mono">
           Building {projectTitle}...
         </span>
       </div>
@@ -89,13 +89,13 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
             transition={{ duration: 0.12 }}
             className={
               line.startsWith("Deploying")
-                ? "text-sky-400 font-semibold"
+                ? "text-[rgb(var(--tc-a-rgb))] font-semibold"
                 : line.startsWith("$")
-                ? "text-cyan-400"
+                ? "text-[rgb(var(--tc-c-rgb))]"
                 : line.startsWith("Step")
                 ? "text-white"
                 : line.startsWith("Successfully")
-                ? "text-sky-300"
+                ? "text-[rgb(var(--tc-b-rgb))]"
                 : "text-gray-500"
             }
           >
@@ -113,7 +113,7 @@ const BuildConsole: React.FC<BuildConsoleProps> = ({ projectTitle, onComplete })
         <motion.span
           animate={{ opacity: [1, 0, 1] }}
           transition={{ duration: 0.8, repeat: Infinity }}
-          className="inline-block w-1.5 h-3.5 bg-sky-400 ml-0.5 align-middle"
+          className="inline-block w-1.5 h-3.5 bg-[rgb(var(--tc-a-rgb))] ml-0.5 align-middle"
         />
       </div>
     </motion.div>

@@ -5,6 +5,33 @@
 :root {
   --background: #1e1e1e;
   --foreground: #cccccc;
+
+  /* Palette d'accent du terminal (défaut : cyan). Format « R G B » pour
+     pouvoir moduler l'alpha via rgb(var(--tc-x-rgb) / .5). */
+  --tc-a-rgb: 56 189 248; /* accent   (ex sky-400)  */
+  --tc-b-rgb: 125 211 252; /* clair    (ex sky-300)  */
+  --tc-c-rgb: 103 232 249; /* vif      (ex cyan-300) */
+  --tc-d-rgb: 14 165 233; /* profond  (ex sky-500)  */
+}
+
+/* ───────── Thèmes du terminal (cyan · vert phosphore · ambre CRT) ───────── */
+[data-term-theme="cyan"] {
+  --tc-a-rgb: 56 189 248;
+  --tc-b-rgb: 125 211 252;
+  --tc-c-rgb: 103 232 249;
+  --tc-d-rgb: 14 165 233;
+}
+[data-term-theme="green"] {
+  --tc-a-rgb: 34 197 94;
+  --tc-b-rgb: 134 239 172;
+  --tc-c-rgb: 74 222 128;
+  --tc-d-rgb: 22 163 74;
+}
+[data-term-theme="amber"] {
+  --tc-a-rgb: 245 158 11;
+  --tc-b-rgb: 252 211 77;
+  --tc-c-rgb: 251 191 36;
+  --tc-d-rgb: 217 119 6;
 }
 
 body {
