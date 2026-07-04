@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-ts-nine.vercel.app"),
   title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
   description:
-    "Portfolio interactif façon IDE (VS Code) de Nadjide Omar, Ingénieur DevOps & Développeur Full Stack : Docker, CI/CD, Next.js, FastAPI, Python. Explore les fichiers, lance les scripts ou tape « help » dans le terminal.",
+    "Portfolio interactif de Nadjide Omar, Ingénieur DevOps & Développeur Full Stack : Docker, CI/CD, Next.js, FastAPI, Python. Un vrai terminal jouable — tape « help » — ou une vue simplifiée, au choix.",
   keywords: ["Ingénieur DevOps", "Développeur Full Stack", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python", "Portfolio", "Nadjide Omar"],
   authors: [{ name: "Nadjide Omar" }],
   creator: "Nadjide Omar",
@@ -28,13 +28,13 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://portfolio-ts-nine.vercel.app",
     title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
-    description: "Portfolio interactif façon IDE — explore les fichiers, lance les scripts, ou tape « help » dans le terminal.",
+    description: "Portfolio interactif — un terminal DevOps jouable ou une vue simplifiée, au choix. Tape « help ».",
     siteName: "Portfolio Nadjide Omar",
   },
   twitter: {
     card: "summary_large_image",
     title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
-    description: "Portfolio interactif façon IDE (VS Code) — Docker, CI/CD, Next.js, FastAPI, Python.",
+    description: "Portfolio interactif avec terminal DevOps jouable — Docker, CI/CD, Next.js, FastAPI, Python.",
   },
 };
 

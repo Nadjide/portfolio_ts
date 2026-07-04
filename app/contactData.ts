@@ -1,7 +1,7 @@
 import type { ContactLink } from "./types";
 
 /* Source UNIQUE des liens de contact — réutilisée par le terminal
-   (commande « contact »), le fichier contact.ts et profile.json. */
+   (commande « contact ») et la vue simplifiée. */
 
 export const contactLinks: ContactLink[] = [
   {

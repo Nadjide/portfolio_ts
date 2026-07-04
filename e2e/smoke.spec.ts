@@ -1,41 +1,67 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Portfolio IDE", () => {
-  test("affiche le shell IDE (explorer, scripts, terminal)", async ({ page }) => {
+/* La notice d'accueil s'affiche à chaque visite : chaque test commence
+   par choisir une vue (ou fermer la notice). */
+
+test.describe("Notice d'accueil", () => {
+  test("propose les deux vues", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText("Explorer", { exact: false }).first()).toBeVisible();
+    await expect(page.getByText("Ce portfolio se découvre", { exact: false })).toBeVisible();
+    // les cartes de choix (libellé + description, distinctes du bouton flottant)
+    await expect(page.getByRole("button", { name: /L'essentiel de mon profil/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Vue terminal/ })).toBeVisible();
+  });
+});
+
+test.describe("Vue terminal", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: /Vue terminal/ }).click();
+  });
+
+  test("démarre sur le prompt avec l'aide affichée", async ({ page }) => {
+    await expect(page.getByText("visitor").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "about", exact: true })).toBeVisible();
-    await expect(page.getByText("Terminal", { exact: true })).toBeVisible();
   });
 
-  test("ouvre un fichier dans un onglet de l'éditeur", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("treeitem", { name: "contact.ts" }).click();
-    await expect(page.getByRole("tab", { name: /contact\.ts/ })).toBeVisible();
-    // contenu généré visible dans l'éditeur
-    await expect(page.getByText("ContactLink").first()).toBeVisible();
-  });
-
-  test("un script s'exécute dans le terminal", async ({ page }) => {
-    await page.goto("/");
-    // attendre la fin du boot du terminal
-    await expect(page.getByText("ready.", { exact: false })).toBeVisible({ timeout: 15000 });
+  test("la commande about s'exécute", async ({ page }) => {
     await page.getByRole("button", { name: "about", exact: true }).click();
     await expect(page.getByText("Localisation", { exact: false })).toBeVisible();
   });
 
-  test("la commande ci joue la pipeline jusqu'au succès", async ({ page }) => {
-    await page.goto("/");
+  test("docker ps liste les conteneurs", async ({ page }) => {
+    const input = page.getByLabel("Terminal input");
+    await input.fill("docker ps");
+    await input.press("Enter");
+    await expect(page.getByText("portfolio-web")).toBeVisible();
+  });
+
+  test("git log raconte le parcours en commits", async ({ page }) => {
+    const input = page.getByLabel("Terminal input");
+    await input.fill("git log");
+    await input.press("Enter");
+    await expect(page.getByText("Hello, World!", { exact: false })).toBeVisible();
+  });
+
+  test("la pipeline ci va jusqu'au succès", async ({ page }) => {
     await page.getByRole("button", { name: "ci", exact: true }).click();
     await expect(page.getByText("All checks passed")).toBeVisible({ timeout: 15000 });
   });
+});
 
-  test("bascule entre la vue IDE et la vue simplifiée", async ({ page }) => {
+test.describe("Bascule de vues", () => {
+  test("terminal → vue simplifiée → terminal", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("button", { name: /Vue simplifiée/ }).click();
-    await expect(page.getByRole("heading", { name: "Nadjide Omar", level: 1 })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Vue développeur/ })).toBeVisible();
-    await page.getByRole("button", { name: /Vue développeur/ }).click();
-    await expect(page.getByText("Explorer", { exact: false }).first()).toBeVisible();
+    await page.getByRole("button", { name: /Vue terminal/ }).click();
+
+    // vers la vue simplifiée (bouton flottant, transition ~1,2 s)
+    await page.getByRole("button", { name: "Vue simplifiée", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "Nadjide Omar", level: 1 })
+    ).toBeVisible({ timeout: 10000 });
+
+    // retour au terminal
+    await page.getByRole("button", { name: /Terminal/ }).click();
+    await expect(page.getByText("visitor").first()).toBeVisible({ timeout: 10000 });
   });
 });

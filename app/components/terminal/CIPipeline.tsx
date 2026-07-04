@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 
-/* Fausse pipeline CI/CD animée pour la commande « ci » du terminal. */
+/* Pipeline CI/CD animée pour la commande « ci » du terminal. */
 
 const STEPS = [
   { id: "lint", label: "Lint", cmd: "eslint . --max-warnings 0" },

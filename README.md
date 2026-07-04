@@ -4,7 +4,7 @@
 
 **Ingénieur DevOps & Développeur Full Stack**
 
-Un portfolio interactif avec **deux expériences** : une vitrine claire pour les recruteurs, et un **IDE façon VS Code** (avec terminal jouable) pour les développeurs.
+Un portfolio interactif avec **deux expériences** : une vitrine moderne et claire, et un **vrai terminal DevOps jouable** pour les curieux.
 
 **[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)**
 
@@ -16,55 +16,43 @@ Un portfolio interactif avec **deux expériences** : une vitrine claire pour les
 
 ## Le concept
 
-Le portfolio propose deux vues, basculables à tout moment (avec une petite animation de transition « écran qui s'allume ») :
+Le portfolio propose deux vues, basculables à tout moment (avec une animation de transition « écran qui s'allume ») :
 
-### Vue recruteur
+### Vue simplifiée
 
-Une landing page moderne, droit au but : hero animé, marquee de technologies, grille *bento*, *spotlight cards* qui suivent la souris, timelines de parcours, et fiches projets avec démo vidéo. Pensée pour qu'un profil non-technique comprenne l'essentiel en quelques secondes.
+Une landing page moderne, droit au but : hero animé, marquee de technologies, grille *bento*, *spotlight cards* qui suivent la souris, timelines de parcours, et fiches projets avec démo vidéo. Pensée pour comprendre l'essentiel en quelques secondes.
 
-### Vue développeur
+### Vue terminal
 
-Une reproduction d'un éditeur **VS Code** entièrement fonctionnelle :
+Un terminal plein écran, façon poste de travail DevOps : fenêtre macOS (le bouton rouge ferme… vers la vue simplifiée), barre de statut façon **tmux**, autocomplétion (`Tab`), historique (`↑`/`↓`), et un jeu de commandes qui raconte le profil.
 
-- **Explorateur de fichiers** (icônes façon *Material Icon Theme*) où chaque fichier expose une partie du CV (`projects/`, `experience/`, `about/`, `skills.json`…).
-- **Recherche** dans le contenu des fichiers, **Run & Debug** pour lancer les démos de projets.
-- **Éditeur** avec coloration syntaxique et rendu Markdown.
-- **Terminal interactif** — le cœur de l'expérience.
-
-#### Commandes du terminal
+#### Commandes
 
 | Commande | Description |
 |---|---|
-| `help` | Liste des commandes |
+| `help` | Liste des commandes (profil · ops · système) |
 | `about` / `whoami` | Présentation |
-| `projects` / `ls` | Liste des projets |
-| `open <projet>` | Lance la démo d'un projet |
-| `cat <fichier>` | Ouvre un fichier dans l'éditeur |
+| `projects` / `open <projet>` | Liste et démos des projets |
 | `skills` · `experience` · `education` · `contact` | Sections du CV |
-| `ci` | Joue une pipeline CI/CD animée |
-| `cv` | Télécharge le CV (PDF) |
-| `neofetch` | Infos « système » |
+| `git log` | Le parcours raconté en commits |
+| `docker ps` / `kubectl get pods` | L'« infra » du portfolio |
+| `ci` / `deploy` | Pipeline CI/CD et mise en prod animées |
+| `top` · `ping` · `uptime` · `neofetch` | Le côté ops |
+| `cv` | CV sur demande (email / LinkedIn) |
 
-> Quelques commandes cachées traînent aussi (`matrix`, `coffee`, `sudo`…)
+> Quelques commandes cachées traînent aussi (`matrix`, `coffee`, `sudo`, `ssh prod`…)
 
 ## Architecture
 
-Le contenu vit dans **une seule source de vérité** ([`app/profileData.ts`](app/profileData.ts), [`portfolioContent.ts`](app/portfolioContent.ts), [`projectsData.ts`](app/projectsData.ts), [`contactData.ts`](app/contactData.ts)). Ces données alimentent à la fois :
-
-1. la **vue recruteur**,
-2. le **terminal**,
-3. et le **faux système de fichiers** de l'IDE ([`app/ide/fileSystem.ts`](app/ide/fileSystem.ts), qui *génère* les fichiers affichés à partir des données).
-
-→ Mettre à jour le CV se fait à **un seul endroit**, sans jamais désynchroniser les trois vues.
+Le contenu vit dans **une seule source de vérité** ([`app/profileData.ts`](app/profileData.ts), [`portfolioContent.ts`](app/portfolioContent.ts), [`projectsData.ts`](app/projectsData.ts), [`contactData.ts`](app/contactData.ts)). Ces données alimentent à la fois la **vue simplifiée** et le **terminal** — mettre à jour le CV se fait à un seul endroit, sans jamais désynchroniser les vues.
 
 ```
 app/
 ├─ components/
-│  ├─ simple/      # Vue recruteur (SimpleView)
-│  ├─ ide/         # IDE : ActivityBar, Sidebar, Editor, Search, Run, Terminal chrome…
-│  └─ terminal/    # Terminal interactif + fenêtre de projet
-├─ ide/            # Système de fichiers simulé (+ tests)
+│  ├─ simple/      # Vue simplifiée (SimpleView)
+│  └─ terminal/    # TerminalView (chrome + statut) · Terminal · ProjectWindow · CIPipeline
 ├─ *Data.ts        # Source unique du contenu
+├─ data.test.ts    # Tests d'intégrité des données (+ garde-fou confidentialité)
 ├─ icon.png        # Favicon (badge logo)
 └─ opengraph-image.tsx  # Image de partage (OG) générée
 ```
@@ -74,8 +62,7 @@ app/
 - **[Next.js 16](https://nextjs.org)** (App Router) · **React 19** · **TypeScript**
 - **[Tailwind CSS](https://tailwindcss.com)** pour le style
 - **[Framer Motion](https://www.framer.com/motion/)** pour les animations
-- **[Iconify](https://iconify.design)** (`@iconify/react`) pour les icônes (Lucide, logos de marque, Material Icon Theme)
-- `react-markdown` + `react-syntax-highlighter` pour les viewers de l'éditeur
+- **[Iconify](https://iconify.design)** (`@iconify/react`) pour les icônes (Lucide + logos de marque)
 - **Vercel Analytics**
 
 ## Démarrage
@@ -100,7 +87,7 @@ Ouvrir [http://localhost:3000](http://localhost:3000).
 
 ## Tests
 
-Les tests unitaires ([Vitest](https://vitest.dev)) valident la cohérence du système de fichiers simulé (slugs, génération d'un fichier par projet/expérience, JSON valide). Tests e2e via [Playwright](https://playwright.dev).
+Les tests unitaires ([Vitest](https://vitest.dev)) valident l'intégrité des données affichées (champs requis, ids uniques, liens exploitables) et incluent un **garde-fou de confidentialité** qui fait échouer la CI si une donnée sensible est réintroduite. Tests e2e via [Playwright](https://playwright.dev).
 
 ## Contact
 

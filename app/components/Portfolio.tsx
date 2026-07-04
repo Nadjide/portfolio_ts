@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import IDELayout from "./ide/IDELayout";
+import TerminalView from "./terminal/TerminalView";
 import SimpleView from "./simple/SimpleView";
 
-type View = "ide" | "simple";
+type View = "terminal" | "simple";
 const KEY = "portfolio_view";
 
 /* Durées de la transition (ms) : on bascule la vue quand l'écran est couvert. */
@@ -14,7 +14,7 @@ const SWAP_AT = 560;
 const END_AT = 1180;
 
 export default function Portfolio() {
-  const [view, setView] = useState<View>("ide");
+  const [view, setView] = useState<View>("terminal");
   const [pending, setPending] = useState<View | null>(null);
   // Notice d'accueil affichée à chaque visite (pas de persistance volontairement).
   const [showWelcome, setShowWelcome] = useState(true);
@@ -24,14 +24,15 @@ export default function Portfolio() {
     try {
       const v = localStorage.getItem(KEY);
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (v === "simple" || v === "ide") setView(v);
+      if (v === "simple" || v === "terminal") setView(v);
+      else if (v === "ide") setView("terminal"); // ancienne valeur (ex-vue IDE)
     } catch {
       /* ignore */
     }
   }, []);
 
-  // L'IDE est une app plein écran (body figé) ; la vue recruteur est une page
-  // classique qui doit pouvoir défiler. globals.css fige le body par défaut.
+  // Le terminal est une app plein écran (body figé) ; la vue simplifiée est une
+  // page classique qui doit pouvoir défiler. globals.css fige le body par défaut.
   useEffect(() => {
     document.body.style.overflow = view === "simple" ? "auto" : "hidden";
     return () => {
@@ -59,7 +60,7 @@ export default function Portfolio() {
 
   const switchView = () => {
     if (pending) return;
-    setPending(view === "ide" ? "simple" : "ide");
+    setPending(view === "terminal" ? "simple" : "terminal");
   };
 
   // Choix depuis la notice d'accueil : bascule directe (sans transition) + ferme.
@@ -77,8 +78,8 @@ export default function Portfolio() {
 
   return (
     <>
-      {view === "ide" ? (
-        <IDELayout onSwitchView={switchView} />
+      {view === "terminal" ? (
+        <TerminalView onSwitchView={switchView} />
       ) : (
         <SimpleView onSwitchView={switchView} />
       )}
@@ -149,11 +150,11 @@ function WelcomeModal({
             className="group flex flex-col items-start gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left transition hover:border-sky-400/50 hover:bg-white/[0.06]"
           >
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500/10 ring-1 ring-sky-400/20">
-              <Icon icon="lucide:briefcase" className="text-xl text-sky-300" />
+              <Icon icon="lucide:panels-top-left" className="text-xl text-sky-300" />
             </span>
-            <span className="font-semibold text-white">Vue recruteur</span>
+            <span className="font-semibold text-white">Vue simplifiée</span>
             <span className="text-xs leading-5 text-stone-400">
-              Mon profil présenté clairement, droit au but.
+              L'essentiel de mon profil, présenté clairement.
             </span>
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-sky-400">
               Découvrir <Icon icon="lucide:arrow-right" className="transition-transform group-hover:translate-x-0.5" />
@@ -162,15 +163,15 @@ function WelcomeModal({
 
           <button
             type="button"
-            onClick={() => onChoose("ide")}
+            onClick={() => onChoose("terminal")}
             className="group flex flex-col items-start gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left transition hover:border-cyan-400/50 hover:bg-white/[0.06]"
           >
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 ring-1 ring-cyan-400/20">
               <Icon icon="lucide:square-terminal" className="text-xl text-cyan-300" />
             </span>
-            <span className="font-semibold text-white">Vue développeur</span>
+            <span className="font-semibold text-white">Vue terminal</span>
             <span className="text-xs leading-5 text-stone-400">
-              Un IDE interactif avec terminal jouable (tapez <span className="font-mono text-cyan-300">help</span>).
+              Un terminal interactif façon DevOps (tapez <span className="font-mono text-cyan-300">help</span>).
             </span>
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-cyan-400">
               Explorer <Icon icon="lucide:arrow-right" className="transition-transform group-hover:translate-x-0.5" />
@@ -200,20 +201,20 @@ function TransitionOverlay({ target }: { target: View }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.28 }}
       className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden ${
-        target === "ide" ? "bg-black" : "bg-[#070b12]"
+        target === "terminal" ? "bg-black" : "bg-[#070b12]"
       }`}
     >
-      {target === "ide" ? <BootScreen /> : <ProfileScreen />}
+      {target === "terminal" ? <BootScreen /> : <ProfileScreen />}
     </motion.div>
   );
 }
 
-/* Vers la vue dev : un écran/PC qui « s'allume » (effet CRT). */
+/* Vers la vue terminal : un écran/PC qui « s'allume » (effet CRT). */
 function BootScreen() {
   const boot = [
     "> mounting /portfolio",
     "> loading modules: next · typescript · docker",
-    "> starting dev environment",
+    "> starting nadjide-sh",
   ];
   return (
     <motion.div
@@ -259,7 +260,7 @@ function BootScreen() {
   );
 }
 
-/* Vers la vue recruteur : transition douce (glow + scintillement). */
+/* Vers la vue simplifiée : transition douce (glow + scintillement). */
 function ProfileScreen() {
   return (
     <motion.div

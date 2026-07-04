@@ -1,33 +1,14 @@
 "use client";
 
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import { projectsData, type ProjectData } from "../../projectsData";
 import { skillGroups, experiences, formations } from "../../portfolioContent";
 import { contactLinks } from "../../contactData";
-import { findFile, allFiles } from "../../ide/fileSystem";
 import { useIsCoarsePointer } from "../../hooks/useIsCoarsePointer";
 import ProjectWindow from "./ProjectWindow";
-import CIPipeline from "../ide/CIPipeline";
-
-/** API impérative exposée au layout IDE (panneau Scripts, boutons "Run demo"…). */
-export interface TerminalHandle {
-  run: (cmd: string) => void;
-  clear: () => void;
-}
-
-export interface TerminalProps {
-  /** Ouvre un fichier dans l'éditeur central (commandes « cat » / « code »). */
-  onOpenPath?: (path: string) => void;
-}
+import CIPipeline from "./CIPipeline";
 
 /* ─────────────────────────── helpers & data ─────────────────────────── */
 
@@ -39,27 +20,31 @@ const projectKey = (title: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+/* Liste utilisée par l'autocomplétion (Tab / →). Les commandes multi-mots
+   sont complétées d'un bloc : « dock » → « docker ps ». */
 const COMMANDS = [
   "help",
   "about",
   "whoami",
   "projects",
-  "ls",
   "open",
-  "cat",
-  "code",
   "skills",
-  "stack",
   "experience",
   "education",
-  "parcours",
   "contact",
-  "ci",
   "cv",
+  "ci",
+  "deploy",
+  "docker ps",
+  "kubectl get pods",
+  "git log",
+  "top",
+  "ping",
+  "uptime",
+  "ssh prod",
   "neofetch",
-  "social",
-  "clear",
   "history",
+  "clear",
   "matrix",
   "coffee",
   "sudo",
@@ -68,32 +53,258 @@ const COMMANDS = [
 
 type Line = { id: number; node: React.ReactNode };
 
-/* ── inline autocomplete: returns the fully-completed command for an input ── */
+/* ── autocomplétion inline : renvoie la commande complétée pour une saisie ── */
 function getCompletion(value: string): string {
-  if (!value) return "";
-  const parts = value.split(/\s+/);
-  if (parts.length === 1) {
-    const m = COMMANDS.find((c) => c.startsWith(value.toLowerCase()) && c !== value.toLowerCase());
-    return m ?? "";
-  }
-  const [name, ...rest] = parts;
-  const lc = name.toLowerCase();
+  const v = value.toLowerCase();
+  if (!v) return "";
+  const m = COMMANDS.find((c) => c.startsWith(v) && c !== v);
+  if (m) return m;
+  const [name, ...rest] = value.split(/\s+/);
   const partial = rest.join(" ").toLowerCase();
-  if (["open", "cd"].includes(lc)) {
-    if (!partial) return "";
+  if (["open", "cd"].includes(name.toLowerCase()) && partial) {
     const p = projectsData.find((pr) => projectKey(pr.title).startsWith(partial));
     if (p) return `${name} ${projectKey(p.title)}`;
   }
-  if (["cat", "code"].includes(lc)) {
-    if (!partial) return "";
-    const f = allFiles().find(
-      (file) =>
-        file.path.toLowerCase().startsWith(partial) ||
-        file.name.toLowerCase().startsWith(partial)
-    );
-    if (f) return `${name} ${f.path}`;
-  }
   return "";
+}
+
+/* Petit hash déterministe → faux SHA git stable pour un libellé donné. */
+const fakeSha = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = ((h ^ s.charCodeAt(i)) * 16777619) >>> 0;
+  return h.toString(16).padStart(7, "0").slice(0, 7);
+};
+
+/* ─────────────────────────── blocs « ops » ─────────────────────────── */
+
+/** `docker ps` — l'infra (fictive mais crédible) qui fait tourner le portfolio. */
+function DockerPsBlock() {
+  const rows = [
+    ["portfolio-web", "nadjide/portfolio:latest", "Up 5 weeks (healthy)", ":3000→3000"],
+    ["api", "fastapi:py3.12", "Up 5 weeks (healthy)", ":8000→8000"],
+    ["db", "postgres:16-alpine", "Up 2 months (healthy)", ":5432"],
+    ["cache", "redis:7-alpine", "Up 2 months", ":6379"],
+    ["llm", "ollama/mistral:7b", "Up 12 days (healthy)", ":11434"],
+    ["edge", "nginx:1.27-alpine", "Up 2 months", ":80→443"],
+  ];
+  return (
+    <div className="overflow-x-auto font-mono text-[12px] leading-5">
+      <div className="grid min-w-[34rem] grid-cols-[10rem_13rem_13rem_1fr] gap-x-4 text-stone-500">
+        <span>NAMES</span>
+        <span>IMAGE</span>
+        <span>STATUS</span>
+        <span>PORTS</span>
+      </div>
+      {rows.map(([name, image, status, ports]) => (
+        <div
+          key={name}
+          className="grid min-w-[34rem] grid-cols-[10rem_13rem_13rem_1fr] gap-x-4"
+        >
+          <span className="text-cyan-300">{name}</span>
+          <span className="text-stone-300">{image}</span>
+          <span className="text-green-400">{status}</span>
+          <span className="text-stone-400">{ports}</span>
+        </div>
+      ))}
+      <p className="mt-1 text-stone-500">6 conteneurs · 0 down — tout roule.</p>
+    </div>
+  );
+}
+
+/** `kubectl get pods` — parce qu'un DevOps sans k8s, c'est louche. */
+function KubectlBlock() {
+  const rows = [
+    ["web-7f9c4d5b6-x2p4q", "1/1", "Running", "0", "12d"],
+    ["api-6b8f7c9d4-p9k2m", "1/1", "Running", "0", "12d"],
+    ["llm-0", "1/1", "Running", "0", "5d"],
+    ["grafana-59d6f8b7c-w8n3z", "1/1", "Running", "0", "34d"],
+  ];
+  return (
+    <div className="overflow-x-auto font-mono text-[12px] leading-5">
+      <div className="grid min-w-[30rem] grid-cols-[15rem_4rem_6rem_6rem_1fr] gap-x-3 text-stone-500">
+        <span>NAME</span>
+        <span>READY</span>
+        <span>STATUS</span>
+        <span>RESTARTS</span>
+        <span>AGE</span>
+      </div>
+      {rows.map(([name, ready, status, restarts, age]) => (
+        <div
+          key={name}
+          className="grid min-w-[30rem] grid-cols-[15rem_4rem_6rem_6rem_1fr] gap-x-3"
+        >
+          <span className="text-cyan-300">{name}</span>
+          <span className="text-stone-300">{ready}</span>
+          <span className="text-green-400">{status}</span>
+          <span className="text-stone-400">{restarts}</span>
+          <span className="text-stone-400">{age}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** `git log` — le parcours raconté en commits (données réelles). */
+function GitLogBlock() {
+  const entries = [
+    ...experiences.map((e) => ({
+      scope: "xp",
+      label: `${e.title} @ ${e.company}`,
+      date: e.date,
+    })),
+    ...[...formations].reverse().map((f) => ({
+      scope: "edu",
+      label: `${f.title} — ${f.company}`,
+      date: f.date,
+    })),
+  ];
+  return (
+    <div className="space-y-0.5 overflow-x-auto font-mono text-[12.5px] leading-5">
+      {entries.map((e, i) => (
+        <p key={e.label} className="whitespace-nowrap">
+          <span className="text-stone-500">* </span>
+          <span className="text-yellow-500">{fakeSha(e.label)}</span>
+          {i === 0 ? (
+            <span className="text-cyan-300"> (HEAD → master, origin/prod)</span>
+          ) : null}
+          <span className="text-stone-200"> feat({e.scope}): {e.label}</span>
+          <span className="text-stone-500"> · {e.date}</span>
+        </p>
+      ))}
+      <p className="whitespace-nowrap">
+        <span className="text-stone-500">* </span>
+        <span className="text-yellow-500">0000000</span>
+        <span className="text-stone-200"> init: premier « Hello, World! »</span>
+        <span className="text-stone-500"> · le début de tout</span>
+      </p>
+    </div>
+  );
+}
+
+/** `top` — les processus qui tournent chez moi. */
+const PROCS = [
+  { pid: 1, cmd: "next-server", cpu: 12.4, mem: 6.1 },
+  { pid: 42, cmd: "fastapi", cpu: 8.7, mem: 3.4 },
+  { pid: 128, cmd: "ollama serve", cpu: 71.2, mem: 38.9 },
+  { pid: 256, cmd: "postgres", cpu: 3.1, mem: 8.8 },
+  { pid: 512, cmd: "dockerd", cpu: 2.4, mem: 4.0 },
+  { pid: 1024, cmd: "veille-techno", cpu: 24.8, mem: 2.2 },
+  { pid: 2048, cmd: "coffee-daemon", cpu: 0.5, mem: 0.1 },
+  { pid: 9001, cmd: "motivation", cpu: 99.9, mem: 1.3 },
+];
+
+function TopBlock() {
+  return (
+    <div className="overflow-x-auto font-mono text-[12px] leading-5">
+      <p className="text-stone-400">
+        top — up {new Date().getFullYear() - 2021} years · 8 tasks, 0 zombie
+      </p>
+      <div className="mt-1 grid min-w-[28rem] grid-cols-[3.5rem_9rem_1fr_4rem_4rem] gap-x-3 text-stone-500">
+        <span>PID</span>
+        <span>COMMAND</span>
+        <span />
+        <span className="text-right">%CPU</span>
+        <span className="text-right">%MEM</span>
+      </div>
+      {PROCS.map((p) => (
+        <div
+          key={p.pid}
+          className="grid min-w-[28rem] grid-cols-[3.5rem_9rem_1fr_4rem_4rem] items-center gap-x-3"
+        >
+          <span className="text-stone-500">{p.pid}</span>
+          <span className="text-cyan-300">{p.cmd}</span>
+          <span className="h-1.5 overflow-hidden rounded-full bg-white/5">
+            <span
+              className={`block h-full rounded-full ${
+                p.cpu > 90 ? "bg-fuchsia-400" : p.cpu > 50 ? "bg-sky-400" : "bg-sky-600/70"
+              }`}
+              style={{ width: `${Math.min(p.cpu, 100)}%` }}
+            />
+          </span>
+          <span className="text-right text-stone-300">{p.cpu.toFixed(1)}</span>
+          <span className="text-right text-stone-400">{p.mem.toFixed(1)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** `ping` — réponses animées, latence honteusement bonne. */
+function PingBlock({ host }: { host: string }) {
+  const [n, setN] = useState(0);
+  const [times] = useState(() =>
+    Array.from({ length: 4 }, () => (8 + Math.random() * 18).toFixed(1))
+  );
+  useEffect(() => {
+    if (n >= 5) return;
+    const t = setTimeout(() => setN((x) => x + 1), n === 0 ? 250 : 600);
+    return () => clearTimeout(t);
+  }, [n]);
+  return (
+    <div className="font-mono text-[12.5px] leading-5">
+      <p className="text-stone-400">PING {host} (76.76.21.21): 56 data bytes</p>
+      {times.slice(0, Math.min(n, 4)).map((t, i) => (
+        <p key={i} className="text-stone-300">
+          64 bytes from {host}: icmp_seq={i + 1} ttl=57 time=
+          <span className="text-green-400">{t} ms</span>
+        </p>
+      ))}
+      {n >= 5 ? (
+        <p className="pt-1 text-stone-500">
+          4 packets transmitted, 4 received, <span className="text-green-400">0% packet loss</span>
+          {" "}— je réponds vite, aussi par email.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** `deploy` — mise en prod animée, zéro downtime évidemment. */
+function DeploySequence() {
+  const version = `v${new Date().getFullYear()}.${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const steps = [
+    { label: "build", cmd: `docker build -t nadjide/portfolio:${version} .` },
+    { label: "push", cmd: "docker push registry.nadjide.dev/portfolio" },
+    { label: "rollout", cmd: "kubectl rollout restart deploy/portfolio-web" },
+    { label: "health", cmd: "curl -f https://prod/healthz → 200 OK" },
+  ];
+  const [done, setDone] = useState(0);
+  const finished = done >= steps.length;
+  useEffect(() => {
+    if (finished) return;
+    const t = setTimeout(() => setDone((d) => d + 1), 700 + Math.random() * 500);
+    return () => clearTimeout(t);
+  }, [done, finished]);
+  return (
+    <div className="space-y-1 font-mono text-[13px]">
+      {steps.map((s, i) => {
+        const state = i < done ? "done" : i === done ? "run" : "pending";
+        return (
+          <div key={s.label} className="flex items-center gap-2">
+            <span className="flex w-4 justify-center">
+              {state === "done" ? (
+                <Icon icon="lucide:circle-check" className="text-[14px] text-green-400" />
+              ) : state === "run" ? (
+                <Icon icon="lucide:loader-circle" className="animate-spin text-[14px] text-sky-400" />
+              ) : (
+                <Icon icon="lucide:circle" className="text-[14px] text-stone-600" />
+              )}
+            </span>
+            <span className={state === "pending" ? "text-stone-600" : "text-stone-200"}>
+              {s.label}
+            </span>
+            <span className="text-stone-600">— {s.cmd}</span>
+          </div>
+        );
+      })}
+      {finished ? (
+        <p className="flex items-center gap-1.5 pt-1 font-semibold text-green-400">
+          <Icon icon="lucide:rocket" className="text-[14px]" />
+          Déployé en production ({version}) — zero downtime. Rollback dispo : « deploy --rollback ».
+        </p>
+      ) : null}
+    </div>
+  );
 }
 
 /* ── easter eggs ── */
@@ -133,6 +344,11 @@ const COFFEE_ART = String.raw`
      ___|             |\___/
     /    \___________/    \
     \_____________________/`;
+
+const CAT_ART = String.raw`
+   /\_/\
+  ( o.o )
+   > ^ <`;
 
 function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false);
@@ -180,10 +396,7 @@ function Prompt({ small }: { small?: boolean }) {
 
 /* ─────────────────────────── main component ─────────────────────────── */
 
-const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
-  { onOpenPath },
-  ref
-) {
+export default function Terminal() {
   const isCoarse = useIsCoarsePointer();
   const [mounted, setMounted] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
@@ -239,51 +452,70 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
 
   /* ───────────────────── content builders (outputs) ───────────────────── */
 
-  const helpOutput = () => (
-    <div className="space-y-2">
-      <p className="text-stone-400">Commandes disponibles — clique ou tape :</p>
-      <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-        {[
-          ["help", "cette aide"],
+  const helpOutput = () => {
+    const sections: [string, [string, string][]][] = [
+      [
+        "profil",
+        [
           ["about", "qui suis-je"],
-          ["projects", "liste des projets"],
-          ["open <projet>", "lancer la démo"],
-          ["cat <fichier>", "ouvrir un fichier"],
+          ["projects", "mes projets"],
+          ["open <projet>", "lancer une démo"],
           ["skills", "stack technique"],
           ["experience", "expériences pro"],
           ["education", "formation"],
           ["contact", "me joindre"],
+          ["cv", "CV sur demande"],
+        ],
+      ],
+      [
+        "ops",
+        [
           ["ci", "pipeline CI/CD"],
-          ["cv", "obtenir mon CV (sur demande)"],
+          ["deploy", "mise en prod"],
+          ["docker ps", "conteneurs"],
+          ["kubectl get pods", "pods k8s"],
+          ["git log", "parcours en commits"],
+          ["top", "processus"],
+          ["ping", "latence"],
           ["neofetch", "infos système"],
-          ["history", "commandes tapées"],
+        ],
+      ],
+      [
+        "système",
+        [
+          ["history", "historique"],
           ["clear", "vider l'écran"],
-        ].map(([c, desc]) => (
-          <div key={c} className="flex items-center gap-2">
-            <Cmd
-              run={
-                c.startsWith("open")
-                  ? "projects"
-                  : c.startsWith("cat")
-                  ? "code skills.json"
-                  : c
-              }
-            >
-              {c}
-            </Cmd>
-            <span className="hidden text-xs text-stone-500 sm:inline">{desc}</span>
+          ["help", "cette aide"],
+        ],
+      ],
+    ];
+    return (
+      <div className="space-y-3">
+        {sections.map(([title, cmds]) => (
+          <div key={title}>
+            <p className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-stone-600">
+              ── {title} ──
+            </p>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+              {cmds.map(([c, desc]) => (
+                <div key={c} className="flex items-center gap-2">
+                  <Cmd run={c.startsWith("open") ? "projects" : c}>{c}</Cmd>
+                  <span className="hidden text-xs text-stone-500 sm:inline">{desc}</span>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
+        <p className="pt-1 text-xs text-stone-600">
+          Astuce : <span className="text-stone-400">Tab</span> ou{" "}
+          <span className="text-stone-400">→</span> accepte la suggestion grisée,{" "}
+          <span className="text-stone-400">↑ / ↓</span> rappelle l'historique. Quelques
+          commandes cachées traînent aussi.{" "}
+          <Icon icon="lucide:eye" className="inline-block align-text-bottom text-[14px]" />
+        </p>
       </div>
-      <p className="pt-1 text-xs text-stone-600">
-        Astuce : <span className="text-stone-400">Tab</span> ou{" "}
-        <span className="text-stone-400">→</span> accepte la suggestion grisée,{" "}
-        <span className="text-stone-400">↑ / ↓</span> rappelle l'historique. Quelques
-        commandes cachées traînent aussi.{" "}
-        <Icon icon="lucide:eye" className="inline-block align-text-bottom text-[14px]" />
-      </p>
-    </div>
-  );
+    );
+  };
 
   const aboutOutput = () => (
     <div className="space-y-3">
@@ -392,7 +624,8 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
         ))}
       </div>
       <p className="text-stone-500">
-        → <Cmd run="education">education</Cmd> pour la formation.
+        → <Cmd run="education">education</Cmd> pour la formation, ou{" "}
+        <Cmd run="git log">git log</Cmd> pour la version condensée.
       </p>
     </div>
   );
@@ -511,8 +744,15 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
         pushLine(helpOutput());
         break;
       case "about":
-      case "whoami":
         pushLine(aboutOutput());
+        break;
+      case "whoami":
+        pushLine(
+          <p className="font-mono text-stone-300">
+            visitor — et moi c'est <span className="font-bold text-white">Nadjide</span>.{" "}
+            Tape <Cmd run="about">about</Cmd> pour faire connaissance.
+          </p>
+        );
         break;
       case "projects":
       case "ls":
@@ -545,31 +785,6 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
         }
         break;
       }
-      case "cat":
-      case "code": {
-        if (!arg) {
-          pushLine(<p className="text-yellow-400">usage: cat &lt;fichier&gt; — ex. « cat projects/stajio.ts » ou « cat skills.json ».</p>);
-          break;
-        }
-        const file = findFile(arg);
-        if (file && onOpenPath) {
-          pushLine(
-            <p className="font-mono text-sky-300">
-              → ouverture de <span className="text-cyan-300">{file.path}</span> dans l&apos;éditeur…
-            </p>
-          );
-          onOpenPath(file.path);
-        } else if (file) {
-          pushLine(<p className="font-mono text-stone-300">{file.path}</p>);
-        } else {
-          pushLine(
-            <p className="text-yellow-400">
-              fichier introuvable : « {arg} ». Explore la sidebar à gauche.
-            </p>
-          );
-        }
-        break;
-      }
       case "skills":
       case "stack":
         pushLine(skillsOutput());
@@ -588,15 +803,105 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
       case "pipeline":
         pushLine(<CIPipeline />);
         break;
+      case "deploy":
+        if (arg.includes("rollback")) {
+          pushLine(
+            <p className="flex items-center gap-1.5 font-mono text-yellow-400">
+              <Icon icon="lucide:undo-2" className="text-[14px]" />
+              rollback v-1 effectué. On fait comme si de rien n'était.
+            </p>
+          );
+        } else {
+          pushLine(<DeploySequence />);
+        }
+        break;
+      case "docker":
+        if (!arg || arg.startsWith("ps")) {
+          pushLine(<DockerPsBlock />);
+        } else {
+          pushLine(
+            <p className="text-yellow-400">
+              docker: ici, seule « docker ps » est câblée. L'infra réelle, on en parle en entretien.
+            </p>
+          );
+        }
+        break;
+      case "kubectl":
+      case "k":
+        pushLine(<KubectlBlock />);
+        break;
+      case "git":
+        if (arg.startsWith("log")) {
+          pushLine(<GitLogBlock />);
+        } else if (arg.startsWith("push")) {
+          pushLine(
+            <p className="font-mono text-stone-300">
+              Everything up-to-date — tout est déjà en prod.
+            </p>
+          );
+        } else {
+          pushLine(
+            <p className="text-yellow-400">
+              git: essaie <Cmd run="git log">git log</Cmd> — mon parcours en commits.
+            </p>
+          );
+        }
+        break;
+      case "top":
+      case "htop":
+        pushLine(<TopBlock />);
+        break;
+      case "ping":
+        pushLine(<PingBlock host={arg || "nadjide.dev"} />);
+        break;
+      case "uptime":
+        pushLine(
+          <p className="font-mono text-[13px] text-stone-300">
+            {new Date().toLocaleTimeString("fr-FR")} up {new Date().getFullYear() - 2021} years
+            (dev depuis 2021), 1 user, load average:{" "}
+            <span className="text-sky-300">café 0.92</span>,{" "}
+            <span className="text-sky-300">projets 0.80</span>,{" "}
+            <span className="text-sky-300">veille 0.61</span>
+          </p>
+        );
+        break;
+      case "ssh":
+        pushLine(
+          <div className="space-y-0.5 font-mono text-[13px]">
+            <p className="text-stone-400">ssh visitor@prod.nadjide.dev</p>
+            <p className="text-red-400">visitor@prod: Permission denied (publickey).</p>
+            <p className="text-stone-500">
+              → l'accès prod se mérite : recrutez-moi et on en reparle.{" "}
+              <Cmd run="contact">contact</Cmd>
+            </p>
+          </div>
+        );
+        break;
+      case "cat":
+        pushLine(
+          arg ? (
+            <p className="text-yellow-400">
+              cat: {arg}: No such file — ici tout passe par des commandes. Tape{" "}
+              <Cmd run="help">help</Cmd>.
+            </p>
+          ) : (
+            <div>
+              <pre className="font-mono text-[12px] leading-4 text-sky-300">{CAT_ART}</pre>
+              <p className="mt-1 font-mono text-stone-400">meow.</p>
+            </div>
+          )
+        );
+        break;
+      case "pwd":
+        pushLine(<p className="font-mono text-stone-300">/home/visitor/portfolio</p>);
+        break;
       case "contact":
       case "links":
+      case "social":
         pushLine(contactOutput());
         break;
       case "neofetch":
         pushLine(neofetchOutput());
-        break;
-      case "social":
-        pushLine(contactOutput());
         break;
       case "cv":
       case "resume": {
@@ -691,16 +996,6 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
 
   executeRef.current = execute;
 
-  /* ── API impérative pour le layout IDE (Scripts, "Run demo") ── */
-  useImperativeHandle(
-    ref,
-    () => ({
-      run: (cmd: string) => executeRef.current(cmd),
-      clear: () => setLines([]),
-    }),
-    []
-  );
-
   /* ───────────── démarrage propre : prompt + sortie « help » direct ───────────── */
 
   useEffect(() => {
@@ -732,21 +1027,24 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
     setInput("");
   };
 
+  const acceptCompletion = () => {
+    const c = getCompletion(input);
+    if (c) setInput(c === "open" ? c + " " : c);
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       submit();
     } else if (e.key === "Tab") {
       e.preventDefault();
-      const c = getCompletion(input);
-      if (c) setInput(c.split(/\s+/).length === 1 ? c + " " : c);
+      acceptCompletion();
     } else if (e.key === "ArrowRight") {
       const el = e.currentTarget;
       if (el.selectionStart === input.length && el.selectionEnd === input.length) {
-        const c = getCompletion(input);
-        if (c) {
+        if (getCompletion(input)) {
           e.preventDefault();
-          setInput(c.split(/\s+/).length === 1 ? c + " " : c);
+          acceptCompletion();
         }
       }
     } else if (e.key === "ArrowUp") {
@@ -769,15 +1067,17 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
     }
   };
 
-  const quickCmds = ["help", "projects", "about", "skills", "experience", "contact", "cv"];
+  const quickCmds = ["help", "projects", "about", "skills", "git log", "docker ps", "deploy", "contact"];
 
   const completion = getCompletion(input);
-  const ghost = completion && completion.startsWith(input) ? completion.slice(input.length) : "";
+  const ghost = completion && completion.startsWith(input.toLowerCase())
+    ? completion.slice(input.length)
+    : "";
 
   /* ───────────────────────── render ───────────────────────── */
 
   return (
-    <div className="flex h-full flex-col bg-[#0d1117] text-[#cccccc]">
+    <div className="flex h-full min-h-0 flex-col text-[#cccccc]">
         {/* terminal body */}
         <div
           ref={scrollRef}
@@ -854,6 +1154,4 @@ const Terminal = forwardRef<TerminalHandle, TerminalProps>(function Terminal(
       </AnimatePresence>
     </div>
   );
-});
-
-export default Terminal;
+}

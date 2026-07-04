@@ -1,5 +1,5 @@
 /* Profil — source UNIQUE du pitch, réutilisée par la vue simplifiée (vitrine)
-   ET par les fichiers about/profile.json & about/README.md de l'IDE. */
+   ET par le terminal (commande « about »). */
 
 export interface ProfileHighlight {
   /** Nom d'icône Iconify (ex. « lucide:rocket ») pour l'UI vitrine. */

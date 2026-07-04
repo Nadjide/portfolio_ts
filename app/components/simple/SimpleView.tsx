@@ -540,7 +540,7 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
             onClick={onSwitchView}
             className="ml-auto flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs text-stone-300 transition hover:border-sky-400/50 hover:text-white md:ml-0"
           >
-            <Icon icon="lucide:code-xml" className="text-[15px] text-sky-400" /> Vue dev
+            <Icon icon="lucide:square-terminal" className="text-[15px] text-sky-400" /> Terminal
           </button>
         </div>
       </header>
