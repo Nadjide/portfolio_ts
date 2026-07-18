@@ -16,9 +16,16 @@ export interface Formation {
   tech: string[];
 }
 
+/** Un sous-projet mené au sein d'un poste (nom fonctionnel + réalisations + stack). */
+export interface ExperienceProject {
+  name: string;
+  bullets: string[];
+  tech: string[];
+}
+
 export interface ExperienceEntry {
   id: number;
-  /** Slug stable utilisé comme nom de fichier dans l'explorateur (ex. "call-to-action"). */
+  /** Slug stable (ex. "cta-devops"). */
   slug: string;
   title: string;
   company: string;
@@ -26,8 +33,8 @@ export interface ExperienceEntry {
   location: string;
   date: string;
   description: string;
-  achievements: string[];
-  tech: string[];
+  /** Sous-projets du poste — permet de montrer l'évolution des responsabilités. */
+  projects: ExperienceProject[];
 }
 
 export const skillGroups: SkillGroup[] = [
@@ -110,36 +117,84 @@ export const formations: Formation[] = [
   },
 ];
 
+/* Trois contrats successifs chez CTA — la progression Technicien → Full Stack →
+   Full Stack & DevOps est volontairement lisible. Les projets sont décrits par
+   leur fonction (aucun nom interne, ni détail révélant le métier de l'entreprise). */
 export const experiences: ExperienceEntry[] = [
   {
     id: 1,
-    slug: "call-to-action",
+    slug: "cta-technicien",
+    title: "Technicien & Développeur Full Stack",
+    company: "Call To Action (CTA)",
+    location: "Nice — Av. Simone Veil (06)",
+    date: "2021 — 2023",
+    description:
+      "Support technique et développement d'applications internes, montée en compétence progressive vers le développement full stack.",
+    projects: [
+      {
+        name: "Outil d'intégration de données",
+        bullets: [
+          "Développement d'un pipeline ETL automatisant l'import, la transformation, le contrôle qualité et l'export de données clients.",
+          "Implémentation de traitements de normalisation, de validation et de dédoublonnage, avec des scripts Python exploitant SQL, DuckDB et Polars.",
+        ],
+        tech: ["Python", "DuckDB", "Polars", "SQL Server", "MySQL"],
+      },
+      {
+        name: "Application d'aide à la vente en temps réel",
+        bullets: [
+          "Développement d'une application web affichant des scripts de vente personnalisés en temps réel aux équipes commerciales.",
+          "Gestion de contenus différenciés par campagne afin d'adapter le message à chaque contexte.",
+        ],
+        tech: ["HTML", "CSS", "JavaScript"],
+      },
+    ],
+  },
+  {
+    id: 2,
+    slug: "cta-fullstack",
+    title: "Développeur Full Stack",
+    company: "Call To Action (CTA)",
+    location: "Nice — Av. Simone Veil (06)",
+    date: "2023 — 2024",
+    description:
+      "Conception d'applications décisionnelles et d'outils de reporting temps réel pour les équipes opérationnelles.",
+    projects: [
+      {
+        name: "Tableau de bord décisionnel",
+        bullets: [
+          "Développement d'une plateforme de suivi temps réel de l'activité, conçue pour supporter l'analyse de données à grande échelle.",
+          "Création de tableaux de bord interactifs et de fonctionnalités de reporting pour les équipes opérationnelles.",
+        ],
+        tech: ["Next.js", "TypeScript", "Shadcn UI", "MySQL", "SQL Server"],
+      },
+    ],
+  },
+  {
+    id: 3,
+    slug: "cta-devops",
     title: "Développeur Full Stack & DevOps",
     company: "Call To Action (CTA)",
     location: "Nice — Av. Simone Veil (06)",
-    date: "2021 — 2026",
+    date: "2024 — 2026",
     description:
-      "Alternance de 5 ans : conception, développement et déploiement d'applications métiers critiques, de l'architecture à la mise en production (CI/CD, Docker, automatisation). Prise en charge du cycle de vie complet de plusieurs outils internes en production.",
-    achievements: [
-      "Conception et déploiement d'une architecture d'IA générative (LLM auto-hébergé via Ollama / Mistral) pour l'analyse automatisée de flux de données — backend FastAPI, conteneurisation Docker, front Next.js, traitement entièrement on-premise.",
-      "Optimisation et automatisation de workflows métiers critiques (Python, interface Tkinter, transformation de données via DuckDB, injection en base SQL Server avec contrôles de cohérence) — gain de productivité majeur sur des processus auparavant manuels.",
-      "Centralisation des accès applicatifs via la mise en place d'une solution d'authentification unique (SSO).",
-      "Refonte d'un tableau de bord de visualisation de données en temps réel.",
-      "Conception et développement d'une application interne de gestion de ressources et d'inventaire.",
-      "Développement de mini-sites événementiels, scripts d'intégration et de traitement de données (Python, Polars), et gestion de projets en méthode Agile.",
-    ],
-    tech: [
-      "Next.js",
-      "TypeScript",
-      "FastAPI",
-      "Python",
-      "Polars",
-      "Docker",
-      "Ollama",
-      "Mistral",
-      "DuckDB",
-      "SQL Server",
-      "Tailwind CSS",
+      "Mise en place et amélioration de workflows CI/CD, conteneurisation Docker, culture DevOps appliquée au quotidien.",
+    projects: [
+      {
+        name: "Outil de pilotage qualité",
+        bullets: [
+          "Développement d'un outil de supervision (grilles d'évaluation, dashboards) pour le suivi qualité et le traitement des anomalies.",
+          "Intégration d'une IA locale pour l'analyse automatisée de données métier, gestion des accès via SSO et interaction avec plusieurs bases de données relationnelles.",
+        ],
+        tech: ["Next.js", "TypeScript", "Shadcn UI", "FastAPI", "MySQL", "MariaDB", "Mistral"],
+      },
+      {
+        name: "Portail d'entreprise",
+        bullets: [
+          "Développement d'un portail web centralisant l'accès aux différentes applications métiers de l'entreprise.",
+          "Mise en œuvre d'une authentification SSO et d'un contrôle d'accès sécurisé basé sur les rôles utilisateurs, avec une interface responsive moderne.",
+        ],
+        tech: ["Next.js", "TypeScript", "Shadcn UI", "Framer Motion", "FastAPI", "SSO"],
+      },
     ],
   },
 ];

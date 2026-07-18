@@ -687,20 +687,27 @@ export default function Terminal({
           # Expérience
         </p>
         {experiences.map((e) => (
-          <div key={e.id} className="mt-2 border-l border-[rgb(var(--tc-d-rgb)/0.3)] pl-4">
+          <div key={e.id} className="mt-3 border-l border-[rgb(var(--tc-d-rgb)/0.3)] pl-4">
             <p className="font-bold text-white">
               {e.title} <span className="text-stone-500">@ {e.company}</span>
             </p>
             <p className="font-mono text-xs text-stone-500">{e.location} · {e.date}</p>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-stone-400">{e.description}</p>
-            <ul className="mt-2 space-y-0.5">
-              {e.achievements.slice(0, 4).map((a, i) => (
-                <li key={i} className="text-sm text-stone-300">
-                  <span className="text-[rgb(var(--tc-d-rgb))]">▸ </span>
-                  {a}
-                </li>
+            <div className="mt-2 space-y-2">
+              {e.projects.map((pr) => (
+                <div key={pr.name}>
+                  <p className="text-sm font-semibold text-[rgb(var(--tc-b-rgb))]">◆ {pr.name}</p>
+                  <ul className="mt-0.5 space-y-0.5">
+                    {pr.bullets.map((b, i) => (
+                      <li key={i} className="text-sm text-stone-300">
+                        <span className="text-[rgb(var(--tc-d-rgb))]">▸ </span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         ))}
       </div>

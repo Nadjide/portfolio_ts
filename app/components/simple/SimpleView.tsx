@@ -772,26 +772,39 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
                       {e.date}
                     </span>
                   </div>
-                  <p className="mt-4 text-[15px] leading-7 text-stone-300">{e.description}</p>
-                  <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {e.achievements.map((a, k) => (
-                      <li key={k} className="flex gap-2 text-sm leading-6 text-stone-300">
-                        <Icon
-                          icon="lucide:circle-check"
-                          className="mt-0.5 shrink-0 text-sky-400"
-                        />
-                        {a}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-5 flex flex-wrap gap-1.5">
-                    {e.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-stone-400"
+                  <p className="mt-4 flex gap-2 text-[15px] leading-7 text-stone-300">
+                    <Icon icon="lucide:chevron-right" className="mt-1.5 shrink-0 text-sky-400/70" />
+                    {e.description}
+                  </p>
+                  <div className="mt-5 space-y-3">
+                    {e.projects.map((pr) => (
+                      <div
+                        key={pr.name}
+                        className="rounded-xl border border-white/10 bg-white/[0.02] p-4"
                       >
-                        {t}
-                      </span>
+                        <p className="flex items-center gap-2 font-semibold text-white">
+                          <Icon icon="lucide:diamond" className="text-[12px] text-sky-400" />
+                          {pr.name}
+                        </p>
+                        <ul className="mt-2 space-y-1.5">
+                          {pr.bullets.map((b, k) => (
+                            <li key={k} className="flex gap-2 text-sm leading-6 text-stone-300">
+                              <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-sky-400/70" />
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {pr.tech.map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-md border border-sky-400/15 bg-sky-400/[0.06] px-2 py-0.5 font-mono text-[11px] text-sky-200/90"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </SpotlightCard>
