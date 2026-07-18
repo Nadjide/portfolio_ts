@@ -140,10 +140,10 @@ export const experiences: ExperienceEntry[] = [
         tech: ["Python", "DuckDB", "Polars", "SQL Server", "MySQL"],
       },
       {
-        name: "Application d'aide à la vente en temps réel",
+        name: "Interface de collecte pour associations",
         bullets: [
-          "Développement d'une application web affichant des scripts de vente personnalisés en temps réel aux équipes commerciales.",
-          "Gestion de contenus différenciés par campagne afin d'adapter le message à chaque contexte.",
+          "Développement de sites web de collecte pour des associations : formulaires, pages de campagne et intégration responsive.",
+          "Gestion de contenus différenciés par campagne afin d'adapter chaque site à son contexte.",
         ],
         tech: ["HTML", "CSS", "JavaScript"],
       },
