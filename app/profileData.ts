@@ -12,7 +12,7 @@ export interface ProfileHighlight {
 
 export const profile = {
   name: "Nadjide Omar",
-  title: "Ingénieur DevOps & Développeur Full Stack",
+  title: "Software Engineer",
   location: "Nice (06)",
   availability: "CDI · disponible le 01/10/2026",
   languages: ["Français : natif", "Anglais : C1"],

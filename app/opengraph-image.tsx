@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Nadjide Omar — Ingénieur DevOps & Développeur Full Stack";
+export const alt = "Nadjide Omar · Software Engineer (Full Stack & DevOps)";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -78,7 +78,7 @@ export default function OpengraphImage() {
               Nadjide Omar
             </div>
             <div style={{ display: "flex", color: CYAN_SOFT, fontSize: 30, marginTop: 4 }}>
-              Ingénieur DevOps &amp; Développeur Full Stack
+              Software Engineer · Full Stack &amp; DevOps
             </div>
 
             <div style={{ display: "flex", height: 22 }} />

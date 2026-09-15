@@ -17,23 +17,23 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-ts-nine.vercel.app"),
-  title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+  title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
   description:
-    "Portfolio interactif de Nadjide Omar, Ingénieur DevOps & Développeur Full Stack : Docker, CI/CD, Next.js, FastAPI, Python. Un vrai terminal jouable — tape « help » — ou une vue simplifiée, au choix.",
-  keywords: ["Ingénieur DevOps", "Développeur Full Stack", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python", "Portfolio", "Nadjide Omar"],
+    "Portfolio interactif de Nadjide Omar, Software Engineer Full Stack & DevOps : Docker, CI/CD, Next.js, FastAPI, Python. Un vrai terminal jouable — tape « help » — ou une vue simplifiée, au choix.",
+  keywords: ["Software Engineer", "Ingénieur DevOps", "Développeur Full Stack", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python", "Portfolio", "Nadjide Omar"],
   authors: [{ name: "Nadjide Omar" }],
   creator: "Nadjide Omar",
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: "https://portfolio-ts-nine.vercel.app",
-    title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+    title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
     description: "Portfolio interactif — un terminal DevOps jouable ou une vue simplifiée, au choix. Tape « help ».",
     siteName: "Portfolio Nadjide Omar",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nadjide Omar | Ingénieur DevOps & Développeur Full Stack",
+    title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
     description: "Portfolio interactif avec terminal DevOps jouable — Docker, CI/CD, Next.js, FastAPI, Python.",
   },
 };
@@ -47,7 +47,7 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Nadjide Omar",
-  jobTitle: "Ingénieur DevOps & Développeur Full Stack",
+  jobTitle: "Software Engineer",
   url: "https://portfolio-ts-nine.vercel.app",
   address: {
     "@type": "PostalAddress",

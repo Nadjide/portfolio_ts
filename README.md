@@ -2,7 +2,7 @@
 
 # Portfolio — Nadjide Omar
 
-**Ingénieur DevOps & Développeur Full Stack**
+**Software Engineer · Full Stack & DevOps**
 
 Un portfolio interactif avec **deux expériences** : une vitrine moderne et claire, et un **vrai terminal DevOps jouable** pour les curieux.
 

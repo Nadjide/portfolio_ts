@@ -600,7 +600,7 @@ export default function Terminal({
 
   const aboutOutput = () => (
     <div className="space-y-3">
-      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-[rgb(var(--tc-b-rgb)/0.9)]">{`Nadjide Omar · Ingénieur DevOps / Développeur Full Stack`}</pre>
+      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-[rgb(var(--tc-b-rgb)/0.9)]">{`Nadjide Omar · Software Engineer (Full Stack & DevOps)`}</pre>
       <div className="grid gap-1 font-mono text-[13px] sm:grid-cols-2">
         {[
           ["lucide:map-pin", "Localisation", "Nice (06)"],
@@ -790,7 +790,7 @@ export default function Terminal({
                  Stack: Next.js · TS · Docker
 `}</pre>
       <div className="space-y-0.5 text-stone-300">
-        <p><span className="text-[rgb(var(--tc-a-rgb))]">role</span>: DevOps / Full Stack</p>
+        <p><span className="text-[rgb(var(--tc-a-rgb))]">role</span>: Software Engineer (Full Stack &amp; DevOps)</p>
         <p><span className="text-[rgb(var(--tc-a-rgb))]">projects</span>: {projectsData.length}</p>
         <p><span className="text-[rgb(var(--tc-a-rgb))]">uptime</span>: dev depuis 2021</p>
         <p><span className="text-[rgb(var(--tc-a-rgb))]">location</span>: Nice, FR</p>
