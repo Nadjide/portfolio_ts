@@ -30,34 +30,33 @@ const LINKEDIN_URL = findLink("LinkedIn")?.href ?? "https://www.linkedin.com/in/
 
 /* ─────────────────────────── données d'affichage ─────────────────────────── */
 
+/* Bandeau : uniquement des technologies pratiquées en production (cohérence CV). */
 const TECH = [
   { icon: "logos:nextjs-icon", label: "Next.js" },
   { icon: "logos:react", label: "React" },
   { icon: "logos:typescript-icon", label: "TypeScript" },
-  { icon: "logos:tailwindcss-icon", label: "Tailwind" },
   { icon: "logos:nodejs-icon", label: "Node.js" },
-  { icon: "logos:fastapi-icon", label: "FastAPI" },
   { icon: "logos:python", label: "Python" },
+  { icon: "logos:fastapi-icon", label: "FastAPI" },
+  { icon: "logos:java", label: "Java" },
+  { icon: "logos:mysql", label: "MySQL" },
   { icon: "logos:docker-icon", label: "Docker" },
   { icon: "logos:github-actions", label: "GitHub Actions" },
-  { icon: "logos:terraform-icon", label: "Terraform" },
-  { icon: "logos:ansible", label: "Ansible" },
-  { icon: "logos:aws", label: "AWS" },
+  { icon: "logos:linux-tux", label: "Linux" },
   { icon: "logos:nginx", label: "Nginx" },
-  { icon: "logos:postgresql", label: "PostgreSQL" },
-  { icon: "logos:mongodb-icon", label: "MongoDB" },
-  { icon: "logos:redis", label: "Redis" },
-  { icon: "logos:prisma", label: "Prisma" },
+  { icon: "logos:mistral-ai-icon", label: "Mistral" },
+  { icon: "logos:vitest", label: "Vitest" },
+  { icon: "logos:tailwindcss-icon", label: "Tailwind" },
   { icon: "logos:framer", label: "Framer Motion" },
 ];
 
 const CATEGORY_ICON: Record<string, string> = {
-  "Frontend Modern & UI": "lucide:layout-panel-top",
+  Frontend: "lucide:layout-panel-top",
   "Backend & API": "lucide:server",
-  "Data Science & IA": "lucide:brain-circuit",
-  "DevOps & Cloud": "lucide:cloud-cog",
-  "Base de Données": "lucide:database",
-  "Mobile & Cross-Platform": "lucide:smartphone",
+  "Données & IA": "lucide:brain-circuit",
+  "DevOps & Sécurité": "lucide:shield-check",
+  "Qualité & Méthodes": "lucide:badge-check",
+  "Sur projets": "lucide:flask-conical",
 };
 
 function contactIcon(label: string): string {
@@ -72,40 +71,53 @@ function contactIcon(label: string): string {
 /* Logos de marque pour chaque techno (vue compétences). */
 const SKILL_ICON: Record<string, string> = {
   "Next.js": "logos:nextjs-icon",
-  "React.js": "logos:react",
+  React: "logos:react",
   "React Native": "logos:react",
   TypeScript: "logos:typescript-icon",
+  JavaScript: "logos:javascript",
   "Tailwind CSS": "logos:tailwindcss-icon",
+  "Shadcn UI": "simple-icons:shadcnui",
   "Framer Motion": "logos:framer",
   "Material UI": "logos:material-ui",
   "Node.js": "logos:nodejs-icon",
-  FastAPI: "logos:fastapi-icon",
   Python: "logos:python",
-  Prisma: "logos:prisma",
+  FastAPI: "logos:fastapi-icon",
+  Java: "logos:java",
+  "API REST": "lucide:plug",
+  "SSO / RBAC": "lucide:key-round",
   Express: "logos:express",
-  "REST/GraphQL": "logos:graphql",
-  Polars: "simple-icons:polars",
-  Pandas: "logos:pandas-icon",
-  DuckDB: "simple-icons:duckdb",
-  "Ollama (Local LLM)": "simple-icons:ollama",
-  "Mistral AI": "logos:mistral-ai-icon",
-  PowerBI: "logos:microsoft-power-bi",
-  Docker: "logos:docker-icon",
-  Terraform: "logos:terraform-icon",
-  Ansible: "logos:ansible",
-  "GitHub Actions": "logos:github-actions",
-  AWS: "logos:aws",
-  Nginx: "logos:nginx",
-  PostgreSQL: "logos:postgresql",
   MySQL: "logos:mysql",
   MariaDB: "logos:mariadb-icon",
-  MongoDB: "logos:mongodb-icon",
+  "SQL Server": "devicon:microsoftsqlserver",
+  DuckDB: "simple-icons:duckdb",
+  Polars: "simple-icons:polars",
+  Pandas: "logos:pandas-icon",
+  "Mistral (LLM auto-hébergé)": "logos:mistral-ai-icon",
+  Ollama: "simple-icons:ollama",
+  Docker: "logos:docker-icon",
+  "GitHub Actions": "logos:github-actions",
+  "CI/CD": "lucide:git-branch",
+  Linux: "logos:linux-tux",
+  Nginx: "logos:nginx",
+  Bash: "logos:bash-icon",
+  SSH: "lucide:terminal",
+  "Windows Server": "logos:microsoft-windows-icon",
+  "Audit des dépendances": "lucide:shield-alert",
+  Vitest: "logos:vitest",
+  Playwright: "logos:playwright",
+  Jest: "logos:jest",
+  ESLint: "logos:eslint",
+  "Revue de code": "lucide:git-pull-request",
+  "Méthode agile": "lucide:refresh-cw",
+  "Kubernetes (K8s)": "logos:kubernetes",
+  Kustomize: "lucide:layers",
+  Terraform: "logos:terraform-icon",
   SQLite: "logos:sqlite",
-  Redis: "logos:redis",
+  PostgreSQL: "logos:postgresql",
+  MongoDB: "logos:mongodb-icon",
+  Supabase: "logos:supabase-icon",
+  "Socket.IO": "logos:socket-io",
   Expo: "logos:expo-icon",
-  Android: "logos:android-icon",
-  iOS: "simple-icons:apple",
-  PWA: "logos:pwa",
 };
 
 /* Logo d'entreprise / école (déposer les fichiers dans /public/images/). */
@@ -637,6 +649,9 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
             {/* stats */}
             <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4">
               {[
+                { v: "5 ans", l: "en entreprise" },
+                { v: "6 apps", l: "en production" },
+                { v: "-83 %", l: "temps d'évaluation" },
                 { v: "FR · EN", l: "langues (C1)" },
                 {
                   v: (
@@ -682,10 +697,11 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
 
           <SpotlightCard className="flex flex-col justify-center p-6">
             <p className="bg-gradient-to-r from-sky-300 to-indigo-300 bg-clip-text text-4xl font-black text-transparent">
-              100%
+              -83 %
             </p>
             <p className="mt-2 text-sm leading-6 text-stone-400">
-              on-premise : IA auto-hébergée, aucune donnée ne quitte l&apos;infrastructure.
+              de temps sur chaque évaluation qualité, grâce à une plateforme en production avec IA
+              auto-hébergée.
             </p>
           </SpotlightCard>
 
@@ -706,7 +722,7 @@ export default function SimpleView({ onSwitchView }: { onSwitchView: () => void 
         <SectionHeader
           eyebrow="Stack"
           title="Compétences"
-          subtitle="Les technologies que j'utilise au quotidien, du front à l'infrastructure."
+          subtitle="Pratiquées en production chez mon employeur ; le dernier bloc regroupe ce que j'ai pratiqué sur projets."
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((g, i) => (

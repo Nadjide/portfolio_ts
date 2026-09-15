@@ -195,7 +195,7 @@ const PROCS = [
   { pid: 1, cmd: "next-server", cpu: 12.4, mem: 6.1 },
   { pid: 42, cmd: "fastapi", cpu: 8.7, mem: 3.4 },
   { pid: 128, cmd: "ollama serve", cpu: 71.2, mem: 38.9 },
-  { pid: 256, cmd: "postgres", cpu: 3.1, mem: 8.8 },
+  { pid: 256, cmd: "mysqld", cpu: 3.1, mem: 8.8 },
   { pid: 512, cmd: "dockerd", cpu: 2.4, mem: 4.0 },
   { pid: 1024, cmd: "veille-techno", cpu: 24.8, mem: 2.2 },
   { pid: 2048, cmd: "coffee-daemon", cpu: 0.5, mem: 0.1 },
@@ -600,13 +600,14 @@ export default function Terminal({
 
   const aboutOutput = () => (
     <div className="space-y-3">
-      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-[rgb(var(--tc-b-rgb)/0.9)]">{`Nadjide Omar — Ingénieur DevOps / Développeur Full Stack`}</pre>
+      <pre className="whitespace-pre-wrap font-mono text-[13px] leading-5 text-[rgb(var(--tc-b-rgb)/0.9)]">{`Nadjide Omar · Ingénieur DevOps / Développeur Full Stack`}</pre>
       <div className="grid gap-1 font-mono text-[13px] sm:grid-cols-2">
         {[
           ["lucide:map-pin", "Localisation", "Nice (06)"],
-          ["lucide:graduation-cap", "Formation", "Mastère Expert Dév. Logiciel (Bac+5)"],
-          ["lucide:briefcase", "Expérience", "Alternance CTA · 2021 → 2026"],
+          ["lucide:graduation-cap", "Formation", "Bac+5 · RNCP niveau 7 (RNCP39583)"],
+          ["lucide:briefcase", "Expérience", "Call To Action · 09/2021 → 09/2026"],
           ["lucide:globe", "Langues", "Français natif · Anglais C1"],
+          ["lucide:calendar-check", "Disponibilité", "CDI · 01/10/2026"],
         ].map(([icon, k, v]) => (
           <p key={k} className="flex items-center gap-1.5">
             <Icon icon={icon} className="shrink-0 text-[rgb(var(--tc-a-rgb))] text-[14px]" />
@@ -617,9 +618,9 @@ export default function Terminal({
       </div>
       <p className="max-w-2xl leading-6 text-stone-300">
         Développeur Full Stack avec une forte culture DevOps : je conçois, teste,
-        déploie et maintiens des applications internes en production. J'ai bâti un
-        écosystème d'outils métiers automatisant des processus critiques, avec un
-        gain de productivité majeur à la clé.
+        sécurise et déploie des applications internes. 6 applications métier en
+        production, -83 % sur le temps d'évaluation qualité, un SSO commun aux 6
+        applications, CI/CD et audit des dépendances sur les applications critiques.
       </p>
       <p className="text-stone-500">
         → <Cmd run="projects">projects</Cmd> pour voir le travail, ou{" "}

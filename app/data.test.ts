@@ -81,6 +81,11 @@ describe("confidentialité", () => {
     /t[ée]l[ée]marketing/i,
     /t[ée]l[ée]vendeur/i,
     /collecte\s+de\s+dons/i,
+    /authcta/i,
+    /int[ée]grateur\s+cta/i,
+    /t[ée]l[ée]conseill/i,
+    /t[ée]l[ée]acteur/i,
+    /centre\s+d['’]appels?/i,
   ];
 
   const corpus = JSON.stringify({
@@ -98,4 +103,38 @@ describe("confidentialité", () => {
       expect(corpus).not.toMatch(regex);
     }
   );
+});
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Cohérence avec le CV (dépôt _cv, faits/profil.toml) : le portfolio ne doit
+   jamais affirmer ce que le CV ne peut pas défendre en entretien.
+   ────────────────────────────────────────────────────────────────────────── */
+
+describe("cohérence avec le CV", () => {
+  const corpus = JSON.stringify({ projectsData, experiences, formations, skillGroups, profile });
+
+  it("aucune affirmation fausse ou non vérifiée", () => {
+    for (const regex of [/aws\s+certified/i, /\bmaster\s*2\b/i, /spring\s*boot/i, /openshift/i]) {
+      expect(corpus).not.toMatch(regex);
+    }
+  });
+
+  it("aucune compétence non vérifiée dans la stack", () => {
+    const items = skillGroups.flatMap((g) => g.items).join(" | ");
+    for (const regex of [/ansible/i, /redis/i, /graphql/i, /power\s*bi/i, /prisma/i, /\bios\b/i, /android/i, /\bpwa\b/i]) {
+      expect(items).not.toMatch(regex);
+    }
+  });
+
+  it("Kubernetes et Terraform uniquement dans « Sur projets »", () => {
+    for (const g of skillGroups.filter((g) => g.category !== "Sur projets")) {
+      expect(g.items.join(" ")).not.toMatch(/kubernetes|terraform/i);
+    }
+  });
+
+  it("dates au format MM/AAAA – MM/AAAA", () => {
+    for (const e of [...experiences, ...formations]) {
+      expect(e.date).toMatch(/^\d{2}\/\d{4} – \d{2}\/\d{4}$/);
+    }
+  });
 });
