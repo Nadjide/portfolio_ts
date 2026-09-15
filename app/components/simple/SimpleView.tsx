@@ -40,6 +40,7 @@ const TECH = [
   { icon: "logos:fastapi-icon", label: "FastAPI" },
   { icon: "logos:java", label: "Java" },
   { icon: "logos:mysql", label: "MySQL" },
+  { icon: "logos:mongodb-icon", label: "MongoDB" },
   { icon: "logos:docker-icon", label: "Docker" },
   { icon: "logos:github-actions", label: "GitHub Actions" },
   { icon: "logos:linux-tux", label: "Linux" },

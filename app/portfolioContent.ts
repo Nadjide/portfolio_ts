@@ -53,7 +53,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     category: "Données & IA",
-    items: ["MySQL", "MariaDB", "SQL Server", "DuckDB", "Polars", "Pandas", "Mistral (LLM auto-hébergé)", "Ollama"],
+    items: ["MySQL", "MariaDB", "SQL Server", "MongoDB", "DuckDB", "Polars", "Pandas", "Mistral (LLM auto-hébergé)", "Ollama"],
     gradient: "from-purple-400 to-pink-600",
   },
   {
@@ -68,7 +68,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     category: "Sur projets",
-    items: ["Kubernetes (K8s)", "Kustomize", "Terraform", "Express", "SQLite", "PostgreSQL", "MongoDB", "Supabase", "Socket.IO", "React Native", "Expo"],
+    items: ["Kubernetes (K8s)", "Kustomize", "Terraform", "Express", "SQLite", "PostgreSQL", "Supabase", "Socket.IO", "React Native", "Expo"],
     gradient: "from-yellow-400 to-amber-600",
   },
 ];
@@ -189,10 +189,10 @@ export const experiences: ExperienceEntry[] = [
         name: "Plateforme de pilotage qualité",
         bullets: [
           "Conception et maintien d'une plateforme d'évaluation qualité en production : temps d'une évaluation ramené de 30 à 5 min (-83 %), plus de 60 utilisateurs.",
-          "Intégration d'un LLM Mistral auto-hébergé pour l'analyse automatisée des données, sans qu'aucune donnée ne quitte l'infrastructure.",
+          "Développement de l'API d'analyse IA automatisée (FastAPI, Ollama, Mistral auto-hébergé, MongoDB) : aucune donnée ne quitte l'infrastructure.",
           "Audit des dépendances bloquant en CI : 5 vulnérabilités de criticité élevée détectées et corrigées en production.",
         ],
-        tech: ["Next.js", "React", "TypeScript", "FastAPI", "MySQL", "MariaDB", "Mistral", "Vitest"],
+        tech: ["Next.js", "React", "TypeScript", "FastAPI", "MySQL", "MariaDB", "MongoDB", "Ollama", "Mistral", "Vitest"],
       },
       {
         name: "Authentification centralisée & portail",
