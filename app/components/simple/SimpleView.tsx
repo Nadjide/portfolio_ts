@@ -1,967 +1,258 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useScroll } from "framer-motion";
-import { Icon } from "@iconify/react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import Image from "next/image";
 import { profile } from "../../profileData";
 import { skillGroups, experiences, formations } from "../../portfolioContent";
 import { projectsData, type ProjectData } from "../../projectsData";
 import { contactLinks, findLink } from "../../contactData";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
+import "./showcase.css";
 
-/** slug d'un projet pour le deep-link ?project=… (ex. « Stajio » → « stajio »). */
 export const projectSlug = (title: string) =>
-  title
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-/* Le CV n'est pas en téléchargement public — on invite à le demander
-   par email (sujet/corps pré-remplis) ou via LinkedIn. */
-const CV_EMAIL = findLink("Email")?.href ?? "mailto:nadjide.omar@outlook.fr";
-const REQUEST_CV_MAILTO =
-  `${CV_EMAIL}?subject=` +
-  encodeURIComponent("Demande de CV — Nadjide Omar") +
-  "&body=" +
-  encodeURIComponent("Bonjour Nadjide,\n\nJe souhaiterais recevoir votre CV.\n\n");
-const LINKEDIN_URL = findLink("LinkedIn")?.href ?? "https://www.linkedin.com/in/nadjide-omar-b55a01212/";
+const EMAIL = findLink("Email")!;
+const REQUEST_CV = EMAIL.href + "?subject=" + encodeURIComponent("Demande de CV — Nadjide Omar") + "&body=" + encodeURIComponent("Bonjour Nadjide,\n\nJe souhaiterais recevoir votre CV.\n\n");
+const NAV = [["projects", "Projets"], ["about", "Approche"], ["experience", "Parcours"], ["contact", "Contact"]] as const;
 
-/* ─────────────────────────── données d'affichage ─────────────────────────── */
+function Arrow({ diagonal = false, className = "" }: { diagonal?: boolean; className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className={"sv-arrow " + className}>
+    <path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h15m-6-6 6 6-6 6"} />
+  </svg>;
+}
 
-/* Bandeau : uniquement des technologies pratiquées en production (cohérence CV). */
-const TECH = [
-  { icon: "logos:nextjs-icon", label: "Next.js" },
-  { icon: "logos:react", label: "React" },
-  { icon: "logos:typescript-icon", label: "TypeScript" },
-  { icon: "logos:nodejs-icon", label: "Node.js" },
-  { icon: "logos:python", label: "Python" },
-  { icon: "logos:fastapi-icon", label: "FastAPI" },
-  { icon: "logos:java", label: "Java" },
-  { icon: "logos:mysql", label: "MySQL" },
-  { icon: "logos:mongodb-icon", label: "MongoDB" },
-  { icon: "logos:docker-icon", label: "Docker" },
-  { icon: "logos:github-actions", label: "GitHub Actions" },
-  { icon: "logos:linux-tux", label: "Linux" },
-  { icon: "logos:nginx", label: "Nginx" },
-  { icon: "logos:mistral-ai-icon", label: "Mistral" },
-  { icon: "logos:vitest", label: "Vitest" },
-  { icon: "logos:tailwindcss-icon", label: "Tailwind" },
-  { icon: "logos:framer", label: "Framer Motion" },
+function SectionTitle({ number, label, title, children }: { number: string; label: string; title: ReactNode; children?: ReactNode }) {
+  return <div className="sv-section-heading" data-reveal>
+    <div><p className="sv-eyebrow"><span>{number}</span> / {label}</p><h2>{title}</h2></div>
+    {children && <div className="sv-section-intro">{children}</div>}
+  </div>;
+}
+
+function OrganizationLogo({ company }: { company: string }) {
+  const src = company.includes("Call To Action") ? "/images/cta-logo.png"
+    : company.includes("Ynov") ? "/images/ynov.jpg" : null;
+  return <span className={"sv-organization-logo" + (src ? "" : " sv-organization-initials")} aria-hidden="true">
+    {src ? <Image src={src} alt="" width={64} height={64} />
+      : company.split(" ").slice(0, 2).map(word => word[0]).join("")}
+  </span>;
+}
+
+const LAYERS = [
+  { name: "Interface", detail: "Des interfaces claires, des composants réutilisables et une expérience responsive.", stack: "Next.js · React · TypeScript", label: "01", position: "interface" },
+  { name: "API", detail: "Des API structurées, une authentification centralisée et des accès maîtrisés.", stack: "FastAPI · Python · SSO / RBAC", label: "02", position: "api" },
+  { name: "Données & IA", detail: "Des données utiles et des modèles auto-hébergés pour garder la maîtrise de l'infrastructure.", stack: "MySQL · MongoDB · Mistral", label: "03", position: "data" },
+  { name: "Livraison", detail: "Des tests automatisés, des images Docker et une livraison continue jusqu'en production.", stack: "Docker · GitHub Actions · Linux", label: "04", position: "delivery" },
 ];
 
-const CATEGORY_ICON: Record<string, string> = {
-  Frontend: "lucide:layout-panel-top",
-  "Backend & API": "lucide:server",
-  "Données & IA": "lucide:brain-circuit",
-  "DevOps & Sécurité": "lucide:shield-check",
-  "Qualité & Méthodes": "lucide:badge-check",
-  "Sur projets": "lucide:flask-conical",
-};
-
-function contactIcon(label: string): string {
-  const l = label.toLowerCase();
-  if (l.includes("mail") || l.includes("email")) return "lucide:mail";
-  if (l.includes("git")) return "lucide:github";
-  if (l.includes("linkedin")) return "lucide:linkedin";
-  if (l.includes("tél") || l.includes("tel") || l.includes("phone")) return "lucide:phone";
-  return "lucide:link";
-}
-
-/* Logos de marque pour chaque techno (vue compétences). */
-const SKILL_ICON: Record<string, string> = {
-  "Next.js": "logos:nextjs-icon",
-  React: "logos:react",
-  "React Native": "logos:react",
-  TypeScript: "logos:typescript-icon",
-  JavaScript: "logos:javascript",
-  "Tailwind CSS": "logos:tailwindcss-icon",
-  "Shadcn UI": "simple-icons:shadcnui",
-  "Framer Motion": "logos:framer",
-  "Material UI": "logos:material-ui",
-  "Node.js": "logos:nodejs-icon",
-  Python: "logos:python",
-  FastAPI: "logos:fastapi-icon",
-  Java: "logos:java",
-  "API REST": "lucide:plug",
-  "SSO / RBAC": "lucide:key-round",
-  Express: "logos:express",
-  MySQL: "logos:mysql",
-  MariaDB: "logos:mariadb-icon",
-  "SQL Server": "devicon:microsoftsqlserver",
-  DuckDB: "simple-icons:duckdb",
-  Polars: "simple-icons:polars",
-  Pandas: "logos:pandas-icon",
-  "Mistral (LLM auto-hébergé)": "logos:mistral-ai-icon",
-  Ollama: "simple-icons:ollama",
-  Docker: "logos:docker-icon",
-  "GitHub Actions": "logos:github-actions",
-  "CI/CD": "lucide:git-branch",
-  Linux: "logos:linux-tux",
-  Nginx: "logos:nginx",
-  Bash: "logos:bash-icon",
-  SSH: "lucide:terminal",
-  "Windows Server": "logos:microsoft-windows-icon",
-  "Audit des dépendances": "lucide:shield-alert",
-  Vitest: "logos:vitest",
-  Playwright: "logos:playwright",
-  Jest: "logos:jest",
-  ESLint: "logos:eslint",
-  "Revue de code": "lucide:git-pull-request",
-  "Méthode agile": "lucide:refresh-cw",
-  "Kubernetes (K8s)": "logos:kubernetes",
-  Kustomize: "lucide:layers",
-  Terraform: "logos:terraform-icon",
-  SQLite: "logos:sqlite",
-  PostgreSQL: "logos:postgresql",
-  MongoDB: "logos:mongodb-icon",
-  Supabase: "logos:supabase-icon",
-  "Socket.IO": "logos:socket-io",
-  Expo: "logos:expo-icon",
-};
-
-/* Logo d'entreprise / école (déposer les fichiers dans /public/images/). */
-function companyLogo(company: string): string | null {
-  const c = company.toLowerCase();
-  if (c.includes("call to action") || c.includes("cta")) return "/images/cta-logo.png";
-  if (c.includes("ynov")) return "/images/ynov.jpg";
-  return null;
-}
-
-function initials(name: string): string {
-  return name
-    .replace(/[()]/g, "")
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
-/* Pastille logo entreprise — fond blanc (les logos noirs/sombres restent lisibles),
-   repli sur les initiales si le fichier image est absent. */
-function CompanyLogo({ company, size = 44 }: { company: string; size?: number }) {
-  const src = companyLogo(company);
-  const [err, setErr] = useState(false);
-
-  if (!src || err) {
-    return (
-      <span
-        style={{ height: size, width: size }}
-        className="grid shrink-0 place-items-center rounded-xl bg-sky-500/10 text-sm font-bold text-sky-300 ring-1 ring-sky-400/20"
-      >
-        {initials(company)}
-      </span>
-    );
-  }
-  return (
-    <span
-      style={{ height: size, width: size }}
-      className="grid shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-white/10"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={company}
-        onError={() => setErr(true)}
-        className="h-full w-full object-contain"
-      />
-    </span>
-  );
-}
-
-/* ───────────────────────── helpers d'animation / UI ───────────────────────── */
-
-function Reveal({
-  children,
-  delay = 0,
-  className,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* Carte « spotlight » : un halo suit le curseur (façon 21st.dev / skiper-ui). */
-function SpotlightCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={(e) => {
-        const r = ref.current?.getBoundingClientRect();
-        if (r) setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
+function Architecture() {
+  const [selected, setSelected] = useState(0);
+  const reducedMotion = useReducedMotion();
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const tiltX = useSpring(pointerX, { stiffness: 110, damping: 22 });
+  const tiltY = useSpring(pointerY, { stiffness: 110, damping: 22 });
+  const layer = LAYERS[selected];
+  return <div className="sv-system">
+    <div className="sv-system-top"><span className="sv-eyebrow">DU PRODUIT À L’INFRA</span><span className="sv-system-mark" aria-hidden="true">N/O — 01</span></div>
+    <div className={"sv-system-scene sv-layer-" + selected}
+      onPointerMove={event => {
+        if (reducedMotion || event.pointerType !== "mouse") return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        pointerX.set(((event.clientY - bounds.top) / bounds.height - 0.5) * -9);
+        pointerY.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 9);
       }}
-      onMouseLeave={() => setPos(null)}
-      className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] transition-colors duration-300 hover:border-white/20 ${className}`}
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: pos
-            ? `radial-gradient(340px circle at ${pos.x}px ${pos.y}px, rgba(56,189,248,0.14), transparent 65%)`
-            : undefined,
-        }}
-      />
-      <div className="relative h-full">{children}</div>
+      onPointerLeave={() => { pointerX.set(0); pointerY.set(0); }}>
+      <motion.svg viewBox="0 0 480 320" className="sv-system-art" fill="none" aria-hidden="true"
+        style={{ rotateX: reducedMotion ? 0 : tiltX, rotateY: reducedMotion ? 0 : tiltY, transformPerspective: 800 }}>
+        <defs>
+          <pattern id="sv-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#596272" opacity=".4" /></pattern>
+          <linearGradient id="sv-layer-fill" x1="240" y1="50" x2="240" y2="260" gradientUnits="userSpaceOnUse"><stop stopColor="#25354a" /><stop offset="1" stopColor="#111a25" /></linearGradient>
+          <linearGradient id="sv-line" x1="120" y1="70" x2="360" y2="270" gradientUnits="userSpaceOnUse"><stop stopColor="#b9ddff" /><stop offset="1" stopColor="#40658b" /></linearGradient>
+        </defs>
+        <rect width="480" height="320" fill="url(#sv-dots)" />
+        <ellipse cx="240" cy="254" rx="110" ry="24" fill="#70b6ff" opacity=".035" />
+        <g className="sv-system-connections" stroke="#475767" strokeDasharray="3 5"><path d="M102 86h34l54 34M378 86h-34l-54 34M105 250h30l57-45M375 250h-30l-57-45" /><path d="M240 34v30m0 192v35" /></g>
+        <motion.g animate={{ y: reducedMotion ? 0 : [0, -5, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
+        <g className="sv-stack-bottom"><path d="m240 139 107 58-107 59-107-59z" fill="#111922" stroke="#38516a" /><path d="m133 197 107 59 107-59v14l-107 59-107-59z" fill="#0d131b" stroke="#38516a" /><path d="m158 197 82 45 82-45" stroke="#6497ca" strokeOpacity=".5" /><circle cx="240" cy="256" r="2" fill="#acd4ff" /></g>
+        <g className="sv-stack-middle"><path d="m240 97 107 58-107 59-107-59z" fill="url(#sv-layer-fill)" stroke="url(#sv-line)" /><path d="m133 155 107 59 107-59v14l-107 59-107-59z" fill="#131e2b" stroke="#537da7" /><path d="m169 155 71 39 71-39" stroke="#83baee" strokeOpacity=".4" /></g>
+        <g className="sv-stack-top"><path d="m240 56 107 58-107 59-107-59z" fill="url(#sv-layer-fill)" stroke="url(#sv-line)" /><path d="m133 114 107 59 107-59v14l-107 59-107-59z" fill="#1a2b3d" stroke="#709dca" /><path d="m221 102-17 10 17 10m38-20 17 10-17 10m-14-25-10 30" stroke="#d1e7ff" strokeWidth="2" strokeLinecap="round" /><path d="m156 114 84 46 84-46" stroke="#b7dcff" strokeOpacity=".2" /></g>
+        </motion.g>
+        <g fill="#a9d6ff"><circle cx="136" cy="86" r="2" /><circle cx="344" cy="86" r="2" /><circle cx="135" cy="250" r="2" /><circle cx="345" cy="250" r="2" /></g>
+      </motion.svg>
+      {LAYERS.map((item, index) => <button type="button" key={item.name} className={"sv-node sv-node-" + item.position} aria-pressed={selected === index} aria-controls="architecture-detail" onClick={() => setSelected(index)}><span>{item.label}</span>{item.name}<i aria-hidden="true" /></button>)}
+      <span className="sv-scene-caption">4 couches. Une vision d’ensemble.</span>
     </div>
-  );
+    <div className="sv-system-detail" id="architecture-detail" aria-live="polite" aria-atomic="true"><div><span className="sv-eyebrow">{layer.label} / {layer.name}</span><span className="sv-detail-index" aria-hidden="true">0{selected + 1}—04</span></div><p>{layer.detail}</p><span className="sv-mono">{layer.stack}</span></div>
+    <p className="sv-system-hint"><span aria-hidden="true">↖</span> Choisissez une couche pour explorer.</p>
+  </div>;
 }
 
-function Marquee() {
-  const row = (
-    <div className="animate-marquee flex shrink-0 items-center gap-10 pr-10">
-      {TECH.map((t) => (
-        <span key={t.label} className="flex items-center gap-2.5 text-stone-300">
-          <Icon icon={t.icon} className="text-2xl" />
-          <span className="text-sm font-medium">{t.label}</span>
-        </span>
-      ))}
-    </div>
-  );
-  return (
-    <div className="marquee-mask flex w-full overflow-hidden">
-      {row}
-      <div aria-hidden>{row}</div>
-    </div>
-  );
+function PipelinePreview() {
+  return <div className="sv-pipeline-preview" aria-label="Illustration de la chaîne de livraison du projet">
+    <div className="sv-code-top"><span><i /><i /><i /></span><span>delivery.workflow</span><span>YAML</span></div>
+    <div className="sv-code-body"><p><span>on:</span> [push, pull_request]</p><p><span>jobs:</span></p><p className="sv-code-indent">build-and-test:</p><p className="sv-code-indent-2"><span>runs-on:</span> ubuntu-latest</p><p className="sv-code-indent-2"><span>steps:</span></p><p className="sv-code-indent-3">− npm ci</p><p className="sv-code-indent-3">− npm test</p><p className="sv-code-indent-3">− docker build .</p></div>
+    <div className="sv-pipeline-stages">{["Code", "Tests", "Docker"].map((name, i) => <span key={name}><span className="sv-stage-check" aria-hidden="true">✓</span>{name}{i < 2 && <span className="sv-stage-line" aria-hidden="true" />}</span>)}</div>
+    <span className="sv-illustration-label">Chaîne de livraison · illustration</span>
+  </div>;
 }
 
-function SectionHeader({
-  eyebrow,
-  title,
-  subtitle,
-}: {
-  eyebrow: string;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <Reveal>
-      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.15em] text-sky-300">
-        <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-        {eyebrow}
-      </span>
-      <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-3 max-w-2xl text-stone-400">{subtitle}</p> : null}
-    </Reveal>
-  );
-}
-
-function Section({
-  id,
-  children,
-  className = "",
-}: {
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      id={id}
-      className={`mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 ${className}`}
-    >
-      {children}
-    </section>
-  );
-}
-
-/* ─────────────────────────── carte projet ─────────────────────────── */
-
-function ProjectCard({ project, onOpen }: { project: ProjectData; onOpen: () => void }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
-
-  return (
-    <motion.button
-      ref={ref}
-      type="button"
-      onClick={onOpen}
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      onMouseMove={(e) => {
-        const r = ref.current?.getBoundingClientRect();
-        if (r) setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
-      }}
-      onMouseLeave={() => setPos(null)}
-      className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] text-left transition-colors hover:border-sky-400/40"
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: pos
-            ? `radial-gradient(340px circle at ${pos.x}px ${pos.y}px, rgba(56,189,248,0.12), transparent 65%)`
-            : undefined,
-        }}
-      />
-      <div className="relative aspect-video w-full overflow-hidden bg-[radial-gradient(circle_at_50%_30%,rgba(56,189,248,0.18),transparent_60%)]">
-        {project.imageSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={project.imageSrc}
-            alt={project.title}
-            className={`h-full w-full transition-transform duration-500 group-hover:scale-105 ${
-              project.imageSrc.endsWith(".png") ? "object-contain p-8" : "object-cover"
-            }`}
-            loading="lazy"
-          />
-        ) : (
-          <div className="grid h-full w-full place-items-center">
-            <span className="font-mono text-4xl font-black text-sky-300/40">
-              {project.title.slice(0, 2)}
-            </span>
-          </div>
-        )}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0c111b] via-transparent to-transparent opacity-60" />
-        {project.videoSrc ? (
-          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-sky-200 backdrop-blur">
-            <Icon icon="lucide:play" className="text-[12px]" /> démo
-          </span>
-        ) : null}
+function FeaturedProject({ project, index, onOpen }: { project: ProjectData; index: number; onOpen: () => void }) {
+  return <article className={"sv-featured sv-featured-" + index} data-reveal data-reveal-order={index}>
+    <button type="button" className="sv-featured-button" onClick={onOpen} aria-label={"Découvrir le projet " + project.title}>
+      <div className="sv-featured-visual">
+        {project.imageSrc ? <div className="sv-browser-preview">
+          <div className="sv-browser-bar"><span><i /><i /><i /></span><span>{project.title.toLowerCase()} / aperçu</span><span aria-hidden="true">↗</span></div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- capture statique déjà compressée */}
+          <img src={project.imageSrc} alt={"Capture de l'application " + project.title} loading="lazy" width="1280" height="742" />
+        </div> : <PipelinePreview />}
+        <span className="sv-visual-badge">{project.videoSrc ? "Voir la démo ↗" : "Explorer le projet ↗"}</span>
       </div>
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-lg font-bold text-white transition-colors group-hover:text-sky-300">
-            {project.title}
-          </h3>
-          <span className="shrink-0 text-xs text-stone-500">{project.year}</span>
-        </div>
-        <p className="mt-1 text-xs uppercase tracking-wide text-sky-400/70">{project.context}</p>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-400">
-          {project.description[0]}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {project.technologies.slice(0, 5).map((t) => (
-            <span
-              key={t}
-              className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-stone-300"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-        <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-sky-400">
-          En savoir plus
-          <Icon
-            icon="lucide:arrow-right"
-            className="text-[15px] transition-transform group-hover:translate-x-1"
-          />
-        </span>
-      </div>
-    </motion.button>
-  );
+      <div className="sv-featured-description"><div className="sv-project-meta"><span>0{index + 1} / {index === 0 ? "FULL STACK & IA LOCALE" : "DEVOPS & CI/CD"}</span><span>{project.year}</span></div><div className="sv-project-title"><h3>{project.title}</h3><span className="sv-project-open"><Arrow diagonal /></span></div><p>{project.summary ?? project.description[0]}</p><div className="sv-tech-line">{project.technologies.filter(t => !["React 19", "TypeScript", "JWT", "SQLite", "Ollama", "Docker Compose", "Express", "Vitest", "Playwright"].includes(t)).slice(0, 4).join(" / ")}</div></div>
+    </button>
+  </article>;
 }
-
-/* ─────────────────────────── modale projet ─────────────────────────── */
 
 function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () => void }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const [maxH, setMaxH] = useState(440);
-  const [collapsed, setCollapsed] = useState(false);
-  useFocusTrap(dialogRef, true);
-
+  useFocusTrap(dialogRef);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    // Restaure la valeur précédente (« auto » en vue recruteur) à la fermeture,
-    // sinon le scroll de la page reste bloqué.
-    const prevOverflow = document.body.style.overflow;
+    const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const calc = () => setMaxH(Math.min(Math.round(window.innerHeight * 0.5), 520));
-    calc();
-    window.addEventListener("resize", calc);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("resize", calc);
-      document.body.style.overflow = prevOverflow;
-    };
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); };
   }, [onClose]);
 
-  // Header vidéo « collapsible » : une seule transition CSS (fluide, sans recalcul
-  // à chaque frame) déclenchée au franchissement d'un seuil de scroll, avec hystérésis.
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const y = el.scrollTop;
-      setCollapsed((c) => (c ? y > 24 : y > 72));
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-0 backdrop-blur-sm sm:p-6"
-    >
-      <motion.div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={`Projet ${project.title}`}
-        initial={{ opacity: 0, scale: 0.95, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97 }}
-        transition={{ type: "spring", stiffness: 240, damping: 26 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative flex max-h-[92dvh] w-full max-w-3xl flex-col overflow-hidden bg-[#0c111b] shadow-2xl sm:max-h-[88vh] sm:rounded-2xl sm:border sm:border-white/10"
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Fermer"
-          className="absolute right-3 top-3 z-30 grid h-8 w-8 place-items-center rounded-full bg-black/60 text-white backdrop-blur hover:bg-black/80"
-        >
-          <Icon icon="lucide:x" className="text-[18px]" />
-        </button>
-
-        <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
-          <div
-            style={{ height: collapsed ? 160 : maxH }}
-            className="sticky top-0 z-10 flex w-full items-center justify-center overflow-hidden border-b border-white/10 bg-black transition-[height] duration-300 ease-out"
-          >
-            {project.videoSrc ? (
-              <video
-                src={project.videoSrc}
-                poster={project.imageSrc}
-                controls
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="h-full w-auto max-w-full object-contain"
-              />
-            ) : project.imageSrc ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={project.imageSrc}
-                alt={project.title}
-                className="h-full w-auto max-w-full object-contain"
-              />
-            ) : (
-              <span className="text-sky-300/40">Aperçu indisponible</span>
-            )}
-          </div>
-          <div className="space-y-5 p-6 sm:p-8">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-sky-400/70">
-              {project.context} · {project.year}
-            </p>
-            <h3 className="mt-1 text-2xl font-black text-white">{project.title}</h3>
-            {project.role ? <p className="mt-2 text-sm text-stone-400">{project.role}</p> : null}
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {project.technologies.map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-sky-500/25 bg-sky-500/5 px-2.5 py-1 text-[11px] text-sky-200"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-          <div className="space-y-3">
-            {project.description.map((para, i) => (
-              <p key={i} className="text-[15px] leading-7 text-stone-300">
-                {para}
-              </p>
-            ))}
-          </div>
-          {(project.githubUrl || project.liveUrl) && (
-            <div className="flex flex-wrap gap-3 pt-1">
-              {project.githubUrl ? (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm text-white transition hover:bg-white/10"
-                >
-                  <Icon icon="lucide:github" className="text-[16px]" /> Code source
-                </a>
-              ) : null}
-              {project.liveUrl ? (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-400"
-                >
-                  <Icon icon="lucide:external-link" className="text-[16px]" /> Voir en ligne
-                </a>
-              ) : null}
-            </div>
-          )}
-          </div>
-        </div>
-      </motion.div>
+  return <motion.div className="sv-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+    <motion.div className="sv-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-label={"Projet " + project.title} initial={{ y: 18 }} animate={{ y: 0 }} exit={{ y: 10 }} onClick={e => e.stopPropagation()}>
+      <div className="sv-modal-toolbar"><span className="sv-eyebrow">ÉTUDE DE PROJET / {project.year}</span><button type="button" onClick={onClose} aria-label="Fermer le projet"><span>Fermer</span><span aria-hidden="true">×</span></button></div>
+      <div className="sv-modal-scroll">
+        {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="metadata" className="sv-modal-media" /> : project.imageSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element -- média de projet chargé uniquement à l'ouverture
+          <img src={project.imageSrc} alt={project.title} className="sv-modal-media" />
+        ) : null}
+        <div className="sv-modal-content"><p className="sv-eyebrow">{project.context}</p><h2 id="project-title">{project.title}</h2>{project.role && <p className="sv-modal-role">{project.role}</p>}<div className="sv-tags">{project.technologies.map(tech => <span key={tech}>{tech}</span>)}</div><div className="sv-modal-copy">{project.description.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div><div className="sv-modal-links">{project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noreferrer" className="sv-button sv-button-primary">Code source <Arrow diagonal /></a>}{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" className="sv-button sv-button-outline">Voir en ligne <Arrow diagonal /></a>}</div></div>
+      </div>
     </motion.div>
-  );
+  </motion.div>;
 }
 
-/* ─────────────────────────── vue principale ─────────────────────────── */
-
-const NAV = [
-  ["about", "À propos"],
-  ["skills", "Compétences"],
-  ["experience", "Expériences"],
-  ["projects", "Projets"],
-  ["education", "Formation"],
-  ["contact", "Contact"],
-];
-
-export default function SimpleView({ onSwitchView }: { onSwitchView: () => void }) {
-  const [openProject, setOpenProject] = useState<ProjectData | null>(null);
+export default function SimpleView() {
+  const showcaseRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
+  const readingProgress = useSpring(scrollYProgress, { stiffness: 160, damping: 30 });
+  const [openProject, setOpenProject] = useState<ProjectData | null>(null);
+  const [activeSection, setActiveSection] = useState("");
 
-  // Deep-link : ouvre le projet passé en ?project=… au montage.
   useEffect(() => {
-    try {
-      const slug = new URLSearchParams(window.location.search).get("project");
-      if (slug) {
-        const p = projectsData.find((pr) => projectSlug(pr.title) === slug);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        if (p) setOpenProject(p);
+    const root = showcaseRef.current;
+    if (!root || reducedMotion || !("IntersectionObserver" in window)) return;
+
+    // Le HTML reste visible sans JavaScript ; seuls les blocs hors écran sont animés.
+    const items = root.querySelectorAll<HTMLElement>("[data-reveal], .sv-project-row, .sv-approach-item, .sv-experience, .sv-education-row, .sv-skill-group, .sv-contact h2, .sv-contact-bottom");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        (entry.target as HTMLElement).dataset.revealState = "visible";
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
+
+    items.forEach(item => {
+      const bounds = item.getBoundingClientRect();
+      if (bounds.top < window.innerHeight && bounds.bottom > 0) return;
+      item.dataset.reveal = "";
+      item.dataset.revealOrder ??= String(Array.from(item.parentElement?.children ?? []).indexOf(item) % 4);
+      item.dataset.revealState = "pending";
+      observer.observe(item);
+    });
+    const revealFocused = (event: FocusEvent) => {
+      const item = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-reveal]") : null;
+      if (item) {
+        item.dataset.revealState = "visible";
+        observer.unobserve(item);
       }
-    } catch {
-      /* ignore */
+    };
+    root.addEventListener("focusin", revealFocused);
+    return () => {
+      observer.disconnect();
+      root.removeEventListener("focusin", revealFocused);
+      items.forEach(item => delete item.dataset.revealState);
+    };
+  }, [reducedMotion]);
+  const closeProject = useCallback(() => {
+    setOpenProject(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("project");
+    window.history.replaceState(null, "", url);
+  }, []);
+  const showProject = (project: ProjectData) => {
+    setOpenProject(project);
+    const url = new URL(window.location.href);
+    url.searchParams.set("project", projectSlug(project.title));
+    window.history.replaceState(null, "", url);
+  };
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const slug = url.searchParams.get("project");
+    // Les anciens liens restent valides et arrivent sur l'unique vitrine.
+    if (url.searchParams.has("view")) {
+      url.searchParams.delete("view");
+      window.history.replaceState(null, "", url);
     }
+    const project = projectsData.find(item => projectSlug(item.title) === slug);
+    if (project) setOpenProject(project);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) setActiveSection(entry.target.id); });
+    }, { rootMargin: "-15% 0px -60% 0px" });
+    NAV.forEach(([id]) => { const section = document.getElementById(id); if (section) observer.observe(section); });
+    return () => observer.disconnect();
   }, []);
 
-  // Reflète le projet ouvert dans l'URL (?project=…), en préservant les autres params.
-  useEffect(() => {
-    try {
-      const url = new URL(window.location.href);
-      if (openProject) url.searchParams.set("project", projectSlug(openProject.title));
-      else url.searchParams.delete("project");
-      window.history.replaceState(null, "", url);
-    } catch {
-      /* ignore */
-    }
-  }, [openProject]);
+  const featured = projectsData.filter(project => ["13", "15"].includes(project.id));
+  const others = projectsData.filter(project => !["13", "15"].includes(project.id));
 
-  return (
-    <div className="min-h-[100dvh] bg-[#070b12] text-stone-200">
-      {/* barre de progression de scroll */}
-      <motion.div
-        style={{ scaleX: scrollYProgress }}
-        className="fixed left-0 top-0 z-[70] h-0.5 w-full origin-left bg-gradient-to-r from-sky-400 via-indigo-400 to-fuchsia-400"
-      />
+  return <div className="showcase" ref={showcaseRef}>
+    <a href="#main" className="sv-skip">Aller au contenu</a>
+    <header className="sv-header"><div className="sv-nav-wrap"><a href="#main" className="sv-brand" aria-label="Nadjide Omar — accueil"><span className="sv-monogram">n<span>.</span></span><span>Nadjide Omar<span className="sv-brand-sub">Software Engineer</span></span></a><nav aria-label="Navigation principale">{NAV.map(([id, label]) => <a key={id} href={"#" + id} aria-current={activeSection === id ? "location" : undefined}>{label}</a>)}</nav><a href={EMAIL.href} className="sv-header-contact">Parlons-en <Arrow diagonal /></a></div><motion.div className="sv-reading-progress" style={{ scaleX: reducedMotion ? scrollYProgress : readingProgress }} aria-hidden="true" /></header>
 
-      {/* nav flottante (glass) */}
-      <header className="sticky top-0 z-50 px-4 pt-4">
-        <div className="mx-auto flex max-w-4xl items-center gap-2 rounded-full border border-white/10 bg-black/40 p-1.5 pl-4 shadow-lg shadow-black/20 backdrop-blur-xl">
-          <span className="font-bold text-white">Nadjide Omar</span>
-          <nav className="ml-auto hidden items-center gap-1 md:flex">
-            {NAV.map(([id, label]) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className="rounded-full px-3 py-1.5 text-sm text-stone-400 transition hover:bg-white/5 hover:text-white"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-          <button
-            type="button"
-            onClick={onSwitchView}
-            className="ml-auto flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-xs text-stone-300 transition hover:border-sky-400/50 hover:text-white md:ml-0"
-          >
-            <Icon icon="lucide:square-terminal" className="text-[15px] text-sky-400" /> Terminal
-          </button>
-        </div>
-      </header>
-
-      {/* hero */}
-      <section className="relative overflow-hidden">
-        {/* aurora + grille */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          <div className="bg-grid absolute inset-0 opacity-60 [mask-image:radial-gradient(70%_55%_at_50%_25%,#000,transparent)]" />
-          <div className="animate-aurora absolute -left-32 -top-20 h-[36rem] w-[36rem] rounded-full bg-sky-500/20 blur-[110px]" />
-          <div
-            className="animate-aurora absolute -right-24 top-0 h-[30rem] w-[30rem] rounded-full bg-indigo-500/20 blur-[110px]"
-            style={{ animationDelay: "-6s" }}
-          />
-          <div
-            className="animate-aurora absolute bottom-[-8rem] left-1/3 h-[26rem] w-[26rem] rounded-full bg-fuchsia-500/10 blur-[110px]"
-            style={{ animationDelay: "-12s" }}
-          />
-        </div>
-
-        <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h1 className="text-5xl font-black leading-[0.95] tracking-tight sm:text-7xl">
-              <span className="animate-sheen bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
-                {profile.name}
-              </span>
-            </h1>
-            <p className="mt-4 bg-gradient-to-r from-sky-300 to-indigo-300 bg-clip-text text-xl font-semibold text-transparent sm:text-3xl">
-              {profile.title}
-            </p>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-300">{profile.tagline}</p>
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              <a
-                href={REQUEST_CV_MAILTO}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 font-medium text-white shadow-lg shadow-sky-500/25 transition hover:shadow-sky-500/40"
-              >
-                <Icon icon="lucide:mail" className="text-[18px]" /> Demander mon CV
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-medium text-white backdrop-blur transition hover:bg-white/10"
-              >
-                <Icon icon="lucide:at-sign" className="text-[18px]" /> Me contacter
-              </a>
-            </div>
-
-            {/* stats */}
-            <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4">
-              {[
-                { v: "5 ans", l: "en entreprise" },
-                { v: "6 apps", l: "en production" },
-                { v: "-83 %", l: "temps d'évaluation" },
-                { v: "FR · EN", l: "langues (C1)" },
-                {
-                  v: (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Icon icon="lucide:map-pin" className="text-xl text-sky-400" />
-                      Nice
-                    </span>
-                  ),
-                  l: profile.location,
-                },
-              ].map((s, i) => (
-                <div key={i}>
-                  <p className="text-2xl font-black text-white">{s.v}</p>
-                  <p className="text-xs uppercase tracking-wide text-stone-500">{s.l}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+    <main id="main">
+      <section className="sv-hero sv-container" aria-label="Présentation">
+        <div className="sv-hero-copy"><p className="sv-eyebrow"><span className="sv-status-dot" />FULL STACK / DEVOPS / IA LOCALE</p><p className="sv-hero-name">Bonjour, je suis {profile.name}.</p><h1 aria-label={profile.name}>Du code.<br />À la <span>production.</span></h1><p className="sv-hero-description">{profile.tagline}</p><div className="sv-hero-actions"><a href="#projects" className="sv-button sv-button-primary">Explorer mes projets <Arrow /></a><a href={REQUEST_CV} className="sv-text-link">Demander mon CV <Arrow diagonal /></a></div><div className="sv-hero-location"><span className="sv-location-symbol" aria-hidden="true">⊕</span>{profile.location}<span className="sv-small-divider" />Full Stack & DevOps<span className="sv-small-divider" />FR / EN</div></div>
+        <Architecture />
+        <div className="sv-hero-bottom"><span className="sv-eyebrow">CONSTRUIRE. SÉCURISER. LIVRER.</span><a href="#projects" className="sv-scroll-link">La suite <span aria-hidden="true">↓</span></a></div>
       </section>
 
-      {/* marquee techno */}
-      <div className="border-y border-white/5 bg-white/[0.015] py-7">
-        <Marquee />
-      </div>
+      <div className="sv-proof-strip"><dl className="sv-container"><div><dt>En entreprise</dt><dd>5<span>ans</span></dd></div><div><dt>En production</dt><dd>6<span>applications</span></dd></div><div><dt>Temps d’évaluation qualité</dt><dd>−83<span>%</span></dd></div><div className="sv-proof-note"><dt>Ma façon de travailler</dt><dd>Un œil sur le produit.<br />L’autre sur l’infrastructure.</dd></div></dl></div>
 
-      {/* à propos — bento */}
-      <Section id="about">
-        <SectionHeader eyebrow="À propos" title="Qui suis-je" />
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          <SpotlightCard className="p-7 lg:col-span-2 lg:row-span-2">
-            <div className="flex h-full flex-col">
-              <div className="space-y-4">
-                {profile.about.map((p, i) => (
-                  <p key={i} className="text-[15px] leading-7 text-stone-300">
-                    {p}
-                  </p>
-                ))}
-              </div>
-              <p className="mt-auto pt-6 font-mono text-sm text-sky-300/80">— {profile.name}</p>
-            </div>
-          </SpotlightCard>
+      <section id="projects" className="sv-section sv-container">
+        <SectionTitle number="01" label="PROJETS CHOISIS" title={<>Du concret,<br /><span>de bout en bout.</span></>}><p>Des projets personnels et académiques, avec le même fil conducteur : comprendre le besoin, construire et livrer.</p><span className="sv-mono">{String(projectsData.length).padStart(2, "0")} PROJETS / 2024 — 2026</span></SectionTitle>
+        <div className="sv-featured-grid">{featured.map((project, index) => <FeaturedProject key={project.id} project={project} index={index} onOpen={() => showProject(project)} />)}</div>
+        <div className="sv-project-list"><div className="sv-list-header"><span>D’AUTRES TERRAINS D’EXPLORATION</span><span>ANNÉE</span></div>{others.map((project, index) => <button type="button" key={project.id} onClick={() => showProject(project)} className="sv-project-row" aria-label={"Découvrir le projet " + project.title}><span className="sv-row-index">{String(index + 3).padStart(2, "0")}</span><span className="sv-row-main"><span className="sv-row-title">{project.title}</span><span className="sv-row-summary">{project.summary ?? project.role}</span></span><span className="sv-row-tech">{project.technologies.slice(0, 2).join(" / ")}</span><span className="sv-row-year">{project.year}</span><Arrow diagonal /></button>)}</div>
+      </section>
 
-          <SpotlightCard className="flex flex-col justify-center p-6">
-            <p className="bg-gradient-to-r from-sky-300 to-indigo-300 bg-clip-text text-4xl font-black text-transparent">
-              -83 %
-            </p>
-            <p className="mt-2 text-sm leading-6 text-stone-400">
-              de temps sur chaque évaluation qualité, grâce à une plateforme en production avec IA
-              auto-hébergée.
-            </p>
-          </SpotlightCard>
+      <section id="about" className="sv-about-section"><div className="sv-container sv-section">
+        <SectionTitle number="02" label="MON APPROCHE" title={<>Le produit en tête.<br /><span>La technique au service.</span></>}><p>{profile.about[0]}</p></SectionTitle>
+        <div className="sv-approach-grid">{profile.highlights.map((item, index) => <article key={item.title} className="sv-approach-item"><span className="sv-approach-index">0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+        <div className="sv-impact"><span className="sv-eyebrow">EN CONDITIONS RÉELLES</span><p>Une évaluation qualité.<br /><span className="sv-impact-before">30 minutes.</span> <span className="sv-impact-after">5 minutes.</span></p><div><span className="sv-impact-metric">−83 %</span><p>Sur une plateforme que j’ai conçue et maintenue, utilisée par plus de 60 collaborateurs, avec une API d’analyse IA auto-hébergée.</p></div></div>
+        <details className="sv-about-details"><summary>En savoir plus sur mon profil <span aria-hidden="true">+</span></summary><div>{profile.about.slice(1).map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div></details>
+      </div></section>
 
-          {profile.highlights.map((h) => (
-            <SpotlightCard key={h.title} className="p-6">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 ring-1 ring-sky-400/20">
-                <Icon icon={h.icon} className="text-xl text-sky-300" />
-              </span>
-              <p className="mt-3 font-semibold text-white">{h.title}</p>
-              <p className="mt-1 text-sm leading-6 text-stone-400">{h.text}</p>
-            </SpotlightCard>
-          ))}
-        </div>
-      </Section>
+      <section id="experience" className="sv-section sv-container"><SectionTitle number="03" label="PARCOURS" title={<>Construire.<br /><span>Et prendre de la hauteur.</span></>}><p>De mes premiers outils d’automatisation à la responsabilité d’applications en production.</p><span className="sv-mono">NICE / 2021 — 2026</span></SectionTitle><div className="sv-experience-list">{[...experiences].reverse().map((experience, index) => <details key={experience.id} className="sv-experience" open={index === 0 ? true : undefined}><summary><span className="sv-experience-date">{experience.date}</span><span className="sv-experience-heading"><OrganizationLogo company={experience.company} /><span className="sv-experience-role"><span>{experience.title}</span><span>{experience.company} · {experience.location}</span></span></span><span className="sv-details-plus" aria-hidden="true">+</span></summary><div className="sv-experience-content"><p className="sv-experience-description">{experience.description}</p>{experience.projects.map(project => <div className="sv-experience-project" key={project.name}><h4>{project.name}</h4><ul>{project.bullets.map(bullet => <li key={bullet}>{bullet}</li>)}</ul><p className="sv-mono">{project.tech.join(" / ")}</p></div>)}</div></details>)}</div>
+        <div id="education" className="sv-education"><h3 className="sv-eyebrow">FORMATION / DE LA PRATIQUE À L’EXPERTISE</h3>{[...formations].reverse().map(formation => <div key={formation.id} className="sv-education-row"><span className="sv-mono">{formation.date}</span><div className="sv-education-heading"><OrganizationLogo company={formation.company} /><div><h4>{formation.title}</h4><p>{formation.subtitle} · {formation.company}</p><span>{formation.location}</span></div></div></div>)}</div>
+      </section>
 
-      {/* compétences */}
-      <Section id="skills">
-        <SectionHeader
-          eyebrow="Stack"
-          title="Compétences"
-          subtitle="Pratiquées en production chez mon employeur ; le dernier bloc regroupe ce que j'ai pratiqué sur projets."
-        />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {skillGroups.map((g, i) => (
-            <Reveal key={g.category} delay={(i % 3) * 0.06}>
-              <SpotlightCard className="h-full">
-                <div className={`h-1 w-full bg-gradient-to-r ${g.gradient}`} />
-                <div className="p-5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10">
-                      <Icon
-                        icon={CATEGORY_ICON[g.category] ?? "lucide:code"}
-                        className="text-lg text-sky-300"
-                      />
-                    </span>
-                    <p className="font-semibold text-white">{g.category}</p>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {g.items.map((it) => (
-                      <span
-                        key={it}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] py-1 pl-1 pr-2.5 text-xs text-stone-200"
-                      >
-                        <span className="inline-flex h-5 items-center justify-center overflow-hidden rounded bg-white px-1">
-                          <Icon
-                            icon={SKILL_ICON[it] ?? "lucide:code"}
-                            className="h-[14px] w-auto text-stone-800"
-                          />
-                        </span>
-                        {it}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </SpotlightCard>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+      <section id="skills" className="sv-stack-section"><div className="sv-container sv-section"><SectionTitle number="04" label="BOÎTE À OUTILS" title={<>La bonne stack.<br /><span>Pour le bon problème.</span></>}><p>Des technologies pratiquées en entreprise. Un espace distinct pour celles explorées sur projets.</p></SectionTitle><div className="sv-skills-grid">{skillGroups.map((group, index) => <article className="sv-skill-group" key={group.category}><h3><span className="sv-mono">0{index + 1}</span>{group.category}{index === skillGroups.length - 1 && <span className="sv-project-only">PROJETS</span>}</h3><p>{group.items.join(" · ")}</p></article>)}</div></div></section>
 
-      {/* expériences */}
-      <Section id="experience">
-        <SectionHeader eyebrow="Parcours" title="Expériences" subtitle="Mon parcours professionnel." />
-        <div className="relative mt-10 pl-6">
-          <div className="absolute left-0 top-1 h-[calc(100%-0.5rem)] w-px bg-gradient-to-b from-sky-400/60 via-white/10 to-transparent" />
-          <div className="space-y-6">
-            {experiences.map((e, i) => (
-              <Reveal key={e.id} delay={i * 0.06}>
-                <span className="absolute -left-[6px] mt-2 h-3 w-3 rounded-full bg-sky-400 ring-4 ring-sky-400/15" />
-                <SpotlightCard className="p-6 sm:p-7">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="flex items-start gap-3">
-                      <CompanyLogo company={e.company} />
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{e.title}</h3>
-                        <p className="mt-0.5 text-sm text-stone-400">{e.company}</p>
-                        <p className="mt-1 inline-flex items-center gap-1 text-xs text-stone-500">
-                          <Icon icon="lucide:map-pin" className="text-[13px] text-sky-400/70" />
-                          {e.location}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 font-mono text-xs text-sky-300">
-                      {e.date}
-                    </span>
-                  </div>
-                  <p className="mt-4 flex gap-2 text-[15px] leading-7 text-stone-300">
-                    <Icon icon="lucide:chevron-right" className="mt-1.5 shrink-0 text-sky-400/70" />
-                    {e.description}
-                  </p>
-                  <div className="mt-5 space-y-3">
-                    {e.projects.map((pr) => (
-                      <div
-                        key={pr.name}
-                        className="rounded-xl border border-white/10 bg-white/[0.02] p-4"
-                      >
-                        <p className="flex items-center gap-2 font-semibold text-white">
-                          <Icon icon="lucide:diamond" className="text-[12px] text-sky-400" />
-                          {pr.name}
-                        </p>
-                        <ul className="mt-2 space-y-1.5">
-                          {pr.bullets.map((b, k) => (
-                            <li key={k} className="flex gap-2 text-sm leading-6 text-stone-300">
-                              <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-sky-400/70" />
-                              {b}
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {pr.tech.map((t) => (
-                            <span
-                              key={t}
-                              className="rounded-md border border-sky-400/15 bg-sky-400/[0.06] px-2 py-0.5 font-mono text-[11px] text-sky-200/90"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </SpotlightCard>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </Section>
+      <section id="contact" className="sv-section sv-container sv-contact"><div className="sv-contact-top"><p className="sv-eyebrow">05 / LA SUITE, ENSEMBLE</p><span className="sv-mono">{profile.location} · {profile.languages.join(" / ")}</span></div><h2>Et si on construisait<br /><span>la suite ?</span></h2><div className="sv-contact-bottom"><div><p>Une équipe à rejoindre, un produit à faire avancer.<br />Parlons de ce que l’on peut construire ensemble.</p><a className="sv-contact-email" href={EMAIL.href}>{EMAIL.value}<Arrow diagonal /></a></div><a href={REQUEST_CV} className="sv-button sv-button-outline">Demander mon CV <Arrow diagonal /></a></div></section>
+    </main>
 
-      {/* projets */}
-      <Section id="projects">
-        <SectionHeader
-          eyebrow="Réalisations"
-          title="Projets"
-          subtitle="Quelques réalisations — clique pour les détails."
-        />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {projectsData.map((p, i) => (
-            <Reveal key={p.id} delay={(i % 3) * 0.06}>
-              <ProjectCard project={p} onOpen={() => setOpenProject(p)} />
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* formation */}
-      <Section id="education">
-        <SectionHeader eyebrow="Cursus" title="Formation" />
-        <div className="relative mt-10 space-y-6 pl-6">
-          <div className="absolute left-0 top-1 h-[calc(100%-0.5rem)] w-px bg-gradient-to-b from-sky-400/50 via-white/10 to-transparent" />
-          {[...formations].reverse().map((f, i) => (
-            <Reveal key={f.id} delay={i * 0.06}>
-              <span className="absolute -left-[6px] mt-1.5 h-3 w-3 rounded-full bg-sky-400 ring-4 ring-sky-400/15" />
-              <SpotlightCard className="p-5">
-                <div className="flex gap-3">
-                  <CompanyLogo company={f.company} size={40} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <p className="font-bold text-white">{f.title}</p>
-                      <span className="font-mono text-sm text-stone-500">{f.date}</span>
-                    </div>
-                    {f.subtitle ? (
-                      <p className="mt-0.5 text-sm text-sky-300/80">{f.subtitle}</p>
-                    ) : null}
-                    <p className="mt-1 text-sm text-stone-400">{f.company}</p>
-                    <p className="mt-1 inline-flex items-center gap-1 text-xs text-stone-500">
-                      <Icon icon="lucide:map-pin" className="text-[13px] text-sky-400/70" />
-                      {f.location}
-                    </p>
-                    {f.tech.length ? (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {f.tech.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-stone-400"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </SpotlightCard>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* contact */}
-      <Section id="contact">
-        <SectionHeader
-          eyebrow="Contact"
-          title="Travaillons ensemble"
-          subtitle="Discutons de votre projet ou d'une opportunité."
-        />
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          <div className="grid gap-3 sm:grid-cols-2 lg:col-span-2">
-            {contactLinks.map((c, i) => (
-              <Reveal key={c.label} delay={i * 0.05}>
-                <a
-                  href={c.href}
-                  target={c.href.startsWith("http") ? "_blank" : undefined}
-                  rel="noreferrer"
-                  className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 transition hover:border-sky-400/40 hover:bg-white/[0.05]"
-                >
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 ring-1 ring-sky-400/20">
-                    <Icon icon={contactIcon(c.label)} className="text-lg text-sky-300" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-xs uppercase tracking-wide text-stone-500">
-                      {c.label}
-                    </span>
-                    <span className="block truncate font-medium text-white">{c.value}</span>
-                  </span>
-                  <Icon
-                    icon="lucide:arrow-up-right"
-                    className="ml-auto shrink-0 text-stone-600 transition group-hover:text-sky-400"
-                  />
-                </a>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={0.1}>
-            <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-2xl border border-sky-400/20 bg-gradient-to-br from-sky-500/15 to-indigo-500/10 p-6">
-              <p className="text-lg font-bold text-white">Mon CV sur demande</p>
-              <p className="mt-1 text-sm text-stone-300">
-                Contactez-moi par email ou via LinkedIn et je vous l'envoie.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <a
-                  href={REQUEST_CV_MAILTO}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 font-medium text-[#070b12] transition hover:bg-stone-200"
-                >
-                  <Icon icon="lucide:mail" className="text-[18px]" /> Demander par email
-                </a>
-                <a
-                  href={LINKEDIN_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 font-medium text-white transition hover:bg-white/10"
-                >
-                  <Icon icon="lucide:linkedin" className="text-[18px]" /> LinkedIn
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </Section>
-
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-stone-500">
-        © {new Date().getFullYear()} {profile.name}
-      </footer>
-
-      <AnimatePresence>
-        {openProject ? (
-          <ProjectModal project={openProject} onClose={() => setOpenProject(null)} />
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
+    <footer className="sv-footer sv-container"><span>© {new Date().getFullYear()} {profile.name}<span className="sv-footer-note">Pensé comme un produit. Construit pour durer.</span></span><div>{contactLinks.filter(link => link.label !== "Email").map(link => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label}<Arrow diagonal /></a>)}<a href="#main" aria-label="Retour en haut">↑</a></div></footer>
+    <AnimatePresence>{openProject && <ProjectModal project={openProject} onClose={closeProject} />}</AnimatePresence>
+  </div>;
 }

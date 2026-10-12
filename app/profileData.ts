@@ -1,5 +1,4 @@
-/* Profil : source UNIQUE du pitch, réutilisée par la vue simplifiée (vitrine)
-   ET par le terminal (commande « about »).
+/* Profil : source unique du pitch et des informations de la vitrine.
    Cohérence : mêmes faits et mêmes chiffres que le CV (dépôt _cv, faits/profil.toml),
    anonymisés côté employeur (précepte P5 : aucun nom interne ni métier de l'entreprise). */
 
@@ -17,7 +16,7 @@ export const profile = {
   availability: "CDI · disponible le 01/10/2026",
   languages: ["Français : natif", "Anglais : C1"],
   tagline:
-    "5 ans en entreprise sur 6 applications métier en production : je les conçois, je les sécurise et j'automatise leur livraison.",
+    "5 ans en entreprise sur 6 applications métier en production\u00a0: je les conçois, je les sécurise et j'automatise leur livraison.",
   about: [
     "Développeur Full Stack à forte culture DevOps, j'accompagne une application sur tout son cycle de vie : architecture, développement, tests, conteneurisation Docker, CI/CD GitHub Actions et déploiement sur serveurs Linux (Nginx) et Windows.",
     "Depuis 2021, au sein d'une équipe technique de 3 personnes, j'ai conçu et je maintiens 6 applications métier en production. La plus récente, une plateforme de pilotage qualité, a ramené le temps d'une évaluation de 30 à 5 minutes (-83 %) pour plus de 60 utilisateurs ; toutes reposent sur le service d'authentification centralisée (SSO) que j'ai développé.",

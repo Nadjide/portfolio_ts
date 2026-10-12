@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-ts-nine.vercel.app"),
   title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
   description:
-    "Portfolio interactif de Nadjide Omar, Software Engineer Full Stack & DevOps : Docker, CI/CD, Next.js, FastAPI, Python. Un vrai terminal jouable — tape « help » — ou une vue simplifiée, au choix.",
+    "Nadjide Omar, Software Engineer Full Stack & DevOps à Nice. 5 ans en entreprise, 6 applications en production. Projets, architecture, IA locale et livraison continue.",
   keywords: ["Software Engineer", "Ingénieur DevOps", "Développeur Full Stack", "Docker", "CI/CD", "Next.js", "React", "TypeScript", "FastAPI", "Python", "Portfolio", "Nadjide Omar"],
   authors: [{ name: "Nadjide Omar" }],
   creator: "Nadjide Omar",
@@ -28,19 +28,19 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://portfolio-ts-nine.vercel.app",
     title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
-    description: "Portfolio interactif — un terminal DevOps jouable ou une vue simplifiée, au choix. Tape « help ».",
+    description: "Du code à la production. Découvrez les projets et le parcours de Nadjide Omar, Software Engineer Full Stack & DevOps à Nice.",
     siteName: "Portfolio Nadjide Omar",
   },
   twitter: {
     card: "summary_large_image",
     title: "Nadjide Omar | Software Engineer (Full Stack & DevOps)",
-    description: "Portfolio interactif avec terminal DevOps jouable — Docker, CI/CD, Next.js, FastAPI, Python.",
+    description: "Du code à la production — projets Full Stack, DevOps et IA locale de Nadjide Omar.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1e1e1e",
-  colorScheme: "dark",
+  themeColor: "#0d1115",
+  colorScheme: "dark light",
 };
 
 const personJsonLd = {

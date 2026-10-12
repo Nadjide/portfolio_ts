@@ -2,6 +2,8 @@ export interface ProjectData {
     id: string;
     title: string;
     description: string[];
+    /** Résumé court de la réalisation, partagé par les aperçus. */
+    summary?: string;
     imageSrc?: string;
     videoSrc?: string;
     githubUrl?: string;
@@ -18,6 +20,8 @@ export const projectsData: ProjectData[] = [
     {
         id: "13",
         title: "Stajio",
+        summary: "Un journal d'alternance qui transforme l'expérience en rapports, soutenances et points CV. IA locale, du produit au déploiement Kubernetes.",
+        imageSrc: "/images/stajio-preview.jpg",
         featured: true,
         year: "2026",
         context: "Projet personnel · DevOps (Mastère)",
@@ -36,6 +40,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "15",
         title: "DevOps Playground",
+        summary: "Une API volontairement simple. Une chaîne de livraison complète : tests, conteneurisation, intégration continue et contrôles de santé.",
         featured: true,
         year: "2026",
         context: "Projet personnel · DevOps",
@@ -51,6 +56,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "16",
         title: "Pokito",
+        summary: "Jeu multijoueur en temps réel, serveur autoritaire et état de partie sécurisé.",
         year: "2025",
         context: "Projet École",
         role: "Développement backend temps réel",
@@ -65,6 +71,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "7",
         title: "Exploree",
+        summary: "Découvrir restaurants et activités à travers une application mobile de vidéos courtes.",
         featured: true,
         year: "2025",
         context: "Projet École",
@@ -82,6 +89,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "8",
         title: "Smart Hire",
+        summary: "Une application RH avec questionnaires IA et visualisation des évaluations.",
         featured: true,
         year: "2024",
         context: "Projet École",
@@ -99,6 +107,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "9",
         title: "Pokedex",
+        summary: "Un Pokédex interactif, multilingue, avec recherche et filtres par type.",
         year: "2024",
         context: "Projet École",
         role: "Développement Frontend",
@@ -116,6 +125,7 @@ export const projectsData: ProjectData[] = [
     {
         id: "14",
         title: "FisherFans API",
+        summary: "API de pêche collaborative : authentification, réservations et règles métier testées.",
         year: "2026",
         context: "Projet académique",
         role: "Conception backend, modélisation des données, implémentation API REST, authentification JWT, règles métier et tests fonctionnels",

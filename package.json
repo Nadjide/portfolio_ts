@@ -12,7 +12,6 @@
     "e2e": "playwright test"
   },
   "dependencies": {
-    "@iconify/react": "^6.0.2",
     "@vercel/analytics": "^2.0.1",
     "framer-motion": "^12.29.2",
     "next": "^16.0.0",
@@ -22,7 +21,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "^1.61.1",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.39.2",

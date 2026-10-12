@@ -1,96 +1,60 @@
-<div align="center">
-
 # Portfolio — Nadjide Omar
 
 **Software Engineer · Full Stack & DevOps**
 
-Un portfolio interactif avec **deux expériences** : une vitrine moderne et claire, et un **vrai terminal DevOps jouable** pour les curieux.
+[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)
 
-**[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)**
+Une vitrine éditoriale graphite, ivoire et bleu glacier : présentation, architecture interactive, projets, parcours, compétences et contact.
 
-`Next.js` · `TypeScript` · `Tailwind CSS` · `Framer Motion`
+## Expérience
 
-</div>
+- Une seule vitrine, directement accessible, sans choix de mode.
+- Schéma d'architecture SVG explorable à la souris et au clavier : interface, API, données & IA, livraison.
+- Stajio et DevOps Playground en réalisations principales ; cinq autres projets en liste.
+- Fiches projets avec démonstrations vidéo chargées à la demande, liens source et site quand disponibles.
+- Liens partageables, par exemple `?project=stajio`. Les anciens liens avec `?view=simple` ou `?view=terminal` arrivent sur la vitrine.
+- Parcours détaillé dépliable, résultat concret, compétences en entreprise distinctes des technologies explorées sur projets.
+- Navigation responsive, focus visible, modales accessibles et respect des animations réduites.
+- Entrée progressive du hero, révélations au défilement, schéma flottant et progression de lecture ; contenu visible sans JavaScript.
 
----
+La recherche de références Astra / Opus 5.5 et les choix de design sont documentés dans [docs/design-references.md](docs/design-references.md).
 
-## Le concept
+## Contenu et architecture
 
-Le portfolio propose deux vues, basculables à tout moment (avec une animation de transition « écran qui s'allume ») :
+Les sources du profil restent centralisées dans `app/profileData.ts`, `app/portfolioContent.ts`, `app/projectsData.ts` et `app/contactData.ts`. Les résumés courts des projets font partie des données.
 
-### Vue simplifiée
-
-Une landing page moderne, droit au but : hero animé, marquee de technologies, grille *bento*, *spotlight cards* qui suivent la souris, timelines de parcours, et fiches projets avec démo vidéo. Pensée pour comprendre l'essentiel en quelques secondes.
-
-### Vue terminal
-
-Un terminal plein écran, façon poste de travail DevOps : fenêtre macOS (le bouton rouge ferme… vers la vue simplifiée), barre de statut façon **tmux**, autocomplétion (`Tab`), historique (`↑`/`↓`), et un jeu de commandes qui raconte le profil.
-
-#### Commandes
-
-| Commande | Description |
-|---|---|
-| `help` | Liste des commandes (profil · ops · système) |
-| `about` / `whoami` | Présentation |
-| `projects` / `open <projet>` | Liste et démos des projets |
-| `skills` · `experience` · `education` · `contact` | Sections du CV |
-| `git log` | Le parcours raconté en commits |
-| `docker ps` / `kubectl get pods` | L'« infra » du portfolio |
-| `ci` / `deploy` | Pipeline CI/CD et mise en prod animées |
-| `top` · `ping` · `uptime` · `neofetch` | Le côté ops |
-| `cv` | CV sur demande (email / LinkedIn) |
-
-> Quelques commandes cachées traînent aussi (`matrix`, `coffee`, `sudo`, `ssh prod`…)
-
-## Architecture
-
-Le contenu vit dans **une seule source de vérité** ([`app/profileData.ts`](app/profileData.ts), [`portfolioContent.ts`](app/portfolioContent.ts), [`projectsData.ts`](app/projectsData.ts), [`contactData.ts`](app/contactData.ts)). Ces données alimentent à la fois la **vue simplifiée** et le **terminal** — mettre à jour le CV se fait à un seul endroit, sans jamais désynchroniser les vues.
-
-```
+```text
 app/
-├─ components/
-│  ├─ simple/      # Vue simplifiée (SimpleView)
-│  └─ terminal/    # TerminalView (chrome + statut) · Terminal · ProjectWindow · CIPipeline
-├─ *Data.ts        # Source unique du contenu
-├─ data.test.ts    # Tests d'intégrité des données (+ garde-fou confidentialité)
-├─ icon.png        # Favicon (badge logo)
-└─ opengraph-image.tsx  # Image de partage (OG) générée
+├── components/Portfolio.tsx
+├── components/simple/SimpleView.tsx
+├── components/simple/showcase.css
+├── hooks/useFocusTrap.ts
+├── *Data.ts / portfolioContent.ts
+├── data.test.ts
+└── opengraph-image.tsx
 ```
 
-## Stack
+Le poster Stajio est une capture de la démonstration existante. Le schéma et l'illustration de livraison sont construits en SVG/CSS, sans WebGL ni bibliothèque 3D.
 
-- **[Next.js 16](https://nextjs.org)** (App Router) · **React 19** · **TypeScript**
-- **[Tailwind CSS](https://tailwindcss.com)** pour le style
-- **[Framer Motion](https://www.framer.com/motion/)** pour les animations
-- **[Iconify](https://iconify.design)** (`@iconify/react`) pour les icônes (Lucide + logos de marque)
-- **Vercel Analytics**
+## Développement
 
-## Démarrage
+`npm install` puis `npm run dev`.
 
-```bash
-npm install
-npm run dev
-```
-
-Ouvrir [http://localhost:3000](http://localhost:3000).
-
-### Scripts
-
-| Script | Action |
+| Commande | Usage |
 |---|---|
-| `npm run dev` | Serveur de développement |
+| `npm run dev` | Prévisualisation Next.js |
 | `npm run build` | Build de production |
 | `npm start` | Serveur de production |
 | `npm run lint` | ESLint |
-| `npm test` | Tests unitaires (Vitest) |
-| `npm run e2e` | Tests end-to-end (Playwright) |
+| `npm test` | Intégrité, confidentialité et cohérence des données |
+| `npm run e2e` | Navigation, fiches projets, accessibilité clavier, liens existants et responsive |
 
-## Tests
+Les tests end-to-end génèrent des aperçus desktop/mobile dans `artifacts/`.
 
-Les tests unitaires ([Vitest](https://vitest.dev)) valident l'intégrité des données affichées (champs requis, ids uniques, liens exploitables) et incluent un **garde-fou de confidentialité** qui fait échouer la CI si une donnée sensible est réintroduite. Tests e2e via [Playwright](https://playwright.dev).
+## Stack
+
+Next.js 16 · React 19 · TypeScript · Tailwind CSS · Framer Motion · Vercel Analytics
 
 ## Contact
-
-**Nadjide Omar** — Nice / Sophia Antipolis (06)
 
 [GitHub](https://github.com/Nadjide) · [LinkedIn](https://www.linkedin.com/in/nadjide-omar-b55a01212/)

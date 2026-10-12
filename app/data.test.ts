@@ -6,7 +6,7 @@ import { profile } from "./profileData";
 
 /* ──────────────────────────────────────────────────────────────────────────
    Tests d'intégrité des données du portfolio : tout ce qui s'affiche
-   (vue simplifiée + terminal) vient de ces sources uniques.
+   dans la vitrine vient de ces sources uniques.
    ────────────────────────────────────────────────────────────────────────── */
 
 describe("projectsData", () => {

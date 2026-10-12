@@ -1,7 +1,6 @@
 import type { ContactLink } from "./types";
 
-/* Source UNIQUE des liens de contact — réutilisée par le terminal
-   (commande « contact ») et la vue simplifiée. */
+/* Source unique des liens de contact de la vitrine. */
 
 export const contactLinks: ContactLink[] = [
   {

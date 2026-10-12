@@ -2,172 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #1e1e1e;
-  --foreground: #cccccc;
-
-  /* Palette d'accent du terminal (défaut : cyan). Format « R G B » pour
-     pouvoir moduler l'alpha via rgb(var(--tc-x-rgb) / .5). */
-  --tc-a-rgb: 56 189 248; /* accent   (ex sky-400)  */
-  --tc-b-rgb: 125 211 252; /* clair    (ex sky-300)  */
-  --tc-c-rgb: 103 232 249; /* vif      (ex cyan-300) */
-  --tc-d-rgb: 14 165 233; /* profond  (ex sky-500)  */
-}
-
-/* ───────── Thèmes du terminal (cyan · vert phosphore · ambre CRT) ───────── */
-[data-term-theme="cyan"] {
-  --tc-a-rgb: 56 189 248;
-  --tc-b-rgb: 125 211 252;
-  --tc-c-rgb: 103 232 249;
-  --tc-d-rgb: 14 165 233;
-}
-[data-term-theme="green"] {
-  --tc-a-rgb: 34 197 94;
-  --tc-b-rgb: 134 239 172;
-  --tc-c-rgb: 74 222 128;
-  --tc-d-rgb: 22 163 74;
-}
-[data-term-theme="amber"] {
-  --tc-a-rgb: 245 158 11;
-  --tc-b-rgb: 252 211 77;
-  --tc-c-rgb: 251 191 36;
-  --tc-d-rgb: 217 119 6;
-}
-
+:root { --background: #0d1115; --foreground: #f0f0e9; }
+html { background: var(--background); }
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
-
-html {
-  background: #1e1e1e;
-}
-
-* {
-  scrollbar-color: #424242 transparent;
-}
-
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #424242;
-  border: 3px solid transparent;
-  background-clip: padding-box;
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #4f4f4f;
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
-
-/* Performance */
-img, video {
-  content-visibility: auto;
-}
-
-/* Focus clavier visible (façon VS Code) sur toute l'app */
-:focus-visible {
-  outline: 1px solid #007acc;
-  outline-offset: -1px;
-}
-
-/* Scrollbar fin (zones éditeur / terminal), façon VS Code */
-.terminal-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #424242 transparent;
-}
-.terminal-scroll::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.terminal-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.terminal-scroll::-webkit-scrollbar-thumb {
-  background: #424242;
-  border-radius: 999px;
-}
-
-/* ───────── Vue recruteur — effets modernes (aurora, marquee, grille) ───────── */
-
-/* Blobs « aurora » animés en fond de hero */
-@keyframes aurora-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  33% {
-    transform: translate3d(6%, 8%, 0) scale(1.12);
-  }
-  66% {
-    transform: translate3d(-7%, -5%, 0) scale(0.92);
-  }
-}
-.animate-aurora {
-  animation: aurora-drift 18s ease-in-out infinite;
-}
-
-/* Marquee horizontal infini (logos de techno) */
-@keyframes marquee-x {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.animate-marquee {
-  animation: marquee-x var(--marquee-duration, 32s) linear infinite;
-}
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-
-/* Fond en grille subtile (façon blueprint) */
-.bg-grid {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-
-/* Dégradé animé pour le titre du hero */
-@keyframes text-sheen {
-  to {
-    background-position: 200% center;
-  }
-}
-.animate-sheen {
-  background-size: 200% auto;
-  animation: text-sheen 6s linear infinite;
-}
-
-/* Respect du réglage système "réduire les animations" */
+* { scrollbar-color: #485562 transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #485562; border: 3px solid transparent; background-clip: padding-box; border-radius: 999px; }
+:focus-visible { outline: 2px solid #a7cfff; outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
   }
 }
