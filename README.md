@@ -38,6 +38,8 @@ Le poster Stajio est une capture de la démonstration existante. Le schéma et l
 
 ## Développement
 
+Node.js **24.x** est requis, comme en CI et sur Vercel. La version est fixée dans `package.json` pour éviter qu'un ancien réglage Vercel conserve un runtime désactivé.
+
 `npm install` puis `npm run dev`.
 
 | Commande | Usage |
