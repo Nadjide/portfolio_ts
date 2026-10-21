@@ -13,7 +13,7 @@ export const profile = {
   name: "Nadjide Omar",
   title: "Software Engineer",
   location: "Nice (06)",
-  availability: "Recherche CDI · Cannes–Monaco ou full remote France",
+  availability: "Recherche CDI · Région PACA ou télétravail intégral en France",
   certification: "AWS Cloud Practitioner (préparation en cours)",
   languages: ["Français : natif", "Anglais : C1"],
   seoDescription:
