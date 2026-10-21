@@ -15,40 +15,33 @@ export interface ProjectData {
     context?: string;
 }
 
+/* Preuves verifiees dans _cv/faits/profil.toml. Les manifestes Kubernetes
+   attestent une pratique de projet, pas un deploiement. */
 export const projectsData: ProjectData[] = [
-    // ─── Projets conservés ───────────────────────────────────────────────────
     {
         id: "13",
         title: "Stajio",
-        summary: "Un journal d'alternance qui transforme l'expérience en rapports, soutenances et points CV. IA locale, du produit au déploiement Kubernetes.",
+        summary: "Next.js, IA locale et CI GitHub Actions. Conteneurisation Docker et manifestes Kubernetes avec Kustomize.",
         imageSrc: "/images/stajio-preview.jpg",
         featured: true,
-        year: "2026",
-        context: "Projet personnel · DevOps (Mastère)",
-        role: "Conception full-stack, architecture backend, intégration IA locale et refonte technique du projet",
+        context: "Projet",
         description: [
-            "Stajio est une application conçue pour aider les étudiants en alternance ou en stage à structurer leur expérience et à valoriser leur travail tout au long de l’année. L’idée du projet est de proposer un espace unique pour saisir son journal de bord, suivre ses deadlines importantes et générer automatiquement des contenus utiles comme un rapport de stage, une préparation à la soutenance ou des points CV.",
-            "Le projet a été entièrement refondu autour de Next.js 16 avec une architecture moderne et plus maintenable. Le backend repose sur des route handlers natifs, tandis que les données sont stockées localement dans une base SQLite. L’intelligence artificielle fonctionne en local via Ollama, ce qui permet de supprimer la dépendance à des clés API cloud et de garder une logique plus simple, plus privée et plus maîtrisée.",
-            "Mon travail sur Stajio m’a permis de mettre en place une architecture full-stack cohérente, de gérer l’authentification avec JWT en cookie HTTP-only, de structurer les données métier et d’intégrer une expérience utilisateur fluide avec un design responsive et une navigation claire. Le projet inclut aussi des fonctionnalités d’export PDF, de génération de contenus IA et de suivi de progression, avec une attention particulière portée à la lisibilité du code et à la modularité.",
-            "Côté DevOps, le projet est industrialisé de bout en bout : CI GitHub Actions en deux jobs (type-check, ESLint, tests Vitest et build, puis tests end-to-end Playwright), image Docker, Docker Compose et manifestes Kubernetes (K8s) déployés via Kustomize (namespace, ConfigMap, Secret, stockage persistant, service Ollama).",
-            "Stajio reflète une approche orientée produit, avec un vrai cas d’usage concret, une stack moderne et une logique local-first qui le distingue des projets classiques."
+            "Stajio associe Next.js 16, React 19 et TypeScript, avec une base SQLite et Ollama pour l'IA locale.",
+            "La CI GitHub Actions comprend le contrôle des types, ESLint, Vitest, le build et les tests E2E Playwright.",
+            "Le projet comprend Docker et des manifestes Kubernetes organisés avec Kustomize.",
         ],
-        videoSrc: "/videos/stajio_video.mp4",
         githubUrl: "https://github.com/Nadjide/stajio",
-        technologies: ["Next.js 16", "React 19", "TypeScript", "SQLite", "Ollama", "JWT", "Docker", "Kubernetes", "GitHub Actions", "Vitest", "Playwright"],
+        technologies: ["Next.js 16", "React 19", "TypeScript", "SQLite", "Ollama", "Docker", "Kubernetes", "Kustomize", "GitHub Actions", "Vitest", "Playwright"],
     },
     {
         id: "15",
         title: "DevOps Playground",
-        summary: "Une API volontairement simple. Une chaîne de livraison complète : tests, conteneurisation, intégration continue et contrôles de santé.",
+        summary: "API Node.js/Express conteneurisée : Docker Compose, GitHub Actions, tests Jest et contrôles de santé.",
         featured: true,
-        year: "2026",
-        context: "Projet personnel · DevOps",
-        role: "Conception de la chaîne de livraison, conteneurisation et tests automatisés",
+        context: "Projet",
         description: [
-            "DevOps Playground est une API Node.js / Express volontairement simple, construite pour montrer un chemin propre du code à l'exécution : tests automatisés, image Docker validée et contrôles de santé à l'exécution.",
-            "L'environnement local tourne avec Docker Compose. À chaque push, un workflow GitHub Actions installe les dépendances, exécute les tests Jest et construit l'image Docker.",
-            "Le projet est volontairement petit : l'objectif n'est pas la fonctionnalité mais la qualité de la chaîne de livraison, lisible et reproductible.",
+            "DevOps Playground est une API Node.js/Express conteneurisée avec Docker et Docker Compose.",
+            "Le projet associe GitHub Actions, des tests Jest et des contrôles de santé.",
         ],
         githubUrl: "https://github.com/Nadjide/devops-playground",
         technologies: ["Node.js", "Express", "Docker", "Docker Compose", "GitHub Actions", "Jest"],
@@ -56,88 +49,13 @@ export const projectsData: ProjectData[] = [
     {
         id: "16",
         title: "Pokito",
-        summary: "Jeu multijoueur en temps réel, serveur autoritaire et état de partie sécurisé.",
-        year: "2025",
-        context: "Projet École",
-        role: "Développement backend temps réel",
+        summary: "Backend Node.js/Socket.IO avec serveur autoritaire, Supabase et Docker.",
+        context: "Projet",
         description: [
-            "Pokito est un jeu de Poker Mexicain multijoueur en temps réel, réalisé dans le cadre du Mastère, avec une API backend et une application Vue.",
-            "Côté backend, la logique de jeu repose sur un serveur autoritaire en Node.js et Socket.IO : l'état live des parties (cartes, tours, mises, mains privées) reste en mémoire côté serveur et n'est jamais confié au client.",
-            "La base Supabase ne stocke que ce qui doit durer : lobby, comptes, économie et portefeuille virtuel, cosmétiques, arènes et historique final des parties. L'API est conteneurisée avec Docker.",
+            "Le backend de Pokito repose sur Node.js et Socket.IO, avec un serveur autoritaire.",
+            "La stack du projet comprend Supabase et Docker.",
         ],
         githubUrl: "https://github.com/Pokito-ynov/api-pokito",
-        technologies: ["Node.js", "Socket.IO", "WebSocket", "Supabase", "API REST", "Docker"],
-    },
-    {
-        id: "7",
-        title: "Exploree",
-        summary: "Découvrir restaurants et activités à travers une application mobile de vidéos courtes.",
-        featured: true,
-        year: "2025",
-        context: "Projet École",
-        role: "Co-développement Mobile & Backend",
-        description: [
-            "Exploree est une application mobile innovante qui combine les concept de REELS pour offrir une expérience immersive et rapide, centrée sur la découverte de restaurants et d'activités. L'idée est de proposer un format de contenu sous forme de reels, permettant aux utilisateurs de visualiser rapidement des recommandations grâce à des vidéos engageantes et dynamiques.",
-            "Le projet a débuté en troisième année d'école en tant que projet de groupe, réunissant une équipe de quatre développeurs, dont moi-même. Grâce à une collaboration étroite, nous avons pu poser les bases de cette application ambitieuse qui vise à transformer la façon dont les utilisateurs découvrent des lieux et des expériences. À l'heure actuelle, Exploree est devenu un projet à part entière, toujours en cours de développement, avec une vision tournée vers l'optimisation de la visibilité pour les restaurateurs et les organisateurs d'activités.",
-            "Mon rôle dans l'équipe de développement a consisté à collaborer étroitement sur les fonctionnalités clés de l'application, telles que le flux de reels, les interactions utilisateur (likes, commentaires), ainsi que l'architecture backend pour la gestion des données. En utilisant des technologies modernes comme React Native, Expo, et MongoDB, nous avons pu créer une application fluide et performante, adaptée aux besoins d'un public jeune et connecté.",
-            "Exploree incarne la convergence entre technologie et lifestyle, offrant une plateforme qui révolutionne la manière dont les utilisateurs trouvent et partagent des expériences locales. Ce projet reste un défi passionnant et une opportunité d'appliquer des compétences avancées dans le développement d'applications mobiles modernes."
-        ],
-        imageSrc: "/images/exploree.jpg",
-        videoSrc: "/videos/optimized/exploree_demo.mp4",
-        technologies: ["React Native", "MongoDB", "Expo", "JavaScript"],
-    },
-    {
-        id: "8",
-        title: "Smart Hire",
-        summary: "Une application RH avec questionnaires IA et visualisation des évaluations.",
-        featured: true,
-        year: "2024",
-        context: "Projet École",
-        role: "Développement Full Stack & IA",
-        description: [
-            "Smart Hire est une application innovante développée dans le cadre d'un projet scolaire, conçue pour révolutionner le processus de recrutement RH grâce à l'intelligence artificielle et à une personnalisation poussée. L'objectif principal de l'application est de faciliter la sélection des candidats en offrant des outils complets d'évaluation et d'analyse des performances.",
-            "L'application propose un système de questionnaires dynamiques, générés automatiquement par l'IA ou personnalisés par les recruteurs selon leurs besoins. Les données collectées sont stockées dans une base de données robuste, permettant de sauvegarder les questions créées pour enrichir constamment le pool de données disponible. Chaque questionnaire est structuré autour de thématiques spécifiques pour garantir une évaluation précise et pertinente des compétences des candidats.",
-            "Smart Hire intègre également un système avancé de comparaison des scores, permettant aux recruteurs d'évaluer les candidats sur la base de graphiques interactifs et de statistiques détaillées. Ces visualisations offrent une vue d'ensemble des performances par thématique, par candidat, et permettent de prendre des décisions éclairées grâce à des données objectives.",
-            "Ce projet représente un exemple abouti d'application RH moderne, combinant une interface utilisateur intuitive et des fonctionnalités puissantes pour optimiser le processus de recrutement. Mon rôle principal a été de développer l'application avec React Native pour l'interface mobile, TypeScript pour une typage strict et FastAPI pour gérer efficacement les données et les fonctionnalités backend."
-        ],
-        imageSrc: "/images/smart_hire.jpg",
-        videoSrc: "/videos/optimized/smart_hire_demo.mp4",
-        technologies: ["React Native", "TypeScript", "FASTAPI"],
-    },
-    {
-        id: "9",
-        title: "Pokedex",
-        summary: "Un Pokédex interactif, multilingue, avec recherche et filtres par type.",
-        year: "2024",
-        context: "Projet École",
-        role: "Développement Frontend",
-        description: [
-            "Pokedex est un projet scolaire développé dans le cadre d'un exercice visant à créer une application ergonomique et performante en utilisant React et Material UI. L'objectif principal était de construire une application intuitive et rapide, tout en intégrant des fonctionnalités avancées pour enrichir l'expérience utilisateur.",
-            "L'application permet de consulter des informations détaillées sur tous les Pokémon, en s'appuyant sur la PokeAPI. J'ai enrichi le projet en ajoutant plusieurs fonctionnalités innovantes: internationalisation (plusieurs langues disponibles), tri par type (eau, feu, plante, etc.) et recommandations intelligentes basées sur les caractéristiques partagées entre Pokémon.",
-            "Ce projet a été une excellente opportunité pour approfondir mes compétences en React, en gestion d'état avec des bibliothèques modernes, et en conception d'interfaces ergonomiques avec Material UI. Il représente un bel exemple de projet d'étude où l'innovation et l'expérience utilisateur sont au cœur de la conception."
-        ],
-        imageSrc: "/images/pokedex.jpg",
-        videoSrc: "/videos/optimized/pokedex_demo.mp4",
-        githubUrl: "https://github.com/Nadjide/pokedex",
-        liveUrl: "https://pokedex-pi-brown.vercel.app/",
-        technologies: ["React", "Material UI", "PokeAPI"],
-    },
-    {
-        id: "14",
-        title: "FisherFans API",
-        summary: "API de pêche collaborative : authentification, réservations et règles métier testées.",
-        year: "2026",
-        context: "Projet académique",
-        role: "Conception backend, modélisation des données, implémentation API REST, authentification JWT, règles métier et tests fonctionnels",
-        description: [
-            "FisherFans est une API backend conçue pour une plateforme collaborative autour de la pêche, avec gestion des utilisateurs, bateaux, sorties, réservations et carnets de pêche numériques.",
-            "Le projet s'appuie sur FastAPI pour la performance et la lisibilité, avec une documentation OpenAPI générée automatiquement. Les données sont structurées avec SQLModel, ce qui permet de combiner validation et persistance SQL dans une architecture simple à faire évoluer. L'authentification repose sur JWT (Bearer token) avec vérification des identifiants et protection des routes sensibles.",
-            "Côté logique métier, l'API inclut des contrôles concrets: unicité des emails, vérification de l'existence des ressources liées (utilisateur, bateau, sortie), filtres de recherche (dont critères géographiques pour les bateaux) et gestion d'erreurs explicite avec des codes HTTP cohérents. Le projet intègre aussi des exigences de conformité comme l'anonymisation des données utilisateur lors de la suppression.",
-            "L'ensemble est testé avec Pytest via des scénarios fonctionnels couvrant les cas nominaux et les erreurs métier. Le déploiement local est facilité par Docker Compose avec Nginx en reverse proxy, ce qui donne un environnement proche d'une architecture de production.",
-            "FisherFans montre une approche backend orientée produit: API documentée, sécurité de base, règles métier réelles, et structure technique propre pour servir de base à une application complète."
-        ],
-        imageSrc: "/images/fisherfans_logo.png",
-        githubUrl: "https://github.com/Nadjide/api-fisherfans",
-        technologies: ["Python 3.9+", "FastAPI", "SQLModel", "SQLite", "JWT", "OAuth2", "Pytest", "Docker", "Nginx", "OpenAPI"],
+        technologies: ["Node.js", "Socket.IO", "Supabase", "Docker"],
     },
 ];

@@ -1,5 +1,53 @@
 import { test, expect } from "@playwright/test";
 import path from "node:path";
+import { writeFile } from "node:fs/promises";
+
+test("le contenu public, les détails et les métadonnées suivent les faits actuels", async ({ page, request }) => {
+  await page.goto("/");
+  await page.locator(".sv-about-details > summary").click();
+  for (const detail of await page.locator("details.sv-experience").all()) {
+    if (await detail.getAttribute("open") === null) await detail.locator("summary").click();
+  }
+
+  await expect(page.locator(".sv-about-details")).toContainText("25/09/2026");
+  const latest = page.locator(".sv-experience").first();
+  await expect(latest).toContainText("équipe technique de 3 personnes, dans un environnement de 6 applications");
+  await expect(latest).toContainText("CI/CD GitHub Actions sur les 3 applications critiques");
+  await expect(latest).toContainText("(RBAC) utilisés par les 6 applications");
+  await expect(latest).toContainText("toute l'application de A à Z");
+  await expect(latest).toContainText("Java 21 / Spring Boot 4");
+  const quality = page.locator(".sv-skill-group").filter({ hasText: "Qualité & Méthodes" });
+  await expect(quality).toContainText("Vitest (plateforme qualité)");
+  await expect(quality).not.toContainText(/Playwright|Jest/);
+  await expect(page.locator("#education")).toContainText("RNCP39583");
+  await expect(page.locator("#education")).toContainText("AWS Cloud Practitioner (préparation en cours)");
+  await expect(page.locator("footer").getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", "https://www.linkedin.com/in/nadjide-omar");
+  const text = await page.locator("main").innerText();
+  expect(text).not.toMatch(/depuis 2021|je maintiens|premiers pipelines|Master 2|Pytest|JPA|Hibernate|microservices|campagnes?|téléconseill|centre d.appels?|FisherFans|Smart Hire|Exploree|Pokedex/i);
+  await expect(page.locator('a[href^="tel:"], a[href$=".pdf"]')).toHaveCount(0);
+  expect((await request.get("/videos/stajio_video.mp4")).status()).toBe(404);
+  // Next normalise le slash final du domaine ; comparer les URL normalisées.
+  expect(new URL(await page.locator('link[rel="canonical"]').getAttribute("href") as string).href).toBe("https://portfolio-ts-nine.vercel.app/");
+  for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
+    await expect(page.locator(selector)).toHaveAttribute("content", /Java\/Spring Boot.*09\/2026.*3 applications critiques/);
+  }
+  const person = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+  expect(person.url).toBe("https://portfolio-ts-nine.vercel.app/");
+  expect(person.sameAs).toContain("https://www.linkedin.com/in/nadjide-omar");
+  expect(person).not.toHaveProperty("worksFor");
+  const shareImageUrl = new URL(await page.locator('meta[property="og:image"]').getAttribute("content") as string);
+  const shareImage = await request.get(shareImageUrl.pathname + shareImageUrl.search);
+  expect(shareImage.status()).toBe(200);
+  expect(shareImage.headers()["content-type"]).toContain("image/png");
+  await writeFile(path.join(process.cwd(), "artifacts", "portfolio-share.png"), await shareImage.body());
+});
+
+test("un ancien lien vers un projet retiré ne réaffiche pas sa fiche", async ({ page }) => {
+  await page.goto("/?project=fisherfans-api");
+  await expect(page.getByRole("heading", { name: "Nadjide Omar", level: 1 })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /FisherFans/ })).toHaveCount(0);
+});
 
 test("ouvre l'unique vitrine, même depuis un ancien lien terminal", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("portfolio_view", "terminal"));
@@ -85,8 +133,12 @@ for (const viewport of [{ width: 390, height: 844, label: "mobile" }, { width: 7
     await page.evaluate(() => document.fonts.ready);
     const dimensions = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, viewport: window.innerWidth }));
     expect(dimensions.page).toBeLessThanOrEqual(dimensions.viewport);
-    if (viewport.label !== "tablet") await page.screenshot({ path: path.join(process.cwd(), "artifacts", "portfolio-" + viewport.label + ".png"), fullPage: false });
-    await page.getByRole("button", { name: "Découvrir le projet FisherFans API" }).click();
-    await expect(page.getByRole("dialog", { name: "Projet FisherFans API" })).toBeVisible();
+    if (viewport.label !== "tablet") {
+      await page.screenshot({ path: path.join(process.cwd(), "artifacts", "portfolio-" + viewport.label + ".png"), fullPage: false });
+      await page.locator(".sv-experience").first().screenshot({ path: path.join(process.cwd(), "artifacts", "portfolio-" + viewport.label + "-experience.png") });
+      await page.locator("#skills").screenshot({ path: path.join(process.cwd(), "artifacts", "portfolio-" + viewport.label + "-skills.png") });
+    }
+    await page.getByRole("button", { name: "Découvrir le projet Pokito" }).click();
+    await expect(page.getByRole("dialog", { name: "Projet Pokito" })).toBeVisible();
   });
 }

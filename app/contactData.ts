@@ -2,6 +2,8 @@ import type { ContactLink } from "./types";
 
 /* Source unique des liens de contact de la vitrine. */
 
+export const portfolioUrl = "https://portfolio-ts-nine.vercel.app/";
+
 export const contactLinks: ContactLink[] = [
   {
     label: "Email",
@@ -16,7 +18,7 @@ export const contactLinks: ContactLink[] = [
   {
     label: "LinkedIn",
     value: "in/nadjide-omar",
-    href: "https://www.linkedin.com/in/nadjide-omar-b55a01212/",
+    href: "https://www.linkedin.com/in/nadjide-omar",
   },
 ];
 

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { profile } from "./profileData";
 
-export const alt = "Nadjide Omar — Du code à la production. Full Stack & DevOps.";
+export const alt = "Nadjide Omar · Java / Spring Boot, Full Stack & DevOps.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -14,7 +14,7 @@ export default function OpengraphImage() {
       </div>
       <div style={{ display: "flex", flexDirection: "column", fontSize: 90, lineHeight: 1.04, letterSpacing: -5 }}><span>Du code.</span><span style={{ color: "#a7cfff" }}>À la production.</span></div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #ffffff25", paddingTop: 25, color: "#a0afbc", fontSize: 19 }}>
-        <span>5 ans en entreprise · 6 applications en production</span><span>{profile.location} · portfolio-ts-nine.vercel.app</span>
+        <span>09/2021–09/2026 · Java / Spring Boot</span><span>{profile.location} · portfolio-ts-nine.vercel.app</span>
       </div>
     </div>,
     size

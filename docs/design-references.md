@@ -47,18 +47,18 @@ Les animations ajoutent une entrée progressive du hero, des apparitions au déf
 
 ## Faits de Nadjide à préserver
 
-Les sources de vérité du dépôt restent `app/profileData.ts`, `app/portfolioContent.ts` et `app/projectsData.ts`. Les formulations peuvent être raccourcies pour la vitrine, sans inventer de résultats ou changer leur périmètre.
+Le contenu est régi par `faits/profil.toml` du dossier CV de référence. `app/profileData.ts`, `app/portfolioContent.ts` et `app/projectsData.ts` en portent une sélection anonymisée, révisée le 21/10/2026. Les formulations peuvent être raccourcies pour la vitrine, sans inventer de résultats ou changer leur périmètre.
 
 | Fait existant | Présentation à conserver |
 | --- | --- |
-| 5 ans en entreprise depuis 2021 | Expérience Full Stack à forte culture DevOps. |
+| Parcours en entreprise de 09/2021 à 09/2026, contrat terminé le 25/09/2026 | Expérience Full Stack à forte culture DevOps. |
 | 6 applications métier en production, équipe technique de 3 personnes | Portée collective et contexte de production ; ne pas présenter l'ensemble comme un travail solitaire. |
 | Évaluation passée de 30 à 5 minutes, soit −83 %, pour plus de 60 utilisateurs | Résultat de la plateforme de pilotage qualité, pas un indicateur global de tous les projets. |
 | SSO et contrôle d'accès communs aux 6 applications | Réalisation d'authentification centralisée et de sécurité applicative. |
 | CI/CD GitHub Actions sur les 3 applications critiques | Conserver ce périmètre ; ne pas l'étendre aux 6 applications sans nouvelle preuve. |
 | Pipeline Python : préparation de 20–60 minutes ramenée à 5 minutes | Présenter comme un résultat distinct de l'évaluation qualité. |
-| IA auto-hébergée avec Mistral et Ollama | Données gardées sur l'infrastructure pour le système concerné. |
-| Stajio et DevOps Playground | Projets personnels ; Stajio s'inscrit également dans le Mastère. Les pratiques Kubernetes de projet ne deviennent pas de l'expérience Kubernetes en entreprise. |
+| IA auto-hébergée avec Mistral et Ollama | API d’analyse IA automatisée, sans garantie globale ajoutée sur les flux de données. |
+| Stajio et DevOps Playground | Projets attestés ; les dates et les contextes personnels/académiques précis ne sont pas confirmés dans les faits. Les pratiques Kubernetes de projet ne deviennent pas de l'expérience Kubernetes en entreprise. |
 
 L'anonymisation des applications et des informations internes de l'employeur reste cohérente avec les données existantes. Aucun chiffre issu des démonstrations de référence n'est importé dans le portfolio.
 

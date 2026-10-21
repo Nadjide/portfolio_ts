@@ -15,7 +15,7 @@ export const projectSlug = (title: string) =>
     .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 const EMAIL = findLink("Email")!;
-const REQUEST_CV = EMAIL.href + "?subject=" + encodeURIComponent("Demande de CV — Nadjide Omar") + "&body=" + encodeURIComponent("Bonjour Nadjide,\n\nJe souhaiterais recevoir votre CV.\n\n");
+const REQUEST_CV = EMAIL.href + "?subject=" + encodeURIComponent("Demande de CV · Nadjide Omar") + "&body=" + encodeURIComponent("Bonjour Nadjide,\n\nJe souhaiterais recevoir votre CV.\n\n");
 const NAV = [["projects", "Projets"], ["about", "Approche"], ["experience", "Parcours"], ["contact", "Contact"]] as const;
 
 function Arrow({ diagonal = false, className = "" }: { diagonal?: boolean; className?: string }) {
@@ -42,9 +42,9 @@ function OrganizationLogo({ company }: { company: string }) {
 
 const LAYERS = [
   { name: "Interface", detail: "Des interfaces claires, des composants réutilisables et une expérience responsive.", stack: "Next.js · React · TypeScript", label: "01", position: "interface" },
-  { name: "API", detail: "Des API structurées, une authentification centralisée et des accès maîtrisés.", stack: "FastAPI · Python · SSO / RBAC", label: "02", position: "api" },
+  { name: "API", detail: "Des API structurées, une authentification centralisée et des accès maîtrisés.", stack: "Java · Spring Boot · FastAPI · SSO / RBAC", label: "02", position: "api" },
   { name: "Données & IA", detail: "Des données utiles et des modèles auto-hébergés pour garder la maîtrise de l'infrastructure.", stack: "MySQL · MongoDB · Mistral", label: "03", position: "data" },
-  { name: "Livraison", detail: "Des tests automatisés, des images Docker et une livraison continue jusqu'en production.", stack: "Docker · GitHub Actions · Linux", label: "04", position: "delivery" },
+  { name: "Livraison", detail: "Docker et CI/CD GitHub Actions sur 3 applications critiques en entreprise. Vitest sur la plateforme qualité.", stack: "Docker · GitHub Actions · Linux", label: "04", position: "delivery" },
 ];
 
 function Architecture() {
@@ -56,7 +56,7 @@ function Architecture() {
   const tiltY = useSpring(pointerY, { stiffness: 110, damping: 22 });
   const layer = LAYERS[selected];
   return <div className="sv-system">
-    <div className="sv-system-top"><span className="sv-eyebrow">DU PRODUIT À L’INFRA</span><span className="sv-system-mark" aria-hidden="true">N/O — 01</span></div>
+    <div className="sv-system-top"><span className="sv-eyebrow">DU PRODUIT À L’INFRA</span><span className="sv-system-mark" aria-hidden="true">N/O · 01</span></div>
     <div className={"sv-system-scene sv-layer-" + selected}
       onPointerMove={event => {
         if (reducedMotion || event.pointerType !== "mouse") return;
@@ -85,7 +85,7 @@ function Architecture() {
       {LAYERS.map((item, index) => <button type="button" key={item.name} className={"sv-node sv-node-" + item.position} aria-pressed={selected === index} aria-controls="architecture-detail" onClick={() => setSelected(index)}><span>{item.label}</span>{item.name}<i aria-hidden="true" /></button>)}
       <span className="sv-scene-caption">4 couches. Une vision d’ensemble.</span>
     </div>
-    <div className="sv-system-detail" id="architecture-detail" aria-live="polite" aria-atomic="true"><div><span className="sv-eyebrow">{layer.label} / {layer.name}</span><span className="sv-detail-index" aria-hidden="true">0{selected + 1}—04</span></div><p>{layer.detail}</p><span className="sv-mono">{layer.stack}</span></div>
+    <div className="sv-system-detail" id="architecture-detail" aria-live="polite" aria-atomic="true"><div><span className="sv-eyebrow">{layer.label} / {layer.name}</span><span className="sv-detail-index" aria-hidden="true">0{selected + 1}/04</span></div><p>{layer.detail}</p><span className="sv-mono">{layer.stack}</span></div>
     <p className="sv-system-hint"><span aria-hidden="true">↖</span> Choisissez une couche pour explorer.</p>
   </div>;
 }
@@ -128,7 +128,7 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
 
   return <motion.div className="sv-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
     <motion.div className="sv-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-label={"Projet " + project.title} initial={{ y: 18 }} animate={{ y: 0 }} exit={{ y: 10 }} onClick={e => e.stopPropagation()}>
-      <div className="sv-modal-toolbar"><span className="sv-eyebrow">ÉTUDE DE PROJET / {project.year}</span><button type="button" onClick={onClose} aria-label="Fermer le projet"><span>Fermer</span><span aria-hidden="true">×</span></button></div>
+      <div className="sv-modal-toolbar"><span className="sv-eyebrow">ÉTUDE DE PROJET{project.year && <> / {project.year}</>}</span><button type="button" onClick={onClose} aria-label="Fermer le projet"><span>Fermer</span><span aria-hidden="true">×</span></button></div>
       <div className="sv-modal-scroll">
         {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="metadata" className="sv-modal-media" /> : project.imageSrc ? (
           // eslint-disable-next-line @next/next/no-img-element -- média de projet chargé uniquement à l'ouverture
@@ -219,7 +219,7 @@ export default function SimpleView() {
 
   return <div className="showcase" ref={showcaseRef}>
     <a href="#main" className="sv-skip">Aller au contenu</a>
-    <header className="sv-header"><div className="sv-nav-wrap"><a href="#main" className="sv-brand" aria-label="Nadjide Omar — accueil"><span className="sv-monogram">n<span>.</span></span><span>Nadjide Omar<span className="sv-brand-sub">Software Engineer</span></span></a><nav aria-label="Navigation principale">{NAV.map(([id, label]) => <a key={id} href={"#" + id} aria-current={activeSection === id ? "location" : undefined}>{label}</a>)}</nav><a href={EMAIL.href} className="sv-header-contact">Parlons-en <Arrow diagonal /></a></div><motion.div className="sv-reading-progress" style={{ scaleX: reducedMotion ? scrollYProgress : readingProgress }} aria-hidden="true" /></header>
+    <header className="sv-header"><div className="sv-nav-wrap"><a href="#main" className="sv-brand" aria-label="Nadjide Omar · accueil"><span className="sv-monogram">n<span>.</span></span><span>Nadjide Omar<span className="sv-brand-sub">Software Engineer</span></span></a><nav aria-label="Navigation principale">{NAV.map(([id, label]) => <a key={id} href={"#" + id} aria-current={activeSection === id ? "location" : undefined}>{label}</a>)}</nav><a href={EMAIL.href} className="sv-header-contact">Parlons-en <Arrow diagonal /></a></div><motion.div className="sv-reading-progress" style={{ scaleX: reducedMotion ? scrollYProgress : readingProgress }} aria-hidden="true" /></header>
 
     <main id="main">
       <section className="sv-hero sv-container" aria-label="Présentation">
@@ -228,28 +228,28 @@ export default function SimpleView() {
         <div className="sv-hero-bottom"><span className="sv-eyebrow">CONSTRUIRE. SÉCURISER. LIVRER.</span><a href="#projects" className="sv-scroll-link">La suite <span aria-hidden="true">↓</span></a></div>
       </section>
 
-      <div className="sv-proof-strip"><dl className="sv-container"><div><dt>En entreprise</dt><dd>5<span>ans</span></dd></div><div><dt>En production</dt><dd>6<span>applications</span></dd></div><div><dt>Temps d’évaluation qualité</dt><dd>−83<span>%</span></dd></div><div className="sv-proof-note"><dt>Ma façon de travailler</dt><dd>Un œil sur le produit.<br />L’autre sur l’infrastructure.</dd></div></dl></div>
+      <div className="sv-proof-strip"><dl className="sv-container"><div><dt>Parcours en entreprise</dt><dd>5<span>ans</span></dd></div><div><dt>Environnement pro</dt><dd>6<span>applications</span></dd></div><div><dt>Temps d’évaluation qualité</dt><dd>−83<span>%</span></dd></div><div className="sv-proof-note"><dt>Ma façon de travailler</dt><dd>Un œil sur le produit.<br />L’autre sur l’infrastructure.</dd></div></dl></div>
 
       <section id="projects" className="sv-section sv-container">
-        <SectionTitle number="01" label="PROJETS CHOISIS" title={<>Du concret,<br /><span>de bout en bout.</span></>}><p>Des projets personnels et académiques, avec le même fil conducteur : comprendre le besoin, construire et livrer.</p><span className="sv-mono">{String(projectsData.length).padStart(2, "0")} PROJETS / 2024 — 2026</span></SectionTitle>
+        <SectionTitle number="01" label="PROJETS CHOISIS" title={<>Du concret,<br /><span>de bout en bout.</span></>}><p>Des réalisations de projet autour du développement, des données et de l’automatisation.</p><span className="sv-mono">{String(projectsData.length).padStart(2, "0")} PROJETS</span></SectionTitle>
         <div className="sv-featured-grid">{featured.map((project, index) => <FeaturedProject key={project.id} project={project} index={index} onOpen={() => showProject(project)} />)}</div>
-        <div className="sv-project-list"><div className="sv-list-header"><span>D’AUTRES TERRAINS D’EXPLORATION</span><span>ANNÉE</span></div>{others.map((project, index) => <button type="button" key={project.id} onClick={() => showProject(project)} className="sv-project-row" aria-label={"Découvrir le projet " + project.title}><span className="sv-row-index">{String(index + 3).padStart(2, "0")}</span><span className="sv-row-main"><span className="sv-row-title">{project.title}</span><span className="sv-row-summary">{project.summary ?? project.role}</span></span><span className="sv-row-tech">{project.technologies.slice(0, 2).join(" / ")}</span><span className="sv-row-year">{project.year}</span><Arrow diagonal /></button>)}</div>
+        <div className="sv-project-list"><div className="sv-list-header"><span>D’AUTRES TERRAINS D’EXPLORATION</span><span /></div>{others.map((project, index) => <button type="button" key={project.id} onClick={() => showProject(project)} className="sv-project-row" aria-label={"Découvrir le projet " + project.title}><span className="sv-row-index">{String(index + 3).padStart(2, "0")}</span><span className="sv-row-main"><span className="sv-row-title">{project.title}</span><span className="sv-row-summary">{project.summary ?? project.role}</span></span><span className="sv-row-tech">{project.technologies.slice(0, 2).join(" / ")}</span><span className="sv-row-year">{project.year}</span><Arrow diagonal /></button>)}</div>
       </section>
 
       <section id="about" className="sv-about-section"><div className="sv-container sv-section">
         <SectionTitle number="02" label="MON APPROCHE" title={<>Le produit en tête.<br /><span>La technique au service.</span></>}><p>{profile.about[0]}</p></SectionTitle>
         <div className="sv-approach-grid">{profile.highlights.map((item, index) => <article key={item.title} className="sv-approach-item"><span className="sv-approach-index">0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-        <div className="sv-impact"><span className="sv-eyebrow">EN CONDITIONS RÉELLES</span><p>Une évaluation qualité.<br /><span className="sv-impact-before">30 minutes.</span> <span className="sv-impact-after">5 minutes.</span></p><div><span className="sv-impact-metric">−83 %</span><p>Sur une plateforme que j’ai conçue et maintenue, utilisée par plus de 60 collaborateurs, avec une API d’analyse IA auto-hébergée.</p></div></div>
+        <div className="sv-impact"><span className="sv-eyebrow">EN CONDITIONS RÉELLES</span><p>Une évaluation qualité.<br /><span className="sv-impact-before">30 minutes.</span> <span className="sv-impact-after">5 minutes.</span></p><div><span className="sv-impact-metric">−83 %</span><p>Résultat de la plateforme de pilotage qualité, utilisée par plus de 60 personnes. Une API d’analyse IA auto-hébergée complétait cette plateforme.</p></div></div>
         <details className="sv-about-details"><summary>En savoir plus sur mon profil <span aria-hidden="true">+</span></summary><div>{profile.about.slice(1).map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div></details>
       </div></section>
 
-      <section id="experience" className="sv-section sv-container"><SectionTitle number="03" label="PARCOURS" title={<>Construire.<br /><span>Et prendre de la hauteur.</span></>}><p>De mes premiers outils d’automatisation à la responsabilité d’applications en production.</p><span className="sv-mono">NICE / 2021 — 2026</span></SectionTitle><div className="sv-experience-list">{[...experiences].reverse().map((experience, index) => <details key={experience.id} className="sv-experience" open={index === 0 ? true : undefined}><summary><span className="sv-experience-date">{experience.date}</span><span className="sv-experience-heading"><OrganizationLogo company={experience.company} /><span className="sv-experience-role"><span>{experience.title}</span><span>{experience.company} · {experience.location}</span></span></span><span className="sv-details-plus" aria-hidden="true">+</span></summary><div className="sv-experience-content"><p className="sv-experience-description">{experience.description}</p>{experience.projects.map(project => <div className="sv-experience-project" key={project.name}><h4>{project.name}</h4><ul>{project.bullets.map(bullet => <li key={bullet}>{bullet}</li>)}</ul><p className="sv-mono">{project.tech.join(" / ")}</p></div>)}</div></details>)}</div>
-        <div id="education" className="sv-education"><h3 className="sv-eyebrow">FORMATION / DE LA PRATIQUE À L’EXPERTISE</h3>{[...formations].reverse().map(formation => <div key={formation.id} className="sv-education-row"><span className="sv-mono">{formation.date}</span><div className="sv-education-heading"><OrganizationLogo company={formation.company} /><div><h4>{formation.title}</h4><p>{formation.subtitle} · {formation.company}</p><span>{formation.location}</span></div></div></div>)}</div>
+      <section id="experience" className="sv-section sv-container"><SectionTitle number="03" label="PARCOURS" title={<>Construire.<br /><span>Et prendre de la hauteur.</span></>}><p>De l’intégration de données au développement Full Stack et aux pratiques DevOps.</p><span className="sv-mono">NICE / 2021 · 2026</span></SectionTitle><div className="sv-experience-list">{[...experiences].reverse().map((experience, index) => <details key={experience.id} className="sv-experience" open={index === 0 ? true : undefined}><summary><span className="sv-experience-date">{experience.date}</span><span className="sv-experience-heading"><OrganizationLogo company={experience.company} /><span className="sv-experience-role"><span>{experience.title}</span><span>{experience.company} · {experience.location}</span></span></span><span className="sv-details-plus" aria-hidden="true">+</span></summary><div className="sv-experience-content"><p className="sv-experience-description">{experience.description}</p>{experience.projects.map(project => <div className="sv-experience-project" key={project.name}><h4>{project.name}</h4><ul>{project.bullets.map(bullet => <li key={bullet}>{bullet}</li>)}</ul><p className="sv-mono">{project.tech.join(" / ")}</p></div>)}</div></details>)}</div>
+        <div id="education" className="sv-education"><h3 className="sv-eyebrow">FORMATION / DE LA PRATIQUE À L’EXPERTISE</h3>{[...formations].reverse().map(formation => <div key={formation.id} className="sv-education-row"><span className="sv-mono">{formation.date}</span><div className="sv-education-heading"><OrganizationLogo company={formation.company} /><div><h4>{formation.title}</h4><p>{formation.subtitle} · {formation.company}</p>{formation.location && <span>{formation.location}</span>}</div></div></div>)}<p className="sv-mono">{profile.certification}</p></div>
       </section>
 
       <section id="skills" className="sv-stack-section"><div className="sv-container sv-section"><SectionTitle number="04" label="BOÎTE À OUTILS" title={<>La bonne stack.<br /><span>Pour le bon problème.</span></>}><p>Des technologies pratiquées en entreprise. Un espace distinct pour celles explorées sur projets.</p></SectionTitle><div className="sv-skills-grid">{skillGroups.map((group, index) => <article className="sv-skill-group" key={group.category}><h3><span className="sv-mono">0{index + 1}</span>{group.category}{index === skillGroups.length - 1 && <span className="sv-project-only">PROJETS</span>}</h3><p>{group.items.join(" · ")}</p></article>)}</div></div></section>
 
-      <section id="contact" className="sv-section sv-container sv-contact"><div className="sv-contact-top"><p className="sv-eyebrow">05 / LA SUITE, ENSEMBLE</p><span className="sv-mono">{profile.location} · {profile.languages.join(" / ")}</span></div><h2>Et si on construisait<br /><span>la suite ?</span></h2><div className="sv-contact-bottom"><div><p>Une équipe à rejoindre, un produit à faire avancer.<br />Parlons de ce que l’on peut construire ensemble.</p><a className="sv-contact-email" href={EMAIL.href}>{EMAIL.value}<Arrow diagonal /></a></div><a href={REQUEST_CV} className="sv-button sv-button-outline">Demander mon CV <Arrow diagonal /></a></div></section>
+      <section id="contact" className="sv-section sv-container sv-contact"><div className="sv-contact-top"><p className="sv-eyebrow">05 / LA SUITE, ENSEMBLE</p><span className="sv-mono">{profile.location} · {profile.languages.join(" / ")}</span></div><h2>Et si on construisait<br /><span>la suite ?</span></h2><div className="sv-contact-bottom"><div><p>{profile.availability}</p><p>Une équipe à rejoindre, un produit à faire avancer.<br />Parlons de ce que l’on peut construire ensemble.</p><a className="sv-contact-email" href={EMAIL.href}>{EMAIL.value}<Arrow diagonal /></a></div><a href={REQUEST_CV} className="sv-button sv-button-outline">Demander mon CV <Arrow diagonal /></a></div></section>
     </main>
 
     <footer className="sv-footer sv-container"><span>© {new Date().getFullYear()} {profile.name}<span className="sv-footer-note">Pensé comme un produit. Construit pour durer.</span></span><div>{contactLinks.filter(link => link.label !== "Email").map(link => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label}<Arrow diagonal /></a>)}<a href="#main" aria-label="Retour en haut">↑</a></div></footer>

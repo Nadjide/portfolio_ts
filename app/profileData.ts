@@ -13,35 +13,39 @@ export const profile = {
   name: "Nadjide Omar",
   title: "Software Engineer",
   location: "Nice (06)",
-  availability: "CDI · disponible le 01/10/2026",
+  availability: "Recherche CDI · Cannes–Monaco ou full remote France",
+  certification: "AWS Cloud Practitioner (préparation en cours)",
   languages: ["Français : natif", "Anglais : C1"],
+  seoDescription:
+    "Nadjide Omar, Software Engineer à Nice. Java/Spring Boot, React/TypeScript, Python/FastAPI. Parcours en entreprise de 09/2021 à 09/2026 ; CI/CD sur 3 applications critiques.",
   tagline:
-    "5 ans en entreprise sur 6 applications métier en production\u00a0: je les conçois, je les sécurise et j'automatise leur livraison.",
+    "5 ans en entreprise, dans une équipe technique de 3 personnes et un environnement de 6 applications en production. Java/Spring Boot, React/TypeScript et Python/FastAPI.",
   about: [
-    "Développeur Full Stack à forte culture DevOps, j'accompagne une application sur tout son cycle de vie : architecture, développement, tests, conteneurisation Docker, CI/CD GitHub Actions et déploiement sur serveurs Linux (Nginx) et Windows.",
-    "Depuis 2021, au sein d'une équipe technique de 3 personnes, j'ai conçu et je maintiens 6 applications métier en production. La plus récente, une plateforme de pilotage qualité, a ramené le temps d'une évaluation de 30 à 5 minutes (-83 %) pour plus de 60 utilisateurs ; toutes reposent sur le service d'authentification centralisée (SSO) que j'ai développé.",
-    "J'aime le code lisible et relu (revue de code sur tous les projets), les solutions qui tiennent en conditions réelles, et l'IA auto-hébergée (Mistral, Ollama) pour garder la donnée privée.",
+    "Développeur Full Stack à forte culture DevOps, je travaille avec Java/Spring Boot, React/TypeScript et Python/FastAPI. Mes pratiques incluent Docker, GitHub Actions et le déploiement sur serveurs Linux (Nginx) et Windows.",
+    "De septembre 2021 à septembre 2026, j'ai travaillé chez Call To Action, dans une équipe technique de 3 personnes et un environnement comprenant 6 applications en production. Mon contrat s'est terminé le 25/09/2026. La CI/CD GitHub Actions concernait 3 applications critiques ; le SSO et le contrôle d'accès par rôles étaient utilisés par 6 applications.",
+    "J'ai développé de A à Z l'application professionnelle de gestion du matériel : Java 21, Spring Boot 4, MariaDB, React, TypeScript, Shadcn UI et Tailwind CSS, avec Docker et GitHub Actions.",
+    "Sur la plateforme de pilotage qualité, le temps d'une évaluation a été ramené de 30 à 5 minutes (-83 %). Vitest et l'audit des dépendances bloquant en CI concernaient cette plateforme. J'ai également développé une API d'analyse IA automatisée avec FastAPI, Ollama, Mistral auto-hébergé et MongoDB.",
   ],
   highlights: [
     {
       icon: "lucide:rocket",
       title: "Cycle complet",
-      text: "De l'architecture à la production : Docker, GitHub Actions, Linux, Nginx.",
+      text: "Docker et déploiement sur serveurs ; CI/CD GitHub Actions sur 3 applications critiques.",
     },
     {
       icon: "lucide:brain-circuit",
       title: "IA locale",
-      text: "LLM auto-hébergé (Mistral) en production : aucune donnée ne quitte l'infrastructure.",
+      text: "API d'analyse IA automatisée : FastAPI, Ollama, Mistral auto-hébergé et MongoDB.",
     },
     {
       icon: "lucide:shield-check",
       title: "Sécurité",
-      text: "SSO et contrôle d'accès pour 6 applications, audit des dépendances bloquant en CI.",
+      text: "SSO/RBAC pour 6 applications ; audit des dépendances bloquant en CI sur la plateforme qualité.",
     },
     {
       icon: "lucide:settings-2",
       title: "Automatisation",
-      text: "Pipeline de données Python : une préparation de 20-60 min ramenée à 5 min.",
+      text: "Pipeline de données Python : une préparation ramenée de 20–60 min à 5 min.",
     },
   ] as ProfileHighlight[],
 };

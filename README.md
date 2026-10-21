@@ -1,8 +1,8 @@
-# Portfolio — Nadjide Omar
+# Portfolio · Nadjide Omar
 
 **Software Engineer · Full Stack & DevOps**
 
-[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app)
+[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app/)
 
 Une vitrine éditoriale graphite, ivoire et bleu glacier : présentation, architecture interactive, projets, parcours, compétences et contact.
 
@@ -10,8 +10,8 @@ Une vitrine éditoriale graphite, ivoire et bleu glacier : présentation, archit
 
 - Une seule vitrine, directement accessible, sans choix de mode.
 - Schéma d'architecture SVG explorable à la souris et au clavier : interface, API, données & IA, livraison.
-- Stajio et DevOps Playground en réalisations principales ; cinq autres projets en liste.
-- Fiches projets avec démonstrations vidéo chargées à la demande, liens source et site quand disponibles.
+- Stajio et DevOps Playground en réalisations principales ; Pokito en liste.
+- Fiches projets avec aperçu statique Stajio et liens vers le code source.
 - Liens partageables, par exemple `?project=stajio`. Les anciens liens avec `?view=simple` ou `?view=terminal` arrivent sur la vitrine.
 - Parcours détaillé dépliable, résultat concret, compétences en entreprise distinctes des technologies explorées sur projets.
 - Navigation responsive, focus visible, modales accessibles et respect des animations réduites.
@@ -21,7 +21,7 @@ La recherche de références Astra / Opus 5.5 et les choix de design sont docume
 
 ## Contenu et architecture
 
-Les sources du profil restent centralisées dans `app/profileData.ts`, `app/portfolioContent.ts`, `app/projectsData.ts` et `app/contactData.ts`. Les résumés courts des projets font partie des données.
+La référence des faits est `faits/profil.toml` dans le dossier CV de référence fourni par Nadjide ; les textes publiés en sont une sélection anonymisée. Les sources du profil restent centralisées dans `app/profileData.ts`, `app/portfolioContent.ts`, `app/projectsData.ts` et `app/contactData.ts`. Les résumés courts des projets font partie des données.
 
 ```text
 app/
@@ -59,4 +59,4 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS · Framer Motion · Vercel 
 
 ## Contact
 
-[GitHub](https://github.com/Nadjide) · [LinkedIn](https://www.linkedin.com/in/nadjide-omar-b55a01212/)
+[GitHub](https://github.com/Nadjide) · [LinkedIn](https://www.linkedin.com/in/nadjide-omar)
