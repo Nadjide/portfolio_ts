@@ -100,17 +100,30 @@ function PipelinePreview() {
 }
 
 function FeaturedProject({ project, index, onOpen }: { project: ProjectData; index: number; onOpen: () => void }) {
-  return <article className={"sv-featured sv-featured-" + index} data-reveal data-reveal-order={index}>
+  const lead = index === 0;
+  const tech = lead
+    ? project.technologies.slice(0, 6)
+    : project.technologies.filter(t => !["React 19", "TypeScript", "JWT", "SQLite", "Ollama", "Docker Compose", "Express", "Vitest", "Playwright"].includes(t)).slice(0, 4);
+
+  return <article className={lead ? "sv-featured sv-featured-lead" : "sv-featured"} data-reveal data-reveal-order={index}>
     <button type="button" className="sv-featured-button" onClick={onOpen} aria-label={"Découvrir le projet " + project.title}>
-      <div className="sv-featured-visual">
-        {project.imageSrc ? <div className="sv-browser-preview">
-          <div className="sv-browser-bar"><span><i /><i /><i /></span><span>{project.title.toLowerCase()} / aperçu</span><span aria-hidden="true">↗</span></div>
+      <div className={project.imageSrc ? "sv-featured-visual sv-featured-capture" : "sv-featured-visual"}>
+        {project.imageSrc ? <div className={lead ? "sv-lead-preview" : "sv-browser-preview"}>
+          {!lead && <div className="sv-browser-bar"><span><i /><i /><i /></span><span>{project.title.toLowerCase()} / aperçu</span><span aria-hidden="true">↗</span></div>}
           {/* eslint-disable-next-line @next/next/no-img-element -- capture statique déjà compressée */}
-          <img src={project.imageSrc} alt={"Capture de l'application " + project.title} loading="lazy" width="1280" height="742" />
+          <img src={project.imageSrc} alt={"Capture de l'application " + project.title} loading="lazy" width="1280" height={lead ? 720 : 742} />
         </div> : <PipelinePreview />}
         <span className="sv-visual-badge">{project.videoSrc ? "Voir la démo ↗" : "Explorer le projet ↗"}</span>
       </div>
-      <div className="sv-featured-description"><div className="sv-project-meta"><span>0{index + 1} / {index === 0 ? "FULL STACK & IA LOCALE" : "DEVOPS & CI/CD"}</span><span>{project.year}</span></div><div className="sv-project-title"><h3>{project.title}</h3><span className="sv-project-open"><Arrow diagonal /></span></div><p>{project.summary ?? project.description[0]}</p><div className="sv-tech-line">{project.technologies.filter(t => !["React 19", "TypeScript", "JWT", "SQLite", "Ollama", "Docker Compose", "Express", "Vitest", "Playwright"].includes(t)).slice(0, 4).join(" / ")}</div></div>
+      <div className="sv-featured-description">
+        <div className="sv-project-meta">
+          <span>{String(index + 1).padStart(2, "0")} / {project.category}</span>
+          <span>{lead ? "PROJET PRINCIPAL" : project.year}</span>
+        </div>
+        <div className="sv-project-title"><h3>{project.title}</h3><span className="sv-project-open"><Arrow diagonal /></span></div>
+        <p>{project.summary ?? project.description[0]}</p>
+        <div className="sv-tech-line">{tech.join(" / ")}</div>
+      </div>
     </button>
   </article>;
 }
@@ -130,7 +143,7 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
     <motion.div className="sv-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-label={"Projet " + project.title} initial={{ y: 18 }} animate={{ y: 0 }} exit={{ y: 10 }} onClick={e => e.stopPropagation()}>
       <div className="sv-modal-toolbar"><span className="sv-eyebrow">ÉTUDE DE PROJET{project.year && <> / {project.year}</>}</span><button type="button" onClick={onClose} aria-label="Fermer le projet"><span>Fermer</span><span aria-hidden="true">×</span></button></div>
       <div className="sv-modal-scroll">
-        {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="metadata" className="sv-modal-media" /> : project.imageSrc ? (
+        {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="none" aria-label={"Présentation vidéo de " + project.title} className="sv-modal-media" /> : project.imageSrc ? (
           // eslint-disable-next-line @next/next/no-img-element -- média de projet chargé uniquement à l'ouverture
           <img src={project.imageSrc} alt={project.title} className="sv-modal-media" />
         ) : null}
@@ -214,8 +227,8 @@ export default function SimpleView() {
     return () => observer.disconnect();
   }, []);
 
-  const featured = projectsData.filter(project => ["13", "15"].includes(project.id));
-  const others = projectsData.filter(project => !["13", "15"].includes(project.id));
+  const featured = projectsData.filter(project => project.featured);
+  const others = projectsData.filter(project => !project.featured);
 
   return <div className="showcase" ref={showcaseRef}>
     <a href="#main" className="sv-skip">Aller au contenu</a>
@@ -231,9 +244,9 @@ export default function SimpleView() {
       <div className="sv-proof-strip"><dl className="sv-container"><div><dt>Parcours en entreprise</dt><dd>5<span>ans</span></dd></div><div><dt>Environnement pro</dt><dd>6<span>applications</span></dd></div><div><dt>Temps d’évaluation qualité</dt><dd>−83<span>%</span></dd></div><div className="sv-proof-note"><dt>Ma façon de travailler</dt><dd>Un œil sur le produit.<br />L’autre sur l’infrastructure.</dd></div></dl></div>
 
       <section id="projects" className="sv-section sv-container">
-        <SectionTitle number="01" label="PROJETS CHOISIS" title={<>Du concret,<br /><span>de bout en bout.</span></>}><p>Des réalisations de projet autour du développement, des données et de l’automatisation.</p><span className="sv-mono">{String(projectsData.length).padStart(2, "0")} PROJETS</span></SectionTitle>
+        <SectionTitle number="01" label="PROJETS CHOISIS" title={<>Du concret,<br /><span>de bout en bout.</span></>}><p>De l’inventaire et l’aménagement 3D de Sureau aux projets d’IA locale, d’automatisation et de temps réel.</p><span className="sv-mono">{String(projectsData.length).padStart(2, "0")} PROJETS</span></SectionTitle>
         <div className="sv-featured-grid">{featured.map((project, index) => <FeaturedProject key={project.id} project={project} index={index} onOpen={() => showProject(project)} />)}</div>
-        <div className="sv-project-list"><div className="sv-list-header"><span>D’AUTRES TERRAINS D’EXPLORATION</span><span /></div>{others.map((project, index) => <button type="button" key={project.id} onClick={() => showProject(project)} className="sv-project-row" aria-label={"Découvrir le projet " + project.title}><span className="sv-row-index">{String(index + 3).padStart(2, "0")}</span><span className="sv-row-main"><span className="sv-row-title">{project.title}</span><span className="sv-row-summary">{project.summary ?? project.role}</span></span><span className="sv-row-tech">{project.technologies.slice(0, 2).join(" / ")}</span><span className="sv-row-year">{project.year}</span><Arrow diagonal /></button>)}</div>
+        <div className="sv-project-list"><div className="sv-list-header"><span>D’AUTRES TERRAINS D’EXPLORATION</span><span /></div>{others.map((project, index) => <button type="button" key={project.id} onClick={() => showProject(project)} className="sv-project-row" aria-label={"Découvrir le projet " + project.title}><span className="sv-row-index">{String(featured.length + index + 1).padStart(2, "0")}</span><span className="sv-row-main"><span className="sv-row-title">{project.title}</span><span className="sv-row-summary">{project.summary ?? project.role}</span></span><span className="sv-row-tech">{project.technologies.slice(0, 2).join(" / ")}</span><span className="sv-row-year">{project.year}</span><Arrow diagonal /></button>)}</div>
       </section>
 
       <section id="about" className="sv-about-section"><div className="sv-container sv-section">

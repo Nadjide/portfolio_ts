@@ -187,7 +187,7 @@ describe("cohérence avec le CV", () => {
   });
 
   it("limite les fiches aux projets attestés et ne leur invente pas une date", () => {
-    expect(projectsData.map(p => p.title).sort()).toEqual(["DevOps Playground", "Pokito", "Stajio"]);
+    expect(projectsData.map(p => p.title)).toEqual(["Sureau", "Stajio", "DevOps Playground", "Pokito"]);
     for (const p of projectsData) expect(p.year).toBeUndefined();
     expect(corpus).not.toMatch(/Expo|SQLModel|FisherFans|Smart Hire|Exploree|Pokedex|Laravel|OpenWeather/);
   });

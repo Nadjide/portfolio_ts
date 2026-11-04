@@ -37,6 +37,7 @@ Je développe des applications Full Stack avec **Java / Spring Boot**, **React /
 
 | Réalisation | Aperçu technique | Liens |
 | :--- | :--- | :--- |
+| **Sureau** · Projet principal | Gestion de parc informatique et atelier 2D/3D auto-hébergés. Java / Spring Boot, React / Three.js, PostgreSQL et Docker Compose. | [Fiche et vidéo](https://portfolio-ts-nine.vercel.app/?project=sureau) · [Code](https://github.com/Nadjide/sureau) |
 | **Stajio** | Application Next.js avec SQLite et IA locale via Ollama. CI GitHub Actions, Docker et manifestes Kubernetes avec Kustomize. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=stajio) · [Code](https://github.com/Nadjide/stajio) |
 | **DevOps Playground** | API Node.js / Express conteneurisée avec Docker Compose, tests Jest et contrôles de santé. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=devops-playground) · [Code](https://github.com/Nadjide/devops-playground) |
 | **Pokito** | Backend temps réel avec serveur autoritaire, Socket.IO, Supabase et Docker. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=pokito) · [Code](https://github.com/Pokito-ynov/api-pokito) |

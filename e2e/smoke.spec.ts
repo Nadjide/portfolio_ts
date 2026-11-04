@@ -96,6 +96,30 @@ test("conserve les liens projets existants et la fermeture explicite", async ({ 
   await expect(dialog).toHaveCount(0);
 });
 
+test("Sureau ouvre la sélection et sa fiche présente la vidéo officielle", async ({ page, request }) => {
+  await page.goto("/");
+  const projects = page.locator("#projects");
+  const cards = projects.getByRole("button", { name: /Découvrir le projet/ });
+  const titles = ["Sureau", "Stajio", "DevOps Playground", "Pokito"];
+  await expect(cards).toHaveCount(titles.length);
+  for (const [index, title] of titles.entries()) {
+    await expect(cards.nth(index)).toHaveAccessibleName("Découvrir le projet " + title);
+  }
+  await expect(cards.first()).toContainText("PROJET PRINCIPAL");
+  await expect(cards.last()).toContainText("04");
+
+  await page.goto("/?project=sureau");
+  const dialog = page.getByRole("dialog", { name: "Projet Sureau" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("link", { name: "Code source" })).toHaveAttribute("href", "https://github.com/Nadjide/sureau");
+  const video = dialog.locator("video");
+  await expect(video).toHaveAttribute("poster", "/images/sureau-atelier-3d.jpg");
+  await expect(video).toHaveAttribute("src", "/videos/optimized/sureau-presentation.mp4");
+  const media = await request.get("/videos/optimized/sureau-presentation.mp4", { headers: { Range: "bytes=0-4095" } });
+  expect(media.status()).toBe(206);
+  expect(media.headers()["content-type"]).toContain("video/mp4");
+});
+
 test("le parcours s'ouvre et les liens de contact sont exploitables", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Parcours", exact: true }).click();
