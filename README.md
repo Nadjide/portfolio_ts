@@ -1,62 +1,77 @@
-# Portfolio · Nadjide Omar
+<div align="center">
 
-**Software Engineer · Full Stack & DevOps**
+<h1>Nadjide Omar</h1>
 
-[portfolio-ts-nine.vercel.app](https://portfolio-ts-nine.vercel.app/)
+<p><strong>Software Engineer · Full Stack &amp; DevOps</strong></p>
+<p>Portfolio de développement logiciel · Projets, parcours et mise en production</p>
 
-Une vitrine éditoriale graphite, ivoire et bleu glacier : présentation, architecture interactive, projets, parcours, compétences et contact.
+<p>
+  <a href="https://portfolio-ts-nine.vercel.app/">
+    <img src="docs/readme/voir-le-portfolio.svg" width="256" height="48" alt="Voir le portfolio en ligne">
+  </a>
+</p>
 
-## Expérience
+<p>
+  <a href="https://portfolio-ts-nine.vercel.app/#projects">Projets</a> ·
+  <a href="https://portfolio-ts-nine.vercel.app/#experience">Parcours</a> ·
+  <a href="https://portfolio-ts-nine.vercel.app/#skills">Compétences</a>
+</p>
 
-- Une seule vitrine, directement accessible, sans choix de mode.
-- Schéma d'architecture SVG explorable à la souris et au clavier : interface, API, données & IA, livraison.
-- Stajio et DevOps Playground en réalisations principales ; Pokito en liste.
-- Fiches projets avec aperçu statique Stajio et liens vers le code source.
-- Liens partageables, par exemple `?project=stajio`. Les anciens liens avec `?view=simple` ou `?view=terminal` arrivent sur la vitrine.
-- Parcours détaillé dépliable, résultat concret, compétences en entreprise distinctes des technologies explorées sur projets.
-- Navigation responsive, focus visible, modales accessibles et respect des animations réduites.
-- Entrée progressive du hero, révélations au défilement, schéma flottant et progression de lecture ; contenu visible sans JavaScript.
+<a href="https://portfolio-ts-nine.vercel.app/">
+  <img src="docs/readme/portfolio.webp" width="1120" alt="Page d’accueil du portfolio de Nadjide Omar, avec le schéma interactif de l’interface au déploiement">
+</a>
 
-La recherche de références Astra / Opus 5.5 et les choix de design sont documentés dans [docs/design-references.md](docs/design-references.md).
+</div>
 
-## Contenu et architecture
+## À propos
 
-La référence des faits est `faits/profil.toml` dans le dossier CV de référence fourni par Nadjide ; les textes publiés en sont une sélection anonymisée. Les sources du profil restent centralisées dans `app/profileData.ts`, `app/portfolioContent.ts`, `app/projectsData.ts` et `app/contactData.ts`. Les résumés courts des projets font partie des données.
+Je développe des applications Full Stack avec **Java / Spring Boot**, **React / TypeScript** et **Python / FastAPI**. Ce portfolio rassemble mes projets personnels et les réalisations qui ont jalonné mes cinq années en entreprise, de septembre 2021 à septembre 2026.
 
-```text
-app/
-├── components/Portfolio.tsx
-├── components/simple/SimpleView.tsx
-├── components/simple/showcase.css
-├── hooks/useFocusTrap.ts
-├── *Data.ts / portfolioContent.ts
-├── data.test.ts
-└── opengraph-image.tsx
+| En production | Livraison | Résultat |
+| :--- | :--- | :--- |
+| **6 applications** dans l’environnement de l’équipe technique | **3 applications critiques** couvertes par la CI/CD GitHub Actions | **30 → 5 min** pour une évaluation sur la plateforme qualité |
+
+[Lire le parcours et les réalisations en entreprise](https://portfolio-ts-nine.vercel.app/#experience)
+
+## Projets
+
+| Réalisation | Aperçu technique | Liens |
+| :--- | :--- | :--- |
+| **Stajio** | Application Next.js avec SQLite et IA locale via Ollama. CI GitHub Actions, Docker et manifestes Kubernetes avec Kustomize. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=stajio) · [Code](https://github.com/Nadjide/stajio) |
+| **DevOps Playground** | API Node.js / Express conteneurisée avec Docker Compose, tests Jest et contrôles de santé. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=devops-playground) · [Code](https://github.com/Nadjide/devops-playground) |
+| **Pokito** | Backend temps réel avec serveur autoritaire, Socket.IO, Supabase et Docker. | [Fiche](https://portfolio-ts-nine.vercel.app/?project=pokito) · [Code](https://github.com/Pokito-ynov/api-pokito) |
+
+## Dans le dépôt
+
+La vitrine est construite avec **Next.js 16, React 19 et TypeScript**, avec Tailwind CSS, Framer Motion et Vercel Analytics. Le schéma interactif présente quatre couches, de l’interface à la livraison. Les fiches projets sont partageables par URL et utilisables au clavier.
+
+| Fichier | Contenu |
+| :--- | :--- |
+| [Vitrine](app/components/simple/SimpleView.tsx) | Présentation, schéma interactif, projets et parcours |
+| [Profil](app/profileData.ts) et [parcours](app/portfolioContent.ts) | Textes et expériences professionnelles |
+| [Données projets](app/projectsData.ts) | Fiches et technologies |
+| [Notes de design](docs/design-references.md) | Références visuelles et choix de conception |
+
+### Lancer en local
+
+Prérequis **Node.js 24.x**.
+
+```bash
+npm ci
+npm run dev
 ```
 
-Le poster Stajio est une capture de la démonstration existante. Le schéma et l'illustration de livraison sont construits en SVG/CSS, sans WebGL ni bibliothèque 3D.
-
-## Développement
-
-Node.js **24.x** est requis, comme en CI et sur Vercel. La version est fixée dans `package.json` pour éviter qu'un ancien réglage Vercel conserve un runtime désactivé.
-
-`npm install` puis `npm run dev`.
+Le site est accessible sur [localhost:3000](http://localhost:3000).
 
 | Commande | Usage |
-|---|---|
-| `npm run dev` | Prévisualisation Next.js |
-| `npm run build` | Build de production |
-| `npm start` | Serveur de production |
-| `npm run lint` | ESLint |
-| `npm test` | Intégrité, confidentialité et cohérence des données |
-| `npm run e2e` | Navigation, fiches projets, accessibilité clavier, liens existants et responsive |
+| :--- | :--- |
+| `npm run build` | Compiler le site pour la production |
+| `npm run lint` | Vérifier le code avec ESLint |
+| `npm test` | Vérifier la cohérence et la confidentialité des données |
+| `npm run e2e` | Tester la navigation, les fiches projets et le responsive avec Playwright |
 
-Les tests end-to-end génèrent des aperçus desktop/mobile dans `artifacts/`.
+---
 
-## Stack
-
-Next.js 16 · React 19 · TypeScript · Tailwind CSS · Framer Motion · Vercel Analytics
-
-## Contact
-
-[GitHub](https://github.com/Nadjide) · [LinkedIn](https://www.linkedin.com/in/nadjide-omar)
+<div align="center">
+  <strong>Nadjide Omar</strong> · <a href="https://github.com/Nadjide">GitHub</a> · <a href="https://www.linkedin.com/in/nadjide-omar">LinkedIn</a>
+</div>
