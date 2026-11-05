@@ -96,6 +96,34 @@ test("conserve les liens projets existants et la fermeture explicite", async ({ 
   await expect(dialog).toHaveCount(0);
 });
 
+test("Stajio présente sa vidéo et ses nouvelles captures en deuxième position", async ({ page, request }) => {
+  await page.goto("/");
+  const card = page.locator("#projects").getByRole("button", { name: /Découvrir le projet/ }).nth(1);
+  await expect(card).toHaveAccessibleName("Découvrir le projet Stajio");
+  await expect(card.locator("img")).toHaveAttribute("src", "/images/stajio-dashboard.webp");
+  await card.click();
+  const dialog = page.getByRole("dialog", { name: "Projet Stajio" });
+  const views = dialog.getByRole("group", { name: "Vues du projet" });
+  const video = dialog.getByLabel("Présentation vidéo de Stajio");
+  await expect(video).toHaveAttribute("src", "/videos/optimized/stajio-presentation.mp4");
+  await expect(video).toHaveAttribute("poster", "/images/stajio-dashboard.webp");
+  await expect(dialog.locator("figcaption")).toContainText("rejouées en accéléré");
+
+  for (const [label, name] of [["Tableau de bord", "dashboard"], ["Journal de bord", "journal"], ["Rapport révisable", "rapport"]]) {
+    await views.getByRole("button", { name: new RegExp(label) }).click();
+    await expect(video).toHaveCount(0);
+    await expect(dialog.locator("figure img")).toHaveAttribute("src", "/images/stajio-" + name + ".webp");
+    const image = await request.get("/images/stajio-" + name + ".webp");
+    expect(image.status()).toBe(200);
+    expect(image.headers()["content-type"]).toContain("image/webp");
+  }
+  await views.getByRole("button", { name: /Présentation vidéo/ }).click();
+  await expect(video).toBeVisible();
+  const media = await request.get("/videos/optimized/stajio-presentation.mp4", { headers: { Range: "bytes=0-4095" } });
+  expect(media.status()).toBe(206);
+  expect(media.headers()["content-type"]).toContain("video/mp4");
+});
+
 test("Sureau ouvre la sélection et sa fiche présente la vidéo officielle", async ({ page, request }) => {
   await page.goto("/");
   const projects = page.locator("#projects");

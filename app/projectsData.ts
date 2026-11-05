@@ -12,6 +12,7 @@ export interface ProjectData {
         caption: string;
     }[];
     videoSrc?: string;
+    videoCaption?: string;
     githubUrl?: string;
     liveUrl?: string;
     technologies: string[];
@@ -46,18 +47,42 @@ export const projectsData: ProjectData[] = [
     {
         id: "13",
         title: "Stajio",
-        summary: "Next.js, IA locale et CI GitHub Actions. Conteneurisation Docker et manifestes Kubernetes avec Kustomize.",
-        imageSrc: "/images/stajio-preview.jpg",
+        summary: "Un espace local-first pour suivre son stage, relier ses activités à des compétences et préparer un rapport révisable, avec une IA locale facultative.",
+        imageSrc: "/images/stajio-dashboard.webp",
+        videoSrc: "/videos/optimized/stajio-presentation.mp4",
+        videoCaption: "Présentation · 2 min 40. Données fictives et réponses réelles de phi4-mini rejouées en accéléré.",
+        gallery: [
+            {
+                src: "/images/stajio-dashboard.webp",
+                alt: "Tableau de bord Stajio en thème sombre avec progression du stage, notes, échéances et compétences",
+                label: "Tableau de bord",
+                caption: "Vue d’ensemble du stage · Progression, notes du journal, compétences documentées et prochaines échéances.",
+            },
+            {
+                src: "/images/stajio-journal.webp",
+                alt: "Journal de bord Stajio présentant les notes d’activité et leur résumé",
+                label: "Journal de bord",
+                caption: "Suivi quotidien · Les notes conservent le texte d’origine. La structuration par l’IA reste une proposition que l’étudiant peut corriger.",
+            },
+            {
+                src: "/images/stajio-rapport.webp",
+                alt: "Rapport de stage Stajio avec plan, section rédigée et aperçu du document",
+                label: "Rapport révisable",
+                caption: "Du journal au rapport · Brief, plan, rédaction par section, versions enregistrées et validation avant export.",
+            },
+        ],
         featured: true,
         category: "FULL STACK & IA LOCALE",
-        context: "Projet",
+        context: "Projet · Application local-first",
+        role: "Conception produit, développement full stack et intégration de l’IA locale",
         description: [
-            "Stajio associe Next.js 16, React 19 et TypeScript, avec une base SQLite et Ollama pour l'IA locale.",
-            "La CI GitHub Actions comprend le contrôle des types, ESLint, Vitest, le build et les tests E2E Playwright.",
-            "Le projet comprend Docker et des manifestes Kubernetes organisés avec Kustomize.",
+            "Stajio accompagne les étudiants pendant leur stage ou leur alternance. Le journal de bord, les preuves de compétences et les échéances alimentent la préparation du rapport et de la soutenance.",
+            "L’IA locale via Ollama est facultative. Elle propose une structuration des notes ou une rédaction que l’étudiant relit et valide. Les générations gardent leur provenance et les informations manquantes sont signalées.",
+            "Le rapport se construit section par section, à partir des notes choisies et des consignes de l’école. Il dispose d’un plan modifiable, d’un aperçu, de versions restaurables et d’un export Markdown ou PDF.",
+            "Next.js 16 et React 19 s’appuient sur SQLite pour conserver les données localement. Docker Compose orchestre l’application et Ollama. La CI GitHub Actions couvre les types, le lint, les tests Vitest, le build et les parcours Playwright.",
         ],
         githubUrl: "https://github.com/Nadjide/stajio",
-        technologies: ["Next.js 16", "React 19", "TypeScript", "SQLite", "Ollama", "Docker", "Kubernetes", "Kustomize", "GitHub Actions", "Vitest", "Playwright"],
+        technologies: ["Next.js 16", "Ollama", "SQLite", "Docker", "React 19", "TypeScript", "Docker Compose", "Zod", "GitHub Actions", "Vitest", "Playwright", "Kubernetes", "Kustomize"],
     },
     {
         id: "15",
