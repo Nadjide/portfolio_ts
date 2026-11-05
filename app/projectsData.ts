@@ -5,6 +5,12 @@ export interface ProjectData {
     /** Résumé court de la réalisation, partagé par les aperçus. */
     summary?: string;
     imageSrc?: string;
+    gallery?: {
+        src: string;
+        alt: string;
+        label: string;
+        caption: string;
+    }[];
     videoSrc?: string;
     githubUrl?: string;
     liveUrl?: string;
@@ -56,16 +62,40 @@ export const projectsData: ProjectData[] = [
     {
         id: "15",
         title: "DevOps Playground",
-        summary: "API Node.js/Express conteneurisée : Docker Compose, GitHub Actions, tests Jest et contrôles de santé.",
+        summary: "Un laboratoire DevOps interactif pour diagnostiquer une API, exécuter un pipeline et restaurer un service, en simulation ou avec Docker local.",
+        imageSrc: "/images/devops-playground-rollback.webp",
+        gallery: [
+            {
+                src: "/images/devops-playground-rollback.webp",
+                alt: "Workbench DevOps Playground après un rollback Docker local, avec pipeline validé et réponse HTTP 200 du service",
+                label: "Rollback Docker",
+                caption: "Docker local · Retour à la version 1.0.0, vérification de la santé du service et preuves de réalisation de la mission.",
+            },
+            {
+                src: "/images/devops-playground-pipeline.webp",
+                alt: "Pipeline simulé montrant une release en échec à l’étape verify, les journaux et les sondes de monitoring",
+                label: "Incident de livraison",
+                caption: "Simulation navigateur · La version 1.1.0 passe les tests et le build, puis échoue au démarrage. Les observations permettent de diagnostiquer l’incident.",
+            },
+            {
+                src: "/images/devops-playground-mission.webp",
+                alt: "Mission Restore the API terminée dans le simulateur, avec terminal, conteneur healthy et contrôle HTTP 200",
+                label: "Mission guidée",
+                caption: "Simulation navigateur · Restauration d’une API arrêtée avec lecture des logs, démarrage du conteneur et contrôle de son endpoint de santé.",
+            },
+        ],
         featured: true,
         category: "DEVOPS & CI/CD",
-        context: "Projet",
+        context: "Projet · Laboratoire interactif",
+        role: "Conception du workbench, moteur de missions et orchestration Docker",
         description: [
-            "DevOps Playground est une API Node.js/Express conteneurisée avec Docker et Docker Compose.",
-            "Le projet associe GitHub Actions, des tests Jest et des contrôles de santé.",
+            "DevOps Playground transforme une API Express en laboratoire d’exploitation. Les panneaux Docker, logs, terminal, monitoring et pipeline partagent le même état de session. Les missions sont validées par des observations techniques, comme une réponse HTTP 200 ou la version attendue du service.",
+            "La démo navigateur s’appuie sur un simulateur déterministe. Le mode Docker local orchestre de vrais conteneurs via un runner isolé : tests, construction d’image, déploiement, vérification et rollback vers la dernière version saine.",
+            "Les missions de stockage couvrent AWS S3 et Azure Blob. En mode local, elles utilisent les émulateurs Moto et Azurite, avec vérification des écritures et lectures par le service.",
+            "L’architecture sépare le moteur métier, l’interface React, l’API de contrôle et le runner Docker. GitHub Actions vérifie les tests unitaires, les parcours Playwright et les intégrations Docker et stockage.",
         ],
         githubUrl: "https://github.com/Nadjide/devops-playground",
-        technologies: ["Node.js", "Express", "Docker", "Docker Compose", "GitHub Actions", "Jest"],
+        technologies: ["React", "Node.js", "Docker", "GitHub Actions", "Vite", "Express", "Docker Compose", "Docker Engine API", "Moto (S3)", "Azurite (Blob)", "Vitest", "Playwright"],
     },
     {
         id: "16",

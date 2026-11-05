@@ -130,6 +130,45 @@ test("le parcours s'ouvre et les liens de contact sont exploitables", async ({ p
   await expect(page.getByRole("link", { name: "Demander mon CV" }).first()).toHaveAttribute("href", /subject=Demande/);
 });
 
+test("DevOps Playground reste troisième et sa galerie se parcourt au clavier", async ({ page, request }) => {
+  await page.goto("/");
+  const cards = page.locator("#projects").getByRole("button", { name: /Découvrir le projet/ });
+  const playground = cards.nth(2);
+  await expect(playground).toHaveAccessibleName("Découvrir le projet DevOps Playground");
+  await expect(playground.locator("img")).toHaveAttribute("src", "/images/devops-playground-rollback.webp");
+  await playground.click();
+  await expect(page).toHaveURL(/project=devops-playground/);
+
+  const dialog = page.getByRole("dialog", { name: "Projet DevOps Playground" });
+  const views = dialog.getByRole("group", { name: "Vues du projet" });
+  const rollback = views.getByRole("button", { name: /Rollback Docker/ });
+  await expect(rollback).toHaveAttribute("aria-pressed", "true");
+  await expect(dialog.locator("figcaption")).toContainText("Docker local");
+
+  const incident = views.getByRole("button", { name: /Incident de livraison/ });
+  await incident.focus();
+  await page.keyboard.press("Enter");
+  await expect(incident).toHaveAttribute("aria-pressed", "true");
+  await expect(rollback).toHaveAttribute("aria-pressed", "false");
+  await expect(dialog.locator("figure img")).toHaveAttribute("src", "/images/devops-playground-pipeline.webp");
+  await expect(dialog.getByRole("link", { name: "Agrandir la capture Incident de livraison" })).toHaveAttribute("href", "/images/devops-playground-pipeline.webp");
+  await expect(dialog.locator("figcaption")).toContainText("Simulation navigateur");
+  await views.getByRole("button", { name: /Mission guidée/ }).click();
+  await expect(dialog.locator("figure img")).toHaveAttribute("src", "/images/devops-playground-mission.webp");
+  await expect(dialog.getByRole("link", { name: "Code source" })).toHaveAttribute("href", "https://github.com/Nadjide/devops-playground");
+
+  for (const name of ["rollback", "pipeline", "mission"]) {
+    const image = await request.get("/images/devops-playground-" + name + ".webp");
+    expect(image.status()).toBe(200);
+    expect(image.headers()["content-type"]).toContain("image/webp");
+  }
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(playground).toBeFocused();
+  await playground.click();
+  await expect(views.getByRole("button", { name: /Rollback Docker/ })).toHaveAttribute("aria-pressed", "true");
+});
+
 test("les fiches restent utilisables avec les animations réduites", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/?project=devops-playground");

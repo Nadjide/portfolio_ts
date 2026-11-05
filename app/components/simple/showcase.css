@@ -121,6 +121,8 @@ html:has(.showcase) { scroll-behavior: smooth; scroll-padding-top: 88px; backgro
 .sv-featured-lead .sv-project-meta > span:last-child { color: var(--sv-accent); }
 .sv-lead-preview { width: 100%; }
 .sv-lead-preview img { display: block; width: 100%; height: auto; }
+.sv-gallery-preview { width: 100%; }
+.sv-gallery-preview img { display: block; width: 100%; height: auto; }
 .sv-browser-preview { width: 87%; border-radius: 5px; overflow: hidden; border: 1px solid #b1d6c83b; box-shadow: 0 28px 40px #0006; transform: perspective(800px) rotateY(-8deg) rotateX(5deg) translateY(12px); transition: transform .45s; }
 .sv-featured-button:hover .sv-browser-preview { transform: perspective(800px) rotateY(-3deg) rotateX(2deg) translateY(6px); }
 .sv-browser-bar { display: flex; align-items: center; justify-content: space-between; background: #16221e; color: #94b1a5; padding: 7px 10px; font: 8px var(--font-geist-mono), monospace; }
@@ -246,6 +248,14 @@ html:has(.showcase) { scroll-behavior: smooth; scroll-padding-top: 88px; backgro
 .sv-modal-toolbar button > span:last-child { font-size: 23px; line-height: 1.2; }
 .sv-modal-scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
 .sv-modal-media { width: 100%; max-height: 48dvh; background: #090e13; object-fit: contain; display: block; }
+.sv-gallery-full { display: block; position: relative; }
+.sv-gallery-full .sv-modal-media { max-height: none; }
+.sv-project-gallery figcaption { padding: 15px 22px; color: #b1bfca; font-size: 13px; line-height: 1.7; min-height: 75px; border-bottom: 1px solid var(--sv-line); }
+.sv-gallery-options { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 22px; border-bottom: 1px solid var(--sv-line); }
+.sv-gallery-options button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid #ffffff25; border-radius: 4px; color: #a9bdcd; font-size: 13px; text-align: left; }
+.sv-gallery-options button span { font: 11px var(--font-geist-mono), monospace; opacity: .65; }
+.sv-gallery-options button:hover { border-color: var(--sv-accent); }
+.sv-gallery-options button[aria-pressed="true"] { border-color: var(--sv-accent); background: #a7cfff12; color: #d8e9ff; }
 .sv-modal-content { padding: 30px 36px 40px; }
 .sv-modal-content h2 { font-size: 38px; font-weight: 450; letter-spacing: -.04em; margin-top: 10px; }
 .sv-modal-role { color: #a9becd; font-size: 15px; margin-top: 8px; }

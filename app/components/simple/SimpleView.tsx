@@ -101,6 +101,8 @@ function PipelinePreview() {
 
 function FeaturedProject({ project, index, onOpen }: { project: ProjectData; index: number; onOpen: () => void }) {
   const lead = index === 0;
+  const galleryCount = project.gallery?.length ?? 0;
+  const hasGallery = galleryCount > 0;
   const tech = lead
     ? project.technologies.slice(0, 6)
     : project.technologies.filter(t => !["React 19", "TypeScript", "JWT", "SQLite", "Ollama", "Docker Compose", "Express", "Vitest", "Playwright"].includes(t)).slice(0, 4);
@@ -108,12 +110,12 @@ function FeaturedProject({ project, index, onOpen }: { project: ProjectData; ind
   return <article className={lead ? "sv-featured sv-featured-lead" : "sv-featured"} data-reveal data-reveal-order={index}>
     <button type="button" className="sv-featured-button" onClick={onOpen} aria-label={"Découvrir le projet " + project.title}>
       <div className={project.imageSrc ? "sv-featured-visual sv-featured-capture" : "sv-featured-visual"}>
-        {project.imageSrc ? <div className={lead ? "sv-lead-preview" : "sv-browser-preview"}>
-          {!lead && <div className="sv-browser-bar"><span><i /><i /><i /></span><span>{project.title.toLowerCase()} / aperçu</span><span aria-hidden="true">↗</span></div>}
+        {project.imageSrc ? <div className={lead ? "sv-lead-preview" : hasGallery ? "sv-gallery-preview" : "sv-browser-preview"}>
+          {!lead && !hasGallery && <div className="sv-browser-bar"><span><i /><i /><i /></span><span>{project.title.toLowerCase()} / aperçu</span><span aria-hidden="true">↗</span></div>}
           {/* eslint-disable-next-line @next/next/no-img-element -- capture statique déjà compressée */}
-          <img src={project.imageSrc} alt={"Capture de l'application " + project.title} loading="lazy" width="1280" height={lead ? 720 : 742} />
+          <img src={project.imageSrc} alt={"Capture de l'application " + project.title} loading="lazy" width="1280" height={lead ? 720 : hasGallery ? 800 : 742} />
         </div> : <PipelinePreview />}
-        <span className="sv-visual-badge">{project.videoSrc ? "Voir la démo ↗" : "Explorer le projet ↗"}</span>
+        <span className="sv-visual-badge">{project.videoSrc ? "Voir la démo ↗" : hasGallery ? galleryCount + " vues du laboratoire ↗" : "Explorer le projet ↗"}</span>
       </div>
       <div className="sv-featured-description">
         <div className="sv-project-meta">
@@ -126,6 +128,30 @@ function FeaturedProject({ project, index, onOpen }: { project: ProjectData; ind
       </div>
     </button>
   </article>;
+}
+
+function ProjectGallery({ images }: { images: NonNullable<ProjectData["gallery"]> }) {
+  const [selected, setSelected] = useState(0);
+  const current = images[selected];
+
+  return <div className="sv-project-gallery">
+    <figure>
+      <a href={current.src} target="_blank" rel="noreferrer" className="sv-gallery-full" aria-label={"Agrandir la capture " + current.label}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- captures locales compressées, chargées à l'ouverture */}
+        <img src={current.src} alt={current.alt} width="1440" height="900" className="sv-modal-media" />
+        <span className="sv-visual-badge" aria-hidden="true">Agrandir ↗</span>
+      </a>
+      <figcaption aria-live="polite">{current.caption}</figcaption>
+    </figure>
+    <div className="sv-gallery-options" role="group" aria-label="Vues du projet">
+      {images.map((image, index) => <button
+        key={image.src}
+        type="button"
+        aria-pressed={selected === index}
+        onClick={() => setSelected(index)}
+      ><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{image.label}</button>)}
+    </div>
+  </div>;
 }
 
 function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () => void }) {
@@ -143,7 +169,7 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
     <motion.div className="sv-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-label={"Projet " + project.title} initial={{ y: 18 }} animate={{ y: 0 }} exit={{ y: 10 }} onClick={e => e.stopPropagation()}>
       <div className="sv-modal-toolbar"><span className="sv-eyebrow">ÉTUDE DE PROJET{project.year && <> / {project.year}</>}</span><button type="button" onClick={onClose} aria-label="Fermer le projet"><span>Fermer</span><span aria-hidden="true">×</span></button></div>
       <div className="sv-modal-scroll">
-        {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="none" aria-label={"Présentation vidéo de " + project.title} className="sv-modal-media" /> : project.imageSrc ? (
+        {project.videoSrc ? <video src={project.videoSrc} poster={project.imageSrc} controls playsInline preload="none" aria-label={"Présentation vidéo de " + project.title} className="sv-modal-media" /> : project.gallery?.length ? <ProjectGallery key={project.id} images={project.gallery} /> : project.imageSrc ? (
           // eslint-disable-next-line @next/next/no-img-element -- média de projet chargé uniquement à l'ouverture
           <img src={project.imageSrc} alt={project.title} className="sv-modal-media" />
         ) : null}
